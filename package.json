@@ -1,0 +1,25 @@
+{
+  "name": "gobang",
+  "version": "1.0.0",
+  "description": "This is a gobang with AI",
+  "main": "main.js",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/csdoker/gobang.git"
+  },
+  "keywords": [
+    "gobang",
+    "AI",
+    "canvas",
+    "es6"
+  ],
+  "author": "csdoker",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/csdoker/gobang/issues"
+  },
+  "homepage": "https://github.com/csdoker/gobang#readme"
+}
