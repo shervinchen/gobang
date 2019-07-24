@@ -1,7 +1,8 @@
+import Canvas from './canvas'
+import Scene from './scene'
+import Player from './player'
 import Chess from './chess'
 import Board from './board'
-import Canvas from './canvas'
-import Player from './player'
 
 /**
  * 游戏主体控制类
@@ -10,9 +11,9 @@ import Player from './player'
 export default class Game {
   constructor () {
     // 是否开始游戏
-    this.isGameStart = false
+    // this.isGameStart = false
     // 是否结束游戏
-    this.isGameEnd = false
+    // this.isGameEnd = false
   }
 
   createGame () {
@@ -21,44 +22,60 @@ export default class Game {
     this.initGame()
     // 监听游戏事件
     this.listenGame()
-    // 选择棋子类型
-    // this.selectChess()
   }
 
   initGame () {
     // 创建画布
     this.canvas = new Canvas()
+    // 创建场景
+    this.scene = new Scene()
     // 创建棋盘
     this.board = new Board()
     // 创建棋子
     this.chess = new Chess(0, 0, 0)
     // 初始化画布
-    canvas.initCanvas()
+    this.canvas.initCanvas()
+    // 初始化场景
+    this.scene.drawScene()
     // 初始化棋盘
-    board.initBoard()
+    this.board.initBoard()
     // 初始化棋子
-    chess.initChess()
+    this.chess.initChess()
   }
 
   listenGame () {
-    if (!this.isGameStart) {
-      // let play = new Player()
-      document.querySelector('#circle').addEventListener(
-        'click',
-        () => {
-          // this.initPlayer()
-        },
-        false
-      )
-      document.querySelector('#cross').addEventListener('click', () => {
+    // 监听场景事件
+    this.listenScene()
+    // 监听棋盘事件
+    this.listenBoard()
+  }
+
+  /**
+   * 监听场景
+   */
+  listenScene() {
+    // 选择棋子类型
+    // this.selectChess()
+    // let play = new Player()
+    document.querySelector('#circle').addEventListener(
+      'click',
+      () => {
         // this.initPlayer()
-      })
-    } else {
-      
-    }
-    if (this.isGameStart && !this.isGameEnd) {
-      this.board.listenBoard()
-    }
+      },
+      false
+    )
+    document.querySelector('#cross').addEventListener('click', () => {
+      // this.initPlayer()
+    })
+  }
+
+  /**
+   * 监听棋盘
+   */
+  listenBoard() {
+    document.querySelector('#board').addEventListener('click', () => {
+
+    })
   }
 
   startGame () {}

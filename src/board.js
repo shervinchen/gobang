@@ -11,12 +11,4 @@ export default class Board {
 
   }
 
-  /**
-   * 监听棋盘
-   */
-  listenBoard() {
-    document.querySelector('#board').addEventListener('click', () => {
-      
-    })
-  }
 }
