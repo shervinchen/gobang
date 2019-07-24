@@ -5,8 +5,10 @@ import Game from './game.js'
 import '../style/index.css'
 // canvas标签可以动态加载
 
-(() => {
-    // 开始游戏
-    const game = new Game();
-    game.start();
-})();
+;(() => {
+  window.onload = () => {
+    // 创建游戏
+    const game = new Game()
+    game.createGame()
+  }
+})()
