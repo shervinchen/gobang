@@ -45,9 +45,9 @@ export default class Game {
 
   listenGame () {
     // 监听场景事件
-    this.listenScene()
+    // this.listenScene()
     // 监听棋盘事件
-    this.listenBoard()
+    // this.listenBoard()
   }
 
   /**

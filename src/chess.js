@@ -15,6 +15,10 @@ export default class Chess {
     this.chessType = chessType
   }
 
+  initChess() {
+    this.drawChess()
+  }
+
   /**
    * 绘制棋子
    */

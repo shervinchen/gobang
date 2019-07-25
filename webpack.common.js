@@ -1,8 +1,6 @@
 const path = require('path')
-const {
-  CleanWebpackPlugin
-} = require('clean-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
   entry: './src/main.js',
@@ -23,10 +21,11 @@ module.exports = {
         removeStyleLinkTypeAttributes: true,
         useShortDoctype: true
       }
-    }),
+    })
   ],
   module: {
-    rules: [{
+    rules: [
+      {
         test: /\.js$/,
         // include: path.resolve(__dirname , 'src'),
         exclude: /node_modules/,
@@ -35,6 +34,21 @@ module.exports = {
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|svg)$/,
+        use: [
+          // 'file-loader'
+          {
+            loader: 'file-loader',
+            options: {
+              // name: '[name].[ext]', // [path] 上下文环境路径
+              publicPath: 'asset/iconfont', // 目标路径
+              outputPath: 'assets/icon' // 输出路径
+              // outputPath: 'dist'
+            }
+          }
+        ]
       }
     ]
   }

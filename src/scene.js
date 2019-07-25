@@ -5,8 +5,8 @@ export default class Scene {
   constructor() {}
 
   drawScene() {
-    drawSceneChess()
-    drawSceneInfo()
+    this.drawSceneChess()
+    this.drawSceneInfo()
   }
 
   drawSceneChess() {}

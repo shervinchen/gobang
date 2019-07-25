@@ -4,6 +4,10 @@
 export default class Board {
   constructor () {}
 
+  initBoard() {
+    this.drawBoard()
+  }
+
   /**
    * 绘制棋盘
    */
