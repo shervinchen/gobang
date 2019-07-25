@@ -10,6 +10,14 @@ import Board from './board'
  */
 export default class Game {
   constructor () {
+    // 创建画布
+    this.canvas = new Canvas()
+    // 创建场景
+    this.scene = new Scene()
+    // 创建棋盘
+    this.board = new Board()
+    // 创建棋子
+    this.chess = new Chess(0, 0, 0)
     // 是否开始游戏
     // this.isGameStart = false
     // 是否结束游戏
@@ -25,14 +33,6 @@ export default class Game {
   }
 
   initGame () {
-    // 创建画布
-    this.canvas = new Canvas()
-    // 创建场景
-    this.scene = new Scene()
-    // 创建棋盘
-    this.board = new Board()
-    // 创建棋子
-    this.chess = new Chess(0, 0, 0)
     // 初始化画布
     this.canvas.initCanvas()
     // 初始化场景
