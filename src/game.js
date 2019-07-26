@@ -4,6 +4,9 @@ import Player from './player'
 import Chess from './chess'
 import Board from './board'
 
+// 棋盘格子大小
+const BOARD_GRID_SIZE = 30
+
 /**
  * 游戏主体控制类
  * 初始化棋盘、棋子，定义游戏相关属性、方法
@@ -15,7 +18,7 @@ export default class Game {
     // 创建场景
     this.scene = new Scene()
     // 创建棋盘
-    this.board = new Board()
+    this.board = new Board(BOARD_GRID_SIZE)
     // 创建棋子
     this.chess = new Chess(0, 0, 0)
     // 是否开始游戏
@@ -33,12 +36,14 @@ export default class Game {
   }
 
   initGame () {
-    // 初始化画布
-    this.canvas.initCanvas()
+    // 获取棋盘大小
+    let boardSize = this.board.getBoardSize()
+    // 设置画布大小
+    this.canvas.setCanvasSize(boardSize)
     // 初始化场景
-    this.scene.drawScene()
-    // 初始化棋盘
-    this.board.initBoard()
+    // this.scene.drawScene()
+    // 绘制棋盘
+    this.board.drawBoard(this.canvas.context)
     // 初始化棋子
     this.chess.initChess()
   }

@@ -16,8 +16,7 @@ html {
 }
 
 body {
-  font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC",
-    "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei",
+  font-family: "Comic Sans MS", cursive, sans-serif,
     sans-serif;
   min-height: 100%;
   background-color: #2c3e50;
@@ -34,12 +33,18 @@ body {
   display: flex;
 }
 
-.scene .choose .circle, .scene .choose .cross {
+.scene .choose .circle, .scene .choose .cross, .scene .resize .zoomout, .scene .resize .zoomin {
     display: block;
     width: 30px;
     height: 30px;
     line-height: 30px;
     font-size: 30px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.scene .choose .circle:active, .scene .choose .cross:active, .scene .resize .zoomout:active, .scene .resize .zoomin:active {
+  transform: scale(1.5);
 }
 
 .scene .choose .circle {
@@ -59,8 +64,18 @@ body {
   text-align: center;
 }
 
+.scene .resize {
+  display: flex;
+  justify-content: space-between;
+}
+
+.scene .resize .zoomout, .scene .resize .zoomin {
+  color: #ffb366;
+}
+
 .board {
   display: block;
-  background-color: #577a9e;
+  background-color: #2c3e50;
+  /* background-color: #577a9e; #34495e */
   /* rgba(87, 122, 158, 0.4) */
 }

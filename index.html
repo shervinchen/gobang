@@ -12,18 +12,22 @@
     <div class="content">
       <div class="scene">
         <div class="choose">
-          <i class="iconfont iconcircle circle"></i>
-          <span class="info">choose your chess to start !</span>
           <i class="iconfont iconcross cross"></i>
+          <span class="info">try to get five in a line!</span>
+          <i class="iconfont iconcircle circle"></i>
         </div>
         <!-- <div class="loading">
           <div class="loading-info"></div>
           <div class="loading-bar"></div>
         </div> -->
-        <!-- 32x15 + 空隙 -->
-        <canvas class="board" width="480px" height="480px">
-            Your browser does not support canvas
+        <!-- 30x15+1X14=464 + 空隙 -->
+        <canvas id="canvas" class="board" width="480px" height="480px">
+            Your browser does not support HTML5 canvas.
         </canvas>
+        <div class="resize">
+          <i class="iconfont iconzoomin zoomin"></i>
+          <i class="iconfont iconzoomout zoomout"></i>
+        </div>
       </div>
     </div>
     <!-- <script src="gobang.min.js" charset="utf-8"></script> -->
