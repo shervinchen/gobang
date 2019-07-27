@@ -1,67 +1,76 @@
-import { radiusRect } from './util'
+import BoardGrid from './boardGird'
 
 /**
  * 棋盘类
  */
 
-// 棋盘每行、每列格子数
-const BOARD_GRID_COUNT = 15
+// 每行、每列棋格数
+const BOARD_GRIDS_COUNT = 15
 
-// 棋盘格子圆角弧度
-const BOARD_GRID_RADIUS = 4
+// 棋格间隙
+const BOARD_GRIDS_GAP = 1
 
-// 棋盘格子颜色
-const BOARD_GRID_COLOR = '#34495e'
+// 棋格大小
+const BOARD_GRIDS_SIZE = 30
 
-// 棋盘格子间隙
-const BOARD_GRID_GAP = 1
+// 棋格类型
+const BOARD_GRID_TYPE_DEFAULT = -1
+const BOARD_GRID_TYPE_CIRCLE = 0
+const BOARD_GRID_TYPE_CROSS = 1
 
 export default class Board {
   /**
    * 定义棋盘属性
-   * @param {Number} boardGridSize 棋盘格子大小
+   * @param {Number} boardGridSize 棋格大小
    * @constructor
    */
-  constructor (boardGridSize) {
-    this.boardGridSize = boardGridSize
+  constructor () {}
+
+  initBoard (ctx) {
+    // 初始化棋格状态
+    this.boardGrids = this.initBoardGrids(ctx)
+    console.log(this.boardGrids)
   }
 
-  // initBoard(ctx) {
-  //   this.drawBoard(ctx)
-  // }
-
   /**
-   * 绘制棋盘
+   * 初始化棋格状态
    */
-  drawBoard (ctx) {
-    for (let row = 0; row < BOARD_GRID_COUNT; row++) {
-      for (let col = 0; col < BOARD_GRID_COUNT; col++) {
-        this.drawRoundedRect(
-          row * (this.boardGridSize + BOARD_GRID_GAP),
-          col * (this.boardGridSize + BOARD_GRID_GAP),
-          this.boardGridSize,
-          this.boardGridSize,
-          BOARD_GRID_RADIUS,
+  initBoardGrids (ctx) {
+    const grids = []
+    for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
+      grids[row] = []
+      for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
+        // 创建棋格
+        grids[row][col] = new BoardGrid(
+          row * (BOARD_GRIDS_SIZE + BOARD_GRIDS_GAP),
+          col * (BOARD_GRIDS_SIZE + BOARD_GRIDS_GAP),
+          BOARD_GRID_TYPE_DEFAULT,
+          BOARD_GRIDS_SIZE
+        )
+        // 绘制棋格
+        grids[row][col].drawBoardGrid(
+          row * (BOARD_GRIDS_SIZE + BOARD_GRIDS_GAP),
+          col * (BOARD_GRIDS_SIZE + BOARD_GRIDS_GAP),
           ctx
         )
       }
     }
+    return grids
   }
-
-  drawRoundedRect (left, top, width, height, r, ctx) {
-    radiusRect(left, top, width, height, r, ctx)
-    ctx.fillStyle = BOARD_GRID_COLOR
-    ctx.fill()
-  }
-
-  setBoardSize (boardGridSize) {
-    this.boardGridSize = boardGridSize
+  
+  /**
+   * 监听棋盘
+   */
+  listenBoard (canvas) {
+    canvas.addEventListener('click', (e) => {
+      console.log(e)
+    })
   }
 
   getBoardSize () {
     return (
-      this.boardGridSize * BOARD_GRID_COUNT +
-      BOARD_GRID_GAP * (BOARD_GRID_COUNT - 1)
+      BOARD_GRIDS_SIZE * BOARD_GRIDS_COUNT +
+      BOARD_GRIDS_GAP * (BOARD_GRIDS_COUNT - 1)
     )
   }
 }
