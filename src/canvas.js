@@ -1,3 +1,5 @@
+import { radiusRect } from './util'
+
 /**
  * 画布类
  */
@@ -33,12 +35,15 @@ export default class Canvas {
   }
 
   // 判断点是否在路径内
-  isInPath (x, y, grid) {
-    // const gridPosition = grid.getGridPosition(game)
-    // context.beginPath()
-    // context.arc(gridPosition.gridPositionX, gridPosition.gridPositionY,
-    // 			grid.gridRadius, 0, Math.PI * 2, true)
-    // context.closePath()
-    // return context.isPointInPath(x, y)
+  isInPath (x, y, boardGrid) {
+    radiusRect(
+      boardGrid.boardGridX,
+      boardGrid.boardGridY,
+      boardGrid.boardGridSize,
+      boardGrid.boardGridSize,
+      boardGrid.boardGridRadius,
+      this.context
+    )
+    return this.context.isPointInPath(x, y)
   }
 }

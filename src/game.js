@@ -49,7 +49,7 @@ export default class Game {
     // 监听场景事件
     // this.listenScene()
     // 监听棋盘事件
-    this.gameBoard.listenBoard(this.gameCanvas.canvas)
+    this.gameBoard.listenBoard(this.gameCanvas)
   }
 
   /**
