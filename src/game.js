@@ -2,6 +2,8 @@ import Canvas from './canvas'
 import Scene from './scene'
 import Player from './player'
 import Chess from './chess'
+import { CHESS_TYPE_CROSS,
+  CHESS_TYPE_CIRCLE } from './constant'
 
 /**
  * 游戏主体控制类
@@ -13,8 +15,12 @@ export default class Game {
     this.gameCanvas = new Canvas()
     // 创建场景
     this.gameScene = new Scene()
+    // 创建人类玩家 默认玩家为 cross 棋子
+    this.gameHumanPlayer = new Player(CHESS_TYPE_CROSS)
+    // 创建AI玩家 默认AI为 circle 棋子
+    this.gameAIPlayer = new Player(CHESS_TYPE_CIRCLE)
     // 创建棋子
-    this.gameChess = new Chess(0, 0, 0)
+    // this.gameChess = new Chess(0, 0, 0)
     // 是否开始游戏
     // this.isGameStart = false
     // 是否结束游戏
@@ -26,14 +32,14 @@ export default class Game {
     // 初始化游戏
     this.initGame()
     // 监听游戏事件
-    this.gameScene.addSceneListener(this.gameCanvas)
+    this.gameScene.addSceneListener(this.gameCanvas, this.gameHumanPlayer)
   }
 
   initGame () {
     // 初始化场景
     this.gameScene.initScene(this.gameCanvas)
     // 初始化棋子
-    this.gameChess.initChess()
+    // this.gameChess.initChess()
   }
 
   startGame () {}

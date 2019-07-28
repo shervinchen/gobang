@@ -1,18 +1,9 @@
 import Board from './board'
-
-// 默认棋格大小
-const BOARD_GRID_DEFAULT_SIZE = 34
-
-// 棋格大小变化量
-const BOARD_GRID_RESIZE_COUNT = 4
-
-const BOARD_GRID_MIN_SIZE = 22
-
-const BOARD_GRID_MAX_SIZE = 42
-
-// 屏幕宽度范围
-// 最小宽度只适配到 320px
-const SCREEN_WIDTH_RANGE = [1440, 1024, 768, 480]
+import { BOARD_GRID_DEFAULT_SIZE,
+  BOARD_GRID_RESIZE_COUNT,
+  BOARD_GRID_MIN_SIZE,
+  BOARD_GRID_MAX_SIZE,
+  SCREEN_WIDTH_RANGE } from './constant'
 
 /**
  * 游戏场景类
@@ -84,13 +75,13 @@ export default class Scene {
   /**
    * 添加场景监听器
    */
-  addSceneListener (gameCanvas) {
+  addSceneListener (gameCanvas, gameHumanPlayer) {
     // 添加选择棋子监听器
     // this.addSceneChessListener()
     // 添加缩放棋盘监听器
     this.addSceneResizeListener(gameCanvas)
     // 添加棋盘监听器
-    this.gameBoard.addBoardListener(gameCanvas)
+    this.gameBoard.addBoardListener(gameCanvas, gameHumanPlayer)
     // let play = new Player()
   }
 

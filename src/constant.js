@@ -1,0 +1,51 @@
+// 棋格颜色
+const BOARD_GRID_COLOR = '#34495e'
+
+// 每行、每列棋格数
+const BOARD_GRIDS_COUNT = 15
+
+// 棋格间隙
+const BOARD_GRIDS_GAP = 1
+
+// 棋格类型
+const BOARD_GRID_TYPE_DEFAULT = -1
+// const BOARD_GRID_TYPE_CIRCLE = 0
+// const BOARD_GRID_TYPE_CROSS = 1
+
+// 棋格圆角弧度
+const BOARD_GRID_RADIUS = 4
+
+// cross类型的棋子（先手）
+const CHESS_TYPE_CROSS = 1
+
+// circle类型的棋子（后手）
+const CHESS_TYPE_CIRCLE = 0
+
+// 默认棋格大小
+const BOARD_GRID_DEFAULT_SIZE = 34
+
+// 棋格大小变化量
+const BOARD_GRID_RESIZE_COUNT = 4
+
+const BOARD_GRID_MIN_SIZE = 22
+
+const BOARD_GRID_MAX_SIZE = 42
+
+// 屏幕宽度范围
+// 最小宽度只适配到 320px
+const SCREEN_WIDTH_RANGE = [1440, 1024, 768, 480]
+
+export {
+  BOARD_GRID_COLOR,
+  BOARD_GRIDS_COUNT,
+  BOARD_GRIDS_GAP,
+  BOARD_GRID_TYPE_DEFAULT,
+  BOARD_GRID_RADIUS,
+  CHESS_TYPE_CROSS,
+  CHESS_TYPE_CIRCLE,
+  BOARD_GRID_DEFAULT_SIZE,
+  BOARD_GRID_RESIZE_COUNT,
+  BOARD_GRID_MIN_SIZE,
+  BOARD_GRID_MAX_SIZE,
+  SCREEN_WIDTH_RANGE
+}

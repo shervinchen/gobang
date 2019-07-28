@@ -1,7 +1,22 @@
+import Chess from './chess'
+
 /*
   玩家
   定义玩家相关属性，支持人机、人人对战
 */
 export default class Player {
-  constructor () {}
+  constructor (playerChess) {
+    // 玩家所选棋子
+    this.playerChess = playerChess
+  }
+
+  setPlayerChess (playerChess) {
+    this.playerChess = playerChess
+  }
+
+  generatePlayerChess (boardGird) {
+    boardGird.drawBoardGridChess(boardGird, this.playerChess)
+  }
+
+  // generateNextStep(row, col) {}
 }

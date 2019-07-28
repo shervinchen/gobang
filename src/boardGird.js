@@ -1,7 +1,5 @@
 import { radiusRect } from './util'
-
-// 棋格颜色
-const BOARD_GRID_COLOR = '#34495e'
+import { BOARD_GRID_COLOR } from './constant'
 
 /**
  * 棋格类
@@ -52,5 +50,12 @@ export default class BoardGrid {
     radiusRect(left, top, boardGridSize, boardGridSize, r, ctx)
     ctx.fillStyle = BOARD_GRID_COLOR
     ctx.fill()
+  }
+
+  /**
+   * 绘制棋格上的棋子
+   */
+  drawBoardGridChess (boardGrid, chessType) {
+    console.log(chessType, boardGrid)
   }
 }
