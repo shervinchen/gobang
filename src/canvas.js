@@ -1,5 +1,3 @@
-import { radiusRect } from './util'
-
 /**
  * 画布类
  */
@@ -32,18 +30,5 @@ export default class Canvas {
       width: this.canvas.clientWidth,
       height: this.canvas.clientHeight
     }
-  }
-
-  // 判断点是否在路径内
-  isInPath (x, y, boardGrid) {
-    radiusRect(
-      boardGrid.boardGridX,
-      boardGrid.boardGridY,
-      boardGrid.boardGridSize,
-      boardGrid.boardGridSize,
-      boardGrid.boardGridRadius,
-      this.context
-    )
-    return this.context.isPointInPath(x, y)
   }
 }

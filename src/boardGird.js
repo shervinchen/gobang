@@ -7,9 +7,7 @@ const BOARD_GRID_COLOR = '#34495e'
  * 棋格类
  */
 export default class BoardGrid {
-  constructor (boardGridX, boardGridY, boardGridType, boardGridSize, boardGridRadius) {
-    // 定义棋格大小
-    this.boardGridSize = boardGridSize
+  constructor (boardGridX, boardGridY, boardGridType, boardGridRadius) {
     // 棋格坐标
     this.boardGridX = boardGridX
     this.boardGridY = boardGridY
@@ -19,18 +17,30 @@ export default class BoardGrid {
     this.boardGridRadius = boardGridRadius
   }
 
-  setBoardGridSize (boardGridSize) {
-    this.boardGridSize = boardGridSize
+  /**
+   * 判断点击的点是否在棋格内
+   */
+  isInBoardGird (x, y, boardGrid, boardGridSize, ctx) {
+    radiusRect(
+      boardGrid.boardGridX,
+      boardGrid.boardGridY,
+      boardGridSize,
+      boardGridSize,
+      boardGrid.boardGridRadius,
+      ctx
+    )
+    return ctx.isPointInPath(x, y)
   }
 
   /**
    * 绘制棋格
    */
-  drawBoardGrid (left, top, ctx) {
+  drawBoardGrid (boardGrid, boardGridSize, ctx) {
     this.drawRoundedRect(
-      left,
-      top,
+      boardGrid.boardGridX,
+      boardGrid.boardGridY,
       this.boardGridRadius,
+      boardGridSize,
       ctx
     )
   }
@@ -38,8 +48,8 @@ export default class BoardGrid {
   /**
    * 绘制填充圆角矩形
    */
-  drawRoundedRect (left, top, r, ctx) {
-    radiusRect(left, top, this.boardGridSize, this.boardGridSize, r, ctx)
+  drawRoundedRect (left, top, r, boardGridSize, ctx) {
+    radiusRect(left, top, boardGridSize, boardGridSize, r, ctx)
     ctx.fillStyle = BOARD_GRID_COLOR
     ctx.fill()
   }

@@ -35,10 +35,10 @@ body {
 
 .scene .choose .circle, .scene .choose .cross, .scene .resize .zoomout, .scene .resize .zoomin {
     display: block;
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
-    font-size: 30px;
+    width: 34px;
+    height: 34px;
+    line-height: 34px;
+    font-size: 34px;
     text-align: center;
     cursor: pointer;
 }
@@ -58,7 +58,7 @@ body {
 .scene .choose .info {
   font-size: 18px;
   color: #ffff66;
-  line-height: 30px;
+  line-height: 34px;
   font-style: italic;
   flex: 1;
   text-align: center;
