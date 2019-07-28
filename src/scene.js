@@ -1,14 +1,18 @@
 import Board from './board'
 
 // 默认棋格大小
-const BOARD_GRID_SIZE = 34
+const BOARD_GRID_DEFAULT_SIZE = 34
 
 // 棋格大小变化量
-const BOARD_GRID_RESIZECOUNT = 4
+const BOARD_GRID_RESIZE_COUNT = 4
 
 const BOARD_GRID_MIN_SIZE = 22
 
 const BOARD_GRID_MAX_SIZE = 42
+
+// 屏幕宽度范围
+// 最小宽度只适配到 320px
+const SCREEN_WIDTH_RANGE = [1440, 1024, 768, 480]
 
 /**
  * 游戏场景类
@@ -20,7 +24,25 @@ export default class Scene {
     // this.listenScene()
 
     // 创建棋盘
-    this.gameBoard = new Board(BOARD_GRID_SIZE)
+    this.gameBoard = new Board(this.calculateBoardGridSize())
+  }
+
+  calculateBoardGridSize () {
+    let boardGridSize = BOARD_GRID_DEFAULT_SIZE
+    // 根据当前屏幕宽度来动态适配棋格大小
+    const clientWidth = document.body.clientWidth
+    if (clientWidth > SCREEN_WIDTH_RANGE[1] - 1 && clientWidth < SCREEN_WIDTH_RANGE[0]) {
+      boardGridSize = BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT
+    } else if (clientWidth > SCREEN_WIDTH_RANGE[2] - 1 && clientWidth < SCREEN_WIDTH_RANGE[1]) {
+      boardGridSize = BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT * 2
+    } else if (clientWidth > SCREEN_WIDTH_RANGE[3] - 1 && clientWidth < SCREEN_WIDTH_RANGE[2]) {
+      boardGridSize = BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT * 3
+    } else if (clientWidth < SCREEN_WIDTH_RANGE[3]) {
+      boardGridSize = BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT * 4
+    } else {
+      boardGridSize = BOARD_GRID_DEFAULT_SIZE
+    }
+    return boardGridSize
   }
 
   initScene (gameCanvas) {
@@ -31,6 +53,7 @@ export default class Scene {
     this.gameBoard.initBoard(gameCanvas.context)
     // 显示场景元素
     this.showSceneEle()
+    this.drawSceneEle(this.gameBoard.getBoardGridSize() - BOARD_GRID_DEFAULT_SIZE)
   }
 
   setCanvas (gameCanvas) {
@@ -85,7 +108,7 @@ export default class Scene {
       'click',
       event => {
         if (this.gameBoard.getBoardGridSize() < BOARD_GRID_MAX_SIZE) {
-          this.resizeCanvas(BOARD_GRID_RESIZECOUNT, gameCanvas)
+          this.resizeCanvas(BOARD_GRID_RESIZE_COUNT, gameCanvas)
         }
       },
       false
@@ -94,7 +117,7 @@ export default class Scene {
       'click',
       event => {
         if (this.gameBoard.getBoardGridSize() > BOARD_GRID_MIN_SIZE) {
-          this.resizeCanvas(-BOARD_GRID_RESIZECOUNT, gameCanvas)
+          this.resizeCanvas(-BOARD_GRID_RESIZE_COUNT, gameCanvas)
         }
       },
       false
