@@ -65,6 +65,24 @@ export default class Board {
     }
   }
 
+  drawBoardGridsChess (gameChess, ctx) {
+    for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
+      for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
+        if (
+          this.boardGrids[row][col].boardGridType === BOARD_GRID_TYPE_DEFAULT
+        ) {
+          continue
+        }
+        this.boardGrids[row][col].drawBoardGridChess(
+          this.boardGrids[row][col].boardGridType,
+          this.boardGridSize,
+          gameChess,
+          ctx
+        )
+      }
+    }
+  }
+
   setBoardGridPosition (boardGrid, x, y) {
     boardGrid.boardGridX = x
     boardGrid.boardGridY = y

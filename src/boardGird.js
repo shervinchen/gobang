@@ -1,4 +1,4 @@
-import { radiusRect } from './util'
+import { drawRadiusRect } from './util'
 import { BOARD_GRID_COLOR } from './constant'
 
 /**
@@ -19,7 +19,7 @@ export default class BoardGrid {
    * 判断点击的点是否在棋格内
    */
   isInBoardGird (x, y, boardGrid, boardGridSize, ctx) {
-    radiusRect(
+    drawRadiusRect(
       boardGrid.boardGridX,
       boardGrid.boardGridY,
       boardGridSize,
@@ -34,33 +34,39 @@ export default class BoardGrid {
    * 绘制棋格
    */
   drawBoardGrid (boardGrid, boardGridSize, ctx) {
-    this.drawRoundedRect(
+    drawRadiusRect(
       boardGrid.boardGridX,
       boardGrid.boardGridY,
-      this.boardGridRadius,
       boardGridSize,
+      boardGridSize,
+      this.boardGridRadius,
       ctx
     )
+    ctx.fillStyle = BOARD_GRID_COLOR
+    ctx.fill()
   }
 
   /**
    * 绘制填充圆角矩形
    */
-  drawRoundedRect (left, top, r, boardGridSize, ctx) {
-    radiusRect(left, top, boardGridSize, boardGridSize, r, ctx)
-    ctx.fillStyle = BOARD_GRID_COLOR
-    ctx.fill()
-  }
+  // drawRoundedRect (left, top, r, boardGridSize, ctx) {}
 
   // getBoardGridX (boardGridRow) {
-  //   return 
+  //   return
   // }
 
   /**
    * 绘制棋格上的棋子
    */
-  drawBoardGridChess (playerChessType, gameChess) {
-    // let boardGridX = 
-    gameChess.drawChess(this.boardGridX, this.boardGridY, playerChessType)
+  drawBoardGridChess (playerChessType, boardGridSize, gameChess, ctx) {
+    // let boardGridX =
+    gameChess.drawChess(
+      this.boardGridX,
+      this.boardGridY,
+      boardGridSize,
+      playerChessType,
+      ctx
+    )
+    this.boardGridType = playerChessType
   }
 }

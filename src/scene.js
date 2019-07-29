@@ -1,7 +1,10 @@
-import { BOARD_GRID_DEFAULT_SIZE,
+import {
+  BOARD_GRID_DEFAULT_SIZE,
   BOARD_GRID_CHESS_DEFAULT_SIZE,
   BOARD_GRID_RESIZE_COUNT,
-  SCREEN_WIDTH_RANGE } from './constant'
+  BOARD_GRID_CHESS_DEFAULT_LINEWIDTH,
+  SCREEN_WIDTH_RANGE
+} from './constant'
 
 /**
  * 游戏场景类
@@ -13,26 +16,35 @@ export default class Scene {
     // this.listenScene()
   }
 
-  calculateBoardGridSize () {
+  calculateScene () {
     let boardGridSize = BOARD_GRID_DEFAULT_SIZE
     // 根据当前屏幕宽度来动态适配棋格大小
     const clientWidth = document.body.clientWidth
-    if (clientWidth > SCREEN_WIDTH_RANGE[1] - 1 && clientWidth < SCREEN_WIDTH_RANGE[0]) {
+    if (
+      clientWidth > SCREEN_WIDTH_RANGE[1] - 1 &&
+      clientWidth < SCREEN_WIDTH_RANGE[0]
+    ) {
       boardGridSize = BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT
-    } else if (clientWidth > SCREEN_WIDTH_RANGE[2] - 1 && clientWidth < SCREEN_WIDTH_RANGE[1]) {
+    } else if (
+      clientWidth > SCREEN_WIDTH_RANGE[2] - 1 &&
+      clientWidth < SCREEN_WIDTH_RANGE[1]
+    ) {
       boardGridSize = BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT * 2
-    } else if (clientWidth > SCREEN_WIDTH_RANGE[3] - 1 && clientWidth < SCREEN_WIDTH_RANGE[2]) {
+    } else if (
+      clientWidth > SCREEN_WIDTH_RANGE[3] - 1 &&
+      clientWidth < SCREEN_WIDTH_RANGE[2]
+    ) {
       boardGridSize = BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT * 3
     } else if (clientWidth < SCREEN_WIDTH_RANGE[3]) {
       boardGridSize = BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT * 4
     } else {
       boardGridSize = BOARD_GRID_DEFAULT_SIZE
     }
-    return boardGridSize
-  }
-
-  calculateBoardGridChessSize (gameBoard) {
-    return gameBoard.getBoardGridSize() - (BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_CHESS_DEFAULT_SIZE)
+    return {
+      boardGridSize,
+      chessSize: this.getSceneChessProperty(boardGridSize).chessSize,
+      chessLineWidth: this.getSceneChessProperty(boardGridSize).chessLineWidth
+    }
   }
 
   initScene (gameBoard, gameCanvas) {
@@ -42,7 +54,10 @@ export default class Scene {
     gameBoard.initBoard(gameCanvas.context)
     // 显示场景元素
     this.showSceneEle()
-    this.drawSceneEle(gameBoard, gameBoard.getBoardGridSize() - BOARD_GRID_DEFAULT_SIZE)
+    this.drawSceneEle(
+      gameBoard,
+      gameBoard.getBoardGridSize() - BOARD_GRID_DEFAULT_SIZE
+    )
   }
 
   setCanvas (gameBoard, gameCanvas) {
@@ -71,10 +86,10 @@ export default class Scene {
       resizeCount / 2}px`
   }
 
-  resizeCanvas (gameBoard, resizeCount, gameCanvas) {
+  resizeCanvas (gameBoard, gameChess, resizeCount, gameCanvas) {
     // 计算新的棋格大小
     const newBoardGridSize = gameBoard.getBoardGridSize() + resizeCount
-    // 设置棋格大小
+    // 重新设置棋格大小
     gameBoard.setBoardGridSize(newBoardGridSize)
     // 重新设置画布大小
     this.setCanvas(gameBoard, gameCanvas)
@@ -82,6 +97,32 @@ export default class Scene {
     this.drawSceneEle(gameBoard, resizeCount)
     // 重新绘制棋格
     gameBoard.drawBoardGrids(gameCanvas.context)
+    // 重新设置棋子属性
+    gameChess.setChessSize(
+      this.getSceneChessProperty(gameBoard.getBoardGridSize()).chessSize
+    )
+    gameChess.setChessLineWidth(
+      this.getSceneChessProperty(gameBoard.getBoardGridSize()).chessLineWidth
+    )
     // 重新绘制棋子
+    gameBoard.drawBoardGridsChess(gameChess, gameCanvas.context)
+  }
+
+  getSceneChessProperty (boardGridSize) {
+    let chessLineWidth = BOARD_GRID_CHESS_DEFAULT_LINEWIDTH
+    const percentSize = BOARD_GRID_CHESS_DEFAULT_SIZE / BOARD_GRID_DEFAULT_SIZE
+    // 根据当前棋格大小获取棋子线宽
+    if (
+      boardGridSize !== BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT &&
+      boardGridSize !== BOARD_GRID_DEFAULT_SIZE
+    ) {
+      chessLineWidth = BOARD_GRID_CHESS_DEFAULT_LINEWIDTH - 1
+    } else {
+      chessLineWidth = BOARD_GRID_CHESS_DEFAULT_LINEWIDTH
+    }
+    return {
+      chessSize: boardGridSize * percentSize,
+      chessLineWidth
+    }
   }
 }

@@ -6,6 +6,8 @@
 */
 export default class Player {
   constructor (playerChessType) {
+    // 玩家类型
+    
     // 玩家所选棋子
     this.playerChessType = playerChessType
   }
@@ -14,8 +16,11 @@ export default class Player {
     this.playerChessType = playerChessType
   }
 
-  generatePlayerChess (boardGird, gameChess) {
-    boardGird.drawBoardGridChess(this.playerChessType, gameChess)
+  generatePlayerChess (boardGird, boardGridSize, gameChess, ctx) {
+    // if (this.playerType) {
+      
+    // }
+    boardGird.drawBoardGridChess(this.playerChessType, boardGridSize, gameChess, ctx)
   }
 
   // generateNextStep(row, col) {}
