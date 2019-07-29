@@ -1,4 +1,4 @@
-import { drawCircle, drawCross } from "./util";
+import { drawCircle, drawCross } from './util'
 import { CHESS_CIRCLE_COLOR, CHESS_CROSS_COLOR, CHESS_TYPE_CROSS, CHESS_TYPE_CIRCLE } from './constant'
 
 /**
@@ -31,15 +31,15 @@ export default class Chess {
     this.chessLineWidth = chessLineWidth
   }
 
-  drawChess (boardGirdX, boardGridY, boardGridSize, playerChessType, ctx) {
-    if (playerChessType === CHESS_TYPE_CROSS) {
+  drawChess (boardGirdX, boardGridY, boardGridSize, chessType, ctx) {
+    if (chessType === CHESS_TYPE_CROSS) {
       this.drawCrossChess(boardGirdX, boardGridY, boardGridSize, ctx)
-    } else if (playerChessType === CHESS_TYPE_CIRCLE) {
+    } else if (chessType === CHESS_TYPE_CIRCLE) {
       this.drawCircleChess(boardGirdX, boardGridY, boardGridSize, ctx)
     } else {
       return
     }
-    console.log(boardGirdX, boardGridY, playerChessType, this.chessSize)
+    console.log(boardGirdX, boardGridY, chessType, this.chessSize)
   }
 
   drawCircleChess (boardGirdX, boardGridY, boardGridSize, ctx) {

@@ -58,15 +58,15 @@ export default class BoardGrid {
   /**
    * 绘制棋格上的棋子
    */
-  drawBoardGridChess (playerChessType, boardGridSize, gameChess, ctx) {
+  drawBoardGridChess (chessType, boardGridSize, gameChess, ctx) {
     // let boardGridX =
     gameChess.drawChess(
       this.boardGridX,
       this.boardGridY,
       boardGridSize,
-      playerChessType,
+      chessType,
       ctx
     )
-    this.boardGridType = playerChessType
+    this.boardGridType = chessType
   }
 }

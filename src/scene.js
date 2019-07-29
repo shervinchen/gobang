@@ -113,13 +113,13 @@ export default class Scene {
     const percentSize = BOARD_GRID_CHESS_DEFAULT_SIZE / BOARD_GRID_DEFAULT_SIZE
     // 根据当前棋格大小获取棋子线宽
     if (
-      boardGridSize !== BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT &&
-      boardGridSize !== BOARD_GRID_DEFAULT_SIZE
+      boardGridSize < BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT
     ) {
       chessLineWidth = BOARD_GRID_CHESS_DEFAULT_LINEWIDTH - 1
     } else {
       chessLineWidth = BOARD_GRID_CHESS_DEFAULT_LINEWIDTH
     }
+    console.log(chessLineWidth)
     return {
       chessSize: boardGridSize * percentSize,
       chessLineWidth

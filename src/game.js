@@ -2,6 +2,7 @@ import Canvas from './canvas'
 import Scene from './scene'
 import Board from './board'
 import Player from './player'
+import AI from './ai/ai'
 import Chess from './chess'
 import {
   CHESS_TYPE_CROSS,
@@ -10,6 +11,8 @@ import {
   BOARD_GRID_TYPE_DEFAULT,
   BOARD_GRID_MIN_SIZE,
   BOARD_GRID_RESIZE_COUNT,
+  PLAYER_TYPE_HUMAN,
+  PLAYER_TYPE_AI,
   BOARD_GRID_MAX_SIZE
 } from './constant'
 
@@ -32,9 +35,9 @@ export default class Game {
     // 创建棋盘
     this.gameBoard = new Board(boardGridSize)
     // 创建人类玩家 默认玩家为 cross 棋子
-    this.gameHumanPlayer = new Player(CHESS_TYPE_CROSS)
+    this.gamePlayer = new Player(CHESS_TYPE_CROSS)
     // 创建AI玩家 默认AI为 circle 棋子
-    this.gameAIPlayer = new Player(CHESS_TYPE_CIRCLE)
+    this.gameAI = new AI(CHESS_TYPE_CIRCLE)
     // 创建棋子
     this.gameChess = new Chess(chessSize, chessLineWidth)
     // 是否开始游戏
@@ -136,7 +139,7 @@ export default class Game {
           ) {
             return
           }
-          this.gameHumanPlayer.generatePlayerChess(
+          this.gamePlayer.generatePlayerChess(
             this.gameBoard.boardGrids[row][col],
             this.gameBoard.boardGridSize,
             this.gameChess,
@@ -145,7 +148,11 @@ export default class Game {
           // 判断玩家是否连成五子或五子以上
           // 如果玩家取得胜利 游戏结束
           // 如果未结束
-          this.gameAIPlayer.generatePlayerChess()
+          this.gameAI.generateAIChess(
+            this.gameBoard,
+            this.gameBoard.boardGridSize,
+            this.gameChess,
+            this.gameCanvas.context)
           console.log(row, col)
         }
       }
