@@ -133,6 +133,11 @@ export default class Game {
             this.gameCanvas.context
           )
         ) {
+          console.log(event.offsetX,
+            event.offsetY,
+            this.gameBoard.boardGrids[row][col],
+            this.gameBoard.boardGridSize,
+            this.gameCanvas.context)
           if (
             this.gameBoard.boardGrids[row][col].boardGridType !==
             BOARD_GRID_TYPE_DEFAULT
@@ -154,6 +159,7 @@ export default class Game {
             this.gameChess,
             this.gameCanvas.context)
           console.log(row, col)
+          return
         }
       }
     }

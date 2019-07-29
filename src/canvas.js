@@ -18,12 +18,15 @@ export default class Canvas {
    * @param {Number} boardSize 棋盘大小
    */
   setCanvasSize (boardSize) {
-    // this.canvas.width = boardSize
-    // this.canvas.height = boardSize
-
+    this.canvas.width = boardSize
+    this.canvas.height = boardSize
+    
+    this.canvas.style.width = `${boardSize}px`
+    this.canvas.style.height = `${boardSize}px`
     let dpr = window.devicePixelRatio // 假设dpr为2
     // 获取css的宽高
     let { width: cssWidth, height: cssHeight } = this.canvas.getBoundingClientRect()
+    console.log(dpr)
     // 根据dpr，扩大canvas画布的像素，使1个canvas像素和1个物理像素相等
     this.canvas.width = dpr * boardSize
     this.canvas.height = dpr * boardSize
