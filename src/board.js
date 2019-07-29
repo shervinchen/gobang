@@ -78,44 +78,6 @@ export default class Board {
     return this.boardGridSize
   }
 
-  /**
-   * 监听棋盘
-   */
-  addBoardListener (gameCanvas, gameHumanPlayer) {
-    gameCanvas.canvas.addEventListener(
-      'click',
-      event => {
-        this.onClickBoard(gameCanvas, gameHumanPlayer, event)
-      },
-      false
-    )
-  }
-
-  onClickBoard (gameCanvas, gameHumanPlayer, event) {
-    console.log(gameCanvas, event)
-    for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
-      for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
-        if (
-          this.boardGrids[row][col].isInBoardGird(
-            event.offsetX,
-            event.offsetY,
-            this.boardGrids[row][col],
-            this.boardGridSize,
-            gameCanvas.context
-          )
-        ) {
-          if (
-            this.boardGrids[row][col].boardGridType !== BOARD_GRID_TYPE_DEFAULT
-          ) {
-            return
-          }
-          gameHumanPlayer.generatePlayerChess(this.boardGrids[row][col])
-          console.log(row, col)
-        }
-      }
-    }
-  }
-
   getBoardSize () {
     return (
       this.boardGridSize * BOARD_GRIDS_COUNT +
