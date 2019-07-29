@@ -52,10 +52,15 @@ export default class BoardGrid {
     ctx.fill()
   }
 
+  // getBoardGridX (boardGridRow) {
+  //   return 
+  // }
+
   /**
    * 绘制棋格上的棋子
    */
-  drawBoardGridChess (boardGrid, chessType) {
-    console.log(chessType, boardGrid)
+  drawBoardGridChess (playerChessType, gameChess) {
+    // let boardGridX = 
+    gameChess.drawChess(this.boardGridX, this.boardGridY, playerChessType)
   }
 }

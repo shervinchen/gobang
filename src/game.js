@@ -26,7 +26,7 @@ export default class Game {
     // 创建AI玩家 默认AI为 circle 棋子
     this.gameAIPlayer = new Player(CHESS_TYPE_CIRCLE)
     // 创建棋子
-    // this.gameChess = new Chess(0, 0, 0)
+    this.gameChess = new Chess(this.gameScene.calculateBoardGridChessSize(this.gameBoard))
     // 是否开始游戏
     // this.isGameStart = false
     // 是否结束游戏
@@ -115,7 +115,11 @@ export default class Game {
           ) {
             return
           }
-          this.gameHumanPlayer.generatePlayerChess(this.gameBoard.boardGrids[row][col])
+          this.gameHumanPlayer.generatePlayerChess(this.gameBoard.boardGrids[row][col], this.gameChess)
+          // 判断玩家是否连成五子或五子以上
+          // 如果玩家取得胜利 游戏结束
+          // 如果未结束
+          // this.gameAIPlayer.generatePlayerChess()
           console.log(row, col)
         }
       }

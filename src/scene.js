@@ -1,4 +1,5 @@
 import { BOARD_GRID_DEFAULT_SIZE,
+  BOARD_GRID_CHESS_DEFAULT_SIZE,
   BOARD_GRID_RESIZE_COUNT,
   SCREEN_WIDTH_RANGE } from './constant'
 
@@ -28,6 +29,10 @@ export default class Scene {
       boardGridSize = BOARD_GRID_DEFAULT_SIZE
     }
     return boardGridSize
+  }
+
+  calculateBoardGridChessSize (gameBoard) {
+    return gameBoard.getBoardGridSize() - (BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_CHESS_DEFAULT_SIZE)
   }
 
   initScene (gameBoard, gameCanvas) {
