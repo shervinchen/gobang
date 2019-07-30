@@ -42,7 +42,7 @@ export default class Board {
           BOARD_GRID_RADIUS
         )
         // 绘制棋格
-        grids[row][col].drawBoardGrid(grids[row][col], this.boardGridSize, ctx)
+        grids[row][col].drawBoardGrid(this.boardGridSize, ctx)
       }
     }
     return grids
@@ -57,7 +57,6 @@ export default class Board {
           col * (this.boardGridSize + BOARD_GRIDS_GAP)
         )
         this.boardGrids[row][col].drawBoardGrid(
-          this.boardGrids[row][col],
           this.boardGridSize,
           ctx
         )

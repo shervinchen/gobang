@@ -18,14 +18,14 @@ export default class BoardGrid {
   /**
    * 判断点击的点是否在棋格内
    */
-  isInBoardGird (clientX, clientY, boardGrid, boardGridSize, gameCanvas) {
+  isInBoardGird (clientX, clientY, boardGridSize, gameCanvas) {
     const { x, y } = window2Canvas(gameCanvas.canvas, clientX, clientY)
     drawRadiusRect(
-      boardGrid.boardGridX,
-      boardGrid.boardGridY,
+      this.boardGridX,
+      this.boardGridY,
       boardGridSize,
       boardGridSize,
-      boardGrid.boardGridRadius,
+      this.boardGridRadius,
       gameCanvas.context
     )
     return gameCanvas.context.isPointInPath(x, y)
@@ -34,10 +34,10 @@ export default class BoardGrid {
   /**
    * 绘制棋格
    */
-  drawBoardGrid (boardGrid, boardGridSize, ctx) {
+  drawBoardGrid (boardGridSize, ctx) {
     drawRadiusRect(
-      boardGrid.boardGridX,
-      boardGrid.boardGridY,
+      this.boardGridX,
+      this.boardGridY,
       boardGridSize,
       boardGridSize,
       this.boardGridRadius,

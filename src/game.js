@@ -11,8 +11,6 @@ import {
   BOARD_GRID_TYPE_DEFAULT,
   BOARD_GRID_MIN_SIZE,
   BOARD_GRID_RESIZE_COUNT,
-  PLAYER_TYPE_HUMAN,
-  PLAYER_TYPE_AI,
   BOARD_GRID_MAX_SIZE
 } from './constant'
 
@@ -128,7 +126,6 @@ export default class Game {
           this.gameBoard.boardGrids[row][col].isInBoardGird(
             event.clientX,
             event.clientY,
-            this.gameBoard.boardGrids[row][col],
             this.gameBoard.boardGridSize,
             this.gameCanvas
           )
