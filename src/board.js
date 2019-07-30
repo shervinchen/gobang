@@ -50,7 +50,7 @@ export default class Board {
     return grids
   }
 
-  drawBoardGrids (ctx) {
+  drawBoardGrids (gameHumanPlayerChess, gameAIPlayerChess, chessSize, chessLineWidth, ctx) {
     for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
       for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
         this.boardGrids[row][col].setBoardGridPosition(
@@ -58,36 +58,26 @@ export default class Board {
           col * (this.boardGrids[row][col].boardGridSize + BOARD_GRIDS_GAP)
         )
         this.boardGrids[row][col].drawBoardGrid(ctx)
+        this.drawBoardChess(this.boardGrids[row][col], gameHumanPlayerChess, gameAIPlayerChess, chessSize, chessLineWidth, ctx)
       }
     }
   }
 
-  drawBoardGridsChess (playerChess, aiChess, chessSize, chessLineWidth, ctx) {
-
-    for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
-      for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
-        if (
-          this.boardGrids[row][col].boardGridType !== BOARD_GRID_TYPE_DEFAULT
-        ) {
-          if (this.boardGrids[row][col].boardGridType === playerChess.chessType) {
-            this.boardGrids[row][col].setBoardGridChessProperty(playerChess, chessSize, chessLineWidth)
-            this.boardGrids[row][col].drawBoardGridChess(
-              playerChess,
-              ctx
-            )
-          } else if (this.boardGrids[row][col].boardGridType === aiChess.chessType) {
-            this.boardGrids[row][col].setBoardGridChessProperty(aiChess, chessSize, chessLineWidth)
-            this.boardGrids[row][col].drawBoardGridChess(
-              aiChess,
-              ctx
-            )
-          } else {
-            continue
-          }
-        } else {
-          continue
-        }
-      }
+  drawBoardChess (boardGird, gameHumanPlayerChess, gameAIPlayerChess, chessSize, chessLineWidth, ctx) {
+    if (boardGird.boardGridType === gameHumanPlayerChess.chessType) {
+      boardGird.setBoardGridChess(gameHumanPlayerChess, chessSize, chessLineWidth)
+      boardGird.drawBoardGridChess(
+        gameHumanPlayerChess,
+        ctx
+      )
+    } else if (boardGird.boardGridType === gameAIPlayerChess.chessType) {
+      boardGird.setBoardGridChess(gameAIPlayerChess, chessSize, chessLineWidth)
+      boardGird.drawBoardGridChess(
+        gameAIPlayerChess,
+        ctx
+      )
+    } else {
+      return
     }
   }
 

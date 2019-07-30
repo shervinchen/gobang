@@ -32,9 +32,11 @@ export default class Game {
     // 创建棋盘
     this.gameBoard = new Board()
     // 创建人类玩家 默认玩家为 cross 棋子
-    this.gamePlayer = new Player(new Chess(CHESS_TYPE_CROSS, chessSize, chessLineWidth))
+    this.gameHumanPlayer = new Player(new Chess(CHESS_TYPE_CROSS, chessSize, chessLineWidth))
     // 创建AI玩家 默认AI为 circle 棋子
-    this.gameAI = new AI(new Chess(CHESS_TYPE_CIRCLE, chessSize, chessLineWidth))
+    this.gameAIPlayer = new Player(new Chess(CHESS_TYPE_CIRCLE, chessSize, chessLineWidth))
+    // 创建AI
+    this.gameAI = new AI()
     // 创建棋子
     // this.gameChess = new Chess(chessSize, chessLineWidth)
     // 是否开始游戏
@@ -80,8 +82,8 @@ export default class Game {
         if (this.gameBoard.getBoardGridSize() <= BOARD_GRID_MAX_SIZE) {
           this.gameScene.resizeCanvas(
             this.gameBoard,
-            this.gamePlayer.playerChess,
-            this.gameAI.aiChess,
+            this.gameHumanPlayer.playerChess,
+            this.gameAIPlayer.playerChess,
             BOARD_GRID_RESIZE_COUNT,
             this.gameCanvas
           )
@@ -95,8 +97,8 @@ export default class Game {
         if (this.gameBoard.getBoardGridSize() >= BOARD_GRID_MIN_SIZE) {
           this.gameScene.resizeCanvas(
             this.gameBoard,
-            this.gamePlayer.playerChess,
-            this.gameAI.aiChess,
+            this.gameHumanPlayer.playerChess,
+            this.gameAIPlayer.playerChess,
             -BOARD_GRID_RESIZE_COUNT,
             this.gameCanvas
           )
@@ -137,15 +139,16 @@ export default class Game {
           ) {
             return
           }
-          this.gamePlayer.generatePlayerChess(
+          this.gameHumanPlayer.generatePlayerChess(
             this.gameBoard.boardGrids[row][col],
             this.gameCanvas.context
           )
           // 判断玩家是否连成五子或五子以上
           // 如果玩家取得胜利 游戏结束
-          // 如果未结束
-          this.gameAI.generateAIChess(
-            this.gameBoard,
+          
+          // 如果未结束 调用AI类 获取AI计算后的落棋位置
+          this.gameAIPlayer.generatePlayerChess(
+            this.gameBoard.boardGrids[this.gameAI.getNextStep().row][this.gameAI.getNextStep().col],
             this.gameCanvas.context)
           console.log(row, col)
           return

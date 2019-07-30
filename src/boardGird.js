@@ -104,7 +104,7 @@ export default class BoardGrid {
     this.boardGridType = gameChess.chessType
   }
 
-  setBoardGridChessProperty (gameChess, chessSize, chessLineWidth) {
+  setBoardGridChess (gameChess, chessSize, chessLineWidth) {
     // 重新设置棋子属性
     gameChess.setChessSize(
       chessSize

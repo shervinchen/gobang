@@ -10,9 +10,9 @@ export default class Player {
     this.playerChess = playerChess
   }
 
-  setPlayerChess (playerChess) {
-    this.playerChess = playerChess
-  }
+  // setPlayerChess (playerChess) {
+  //   this.playerChess = playerChess
+  // }
 
   generatePlayerChess (boardGird, ctx) {
     boardGird.drawBoardGridChess(this.playerChess, ctx)
