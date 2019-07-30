@@ -11,7 +11,9 @@ import {
   BOARD_GRID_TYPE_DEFAULT,
   BOARD_GRID_MIN_SIZE,
   BOARD_GRID_RESIZE_COUNT,
-  BOARD_GRID_MAX_SIZE
+  BOARD_GRID_MAX_SIZE,
+  PLAYER_TYPE_HUMAN,
+  PLAYER_TYPE_AI
 } from './constant'
 
 /**
@@ -20,6 +22,8 @@ import {
  */
 export default class Game {
   constructor () {
+    // 游戏状态
+    this.gameStatus = true
     // 创建画布
     this.gameCanvas = new Canvas()
     // 创建场景
@@ -32,9 +36,9 @@ export default class Game {
     // 创建棋盘
     this.gameBoard = new Board()
     // 创建人类玩家 默认玩家为 cross 棋子
-    this.gameHumanPlayer = new Player(new Chess(CHESS_TYPE_CROSS, chessSize, chessLineWidth))
+    this.gameHumanPlayer = new Player(PLAYER_TYPE_HUMAN, new Chess(CHESS_TYPE_CROSS, chessSize, chessLineWidth), false)
     // 创建AI玩家 默认AI为 circle 棋子
-    this.gameAIPlayer = new Player(new Chess(CHESS_TYPE_CIRCLE, chessSize, chessLineWidth))
+    this.gameAIPlayer = new Player(PLAYER_TYPE_AI, new Chess(CHESS_TYPE_CIRCLE, chessSize, chessLineWidth), false)
     // 创建AI
     this.gameAI = new AI()
     // 创建棋子
@@ -139,22 +143,49 @@ export default class Game {
           ) {
             return
           }
-          this.gameHumanPlayer.generatePlayerChess(
-            this.gameBoard.boardGrids[row][col],
-            this.gameCanvas.context
-          )
-          // 判断玩家是否连成五子或五子以上
-          // 如果玩家取得胜利 游戏结束
-          
-          // 如果未结束 调用AI类 获取AI计算后的落棋位置
-          this.gameAIPlayer.generatePlayerChess(
-            this.gameBoard.boardGrids[this.gameAI.getNextStep().row][this.gameAI.getNextStep().col],
-            this.gameCanvas.context)
-          console.log(row, col)
+          this.generateGameHumanPlayerChess(this.gameBoard.boardGrids[row][col])
+          this.generateGameAIPlayerChess()
           return
         }
       }
     }
+  }
+
+  generateGameHumanPlayerChess (boardGrid) {
+    this.gameHumanPlayer.generatePlayerChess(
+      boardGrid,
+      this.gameCanvas.context
+    )
+    this.checkGamePlayerStatus(this.gameHumanPlayer)
+  }
+
+  generateGameAIPlayerChess () {
+    // 如果未结束 调用AI类 获取AI计算后的落棋位置
+    this.gameAIPlayer.generatePlayerChess(
+      this.gameBoard.boardGrids[this.gameAI.getNextStep().row][this.gameAI.getNextStep().col],
+      this.gameCanvas.context)
+    this.checkGamePlayerStatus(this.gameAIPlayer)
+  }
+
+  checkGamePlayerStatus (gamePlayer) {
+    // 判断当前玩家是否胜利
+    this.checkGameStatus(gamePlayer)
+    // 如果当前玩家取得胜利 游戏结束
+    if (gamePlayer.playerStatus) {
+      this.gameStatus = false
+      if (gamePlayer.playerType === PLAYER_TYPE_HUMAN) { // 如果是人类玩家
+        // 绘制 you win 文字
+      } else if (gamePlayer.playerType === PLAYER_TYPE_AI) { // 如果AI玩家
+        // 绘制 you lose 文字
+      } else {
+        return null
+      }
+    }
+  }
+
+  checkGameStatus (gamePlayer) {
+    // 判断当前玩家的棋子是否连成五子或五子以上
+    
   }
 
   initGame () {
