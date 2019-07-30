@@ -32,11 +32,11 @@ export default class Game {
     // 创建棋盘
     this.gameBoard = new Board()
     // 创建人类玩家 默认玩家为 cross 棋子
-    this.gamePlayer = new Player(CHESS_TYPE_CROSS)
+    this.gamePlayer = new Player(new Chess(CHESS_TYPE_CROSS, chessSize, chessLineWidth))
     // 创建AI玩家 默认AI为 circle 棋子
-    this.gameAI = new AI(CHESS_TYPE_CIRCLE)
+    this.gameAI = new AI(new Chess(CHESS_TYPE_CIRCLE, chessSize, chessLineWidth))
     // 创建棋子
-    this.gameChess = new Chess(chessSize, chessLineWidth)
+    // this.gameChess = new Chess(chessSize, chessLineWidth)
     // 是否开始游戏
     // this.isGameStart = false
     // 是否结束游戏
@@ -80,7 +80,8 @@ export default class Game {
         if (this.gameBoard.getBoardGridSize() <= BOARD_GRID_MAX_SIZE) {
           this.gameScene.resizeCanvas(
             this.gameBoard,
-            this.gameChess,
+            this.gamePlayer.playerChess,
+            this.gameAI.aiChess,
             BOARD_GRID_RESIZE_COUNT,
             this.gameCanvas
           )
@@ -94,7 +95,8 @@ export default class Game {
         if (this.gameBoard.getBoardGridSize() >= BOARD_GRID_MIN_SIZE) {
           this.gameScene.resizeCanvas(
             this.gameBoard,
-            this.gameChess,
+            this.gamePlayer.playerChess,
+            this.gameAI.aiChess,
             -BOARD_GRID_RESIZE_COUNT,
             this.gameCanvas
           )
@@ -118,7 +120,6 @@ export default class Game {
   }
 
   onClickBoard (event) {
-    console.log(this.gameCanvas, event)
     for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
       for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
         if (
@@ -138,7 +139,6 @@ export default class Game {
           }
           this.gamePlayer.generatePlayerChess(
             this.gameBoard.boardGrids[row][col],
-            this.gameChess,
             this.gameCanvas.context
           )
           // 判断玩家是否连成五子或五子以上
@@ -146,7 +146,6 @@ export default class Game {
           // 如果未结束
           this.gameAI.generateAIChess(
             this.gameBoard,
-            this.gameChess,
             this.gameCanvas.context)
           console.log(row, col)
           return

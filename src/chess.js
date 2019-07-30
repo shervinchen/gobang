@@ -7,8 +7,6 @@ import { CHESS_CIRCLE_COLOR, CHESS_CROSS_COLOR, CHESS_CROSS_LINECAP, CHESS_TYPE_
 export default class Chess {
   // /**
   //  * 定义棋子位置、棋子类型等属性
-  //  * @param {Number} chessRow 棋子所在行数
-  //  * @param {Number} chessCol 棋子所在列数
   //  * @param {Number} chessType 棋子类型
   //  * @constructor
   //  */
@@ -18,7 +16,8 @@ export default class Chess {
   //   this.chessType = chessType
   // }
 
-  constructor (chessSize, chessLineWidth) {
+  constructor (chessType, chessSize, chessLineWidth) {
+    this.chessType = chessType
     this.chessSize = chessSize
     this.chessLineWidth = chessLineWidth
   }
@@ -31,15 +30,15 @@ export default class Chess {
     this.chessLineWidth = chessLineWidth
   }
 
-  drawChess (boardGirdX, boardGridY, boardGridSize, chessType, ctx) {
-    if (chessType === CHESS_TYPE_CROSS) {
+  drawChess (boardGirdX, boardGridY, boardGridSize, ctx) {
+    if (this.chessType === CHESS_TYPE_CROSS) {
       this.drawCrossChess(boardGirdX, boardGridY, boardGridSize, ctx)
-    } else if (chessType === CHESS_TYPE_CIRCLE) {
+    } else if (this.chessType === CHESS_TYPE_CIRCLE) {
       this.drawCircleChess(boardGirdX, boardGridY, boardGridSize, ctx)
     } else {
       return
     }
-    console.log(boardGirdX, boardGridY, chessType, this.chessSize)
+    // console.log(boardGirdX, boardGridY, this.chessType, this.chessSize)
   }
 
   drawCircleChess (boardGirdX, boardGridY, boardGridSize, ctx) {

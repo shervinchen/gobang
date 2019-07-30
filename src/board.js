@@ -3,21 +3,23 @@ import {
   BOARD_GRIDS_COUNT,
   BOARD_GRIDS_GAP,
   BOARD_GRID_TYPE_DEFAULT,
+  BOARD_GRID_TYPE_CIRCLE,
+  BOARD_GRID_TYPE_CROSS,
   BOARD_GRID_RADIUS
 } from './constant'
 
 /**
  * 棋盘类
+ *
+ * @export
+ * @class Board
  */
 export default class Board {
   /**
    * 定义棋盘属性
-   * @param {Number} boardGridSize 棋格大小
    * @constructor
    */
-  constructor () {
-
-  }
+  constructor () {}
 
   initBoard (boardGridSize, ctx) {
     // 初始化棋格状态
@@ -60,19 +62,31 @@ export default class Board {
     }
   }
 
-  drawBoardGridsChess (gameChess, ctx) {
+  drawBoardGridsChess (playerChess, aiChess, chessSize, chessLineWidth, ctx) {
+
     for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
       for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
         if (
-          this.boardGrids[row][col].boardGridType === BOARD_GRID_TYPE_DEFAULT
+          this.boardGrids[row][col].boardGridType !== BOARD_GRID_TYPE_DEFAULT
         ) {
+          if (this.boardGrids[row][col].boardGridType === playerChess.chessType) {
+            this.boardGrids[row][col].setBoardGridChessProperty(playerChess, chessSize, chessLineWidth)
+            this.boardGrids[row][col].drawBoardGridChess(
+              playerChess,
+              ctx
+            )
+          } else if (this.boardGrids[row][col].boardGridType === aiChess.chessType) {
+            this.boardGrids[row][col].setBoardGridChessProperty(aiChess, chessSize, chessLineWidth)
+            this.boardGrids[row][col].drawBoardGridChess(
+              aiChess,
+              ctx
+            )
+          } else {
+            continue
+          }
+        } else {
           continue
         }
-        this.boardGrids[row][col].drawBoardGridChess(
-          this.boardGrids[row][col].boardGridType,
-          gameChess,
-          ctx
-        )
       }
     }
   }

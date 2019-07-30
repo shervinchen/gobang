@@ -83,7 +83,7 @@ export default class Scene {
       resizeCount / 2}px`
   }
 
-  resizeCanvas (gameBoard, gameChess, resizeCount, gameCanvas) {
+  resizeCanvas (gameBoard, playerChess, aiChess, resizeCount, gameCanvas) {
     // 计算新的棋格大小
     const newBoardGridSize = gameBoard.getBoardGridSize() + resizeCount
     // 重新设置棋格大小
@@ -94,15 +94,9 @@ export default class Scene {
     this.drawSceneEle(gameBoard, resizeCount)
     // 重新绘制棋格
     gameBoard.drawBoardGrids(gameCanvas.context)
-    // 重新设置棋子属性
-    gameChess.setChessSize(
-      this.getSceneChessProperty(gameBoard.getBoardGridSize()).chessSize
-    )
-    gameChess.setChessLineWidth(
-      this.getSceneChessProperty(gameBoard.getBoardGridSize()).chessLineWidth
-    )
+    const {chessSize, chessLineWidth} = this.getSceneChessProperty(gameBoard.getBoardGridSize())
     // 重新绘制棋子
-    gameBoard.drawBoardGridsChess(gameChess, gameCanvas.context)
+    gameBoard.drawBoardGridsChess(playerChess, aiChess, chessSize, chessLineWidth, gameCanvas.context)
   }
 
   getSceneChessProperty (boardGridSize) {

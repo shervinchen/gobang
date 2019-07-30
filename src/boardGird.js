@@ -3,9 +3,28 @@ import { BOARD_GRID_COLOR } from './constant'
 
 /**
  * 棋格类
+ *
+ * @export
+ * @class BoardGrid
  */
 export default class BoardGrid {
-  constructor (boardGridX, boardGridY, boardGridSize, boardGridType, boardGridRadius) {
+  /**
+   * 构造方法
+   *
+   * @param {Number} boardGridX 棋格左上角横坐标
+   * @param {Number} boardGridY 棋格左上角纵坐标
+   * @param {Number} boardGridSize 棋格大小
+   * @param {Number} boardGridType 棋格类型
+   * @param {Number} boardGridRadius 棋格圆角半径
+   * @memberof BoardGrid
+   */
+  constructor (
+    boardGridX,
+    boardGridY,
+    boardGridSize,
+    boardGridType,
+    boardGridRadius
+  ) {
     // 棋格坐标
     this.boardGridX = boardGridX
     this.boardGridY = boardGridY
@@ -28,6 +47,12 @@ export default class BoardGrid {
 
   /**
    * 判断点击的点是否在棋格内
+   *
+   * @param {Number} clientX
+   * @param {Number} clientY
+   * @param {Object} gameCanvas
+   * @returns
+   * @memberof BoardGrid
    */
   isInBoardGird (clientX, clientY, gameCanvas) {
     const { x, y } = window2Canvas(gameCanvas.canvas, clientX, clientY)
@@ -44,6 +69,9 @@ export default class BoardGrid {
 
   /**
    * 绘制棋格
+   *
+   * @param {Object} ctx 画布内容对象
+   * @memberof BoardGrid
    */
   drawBoardGrid (ctx) {
     drawRadiusRect(
@@ -59,26 +87,30 @@ export default class BoardGrid {
   }
 
   /**
-   * 绘制填充圆角矩形
-   */
-  // drawRoundedRect (left, top, r, boardGridSize, ctx) {}
-
-  // getBoardGridX (boardGridRow) {
-  //   return
-  // }
-
-  /**
    * 绘制棋格上的棋子
+   *
+   * @param {Number} chessType 棋子类型
+   * @param {Object} gameChess 棋子对象
+   * @param {Object} ctx 画布内容对象
+   * @memberof BoardGrid
    */
-  drawBoardGridChess (chessType, gameChess, ctx) {
-    // let boardGridX =
+  drawBoardGridChess (gameChess, ctx) {
     gameChess.drawChess(
       this.boardGridX,
       this.boardGridY,
       this.boardGridSize,
-      chessType,
       ctx
     )
-    this.boardGridType = chessType
+    this.boardGridType = gameChess.chessType
+  }
+
+  setBoardGridChessProperty (gameChess, chessSize, chessLineWidth) {
+    // 重新设置棋子属性
+    gameChess.setChessSize(
+      chessSize
+    )
+    gameChess.setChessLineWidth(
+      chessLineWidth
+    )
   }
 }

@@ -3,19 +3,19 @@
   定义玩家相关属性，支持人机、人人对战
 */
 export default class Player {
-  constructor (chessType) {
+  constructor (playerChess) {
     // 玩家类型
     // this.playerType = playerType
     // 玩家所选棋子
-    this.chessType = chessType
+    this.playerChess = playerChess
   }
 
-  setPlayerChessType (chessType) {
-    this.chessType = chessType
+  setPlayerChess (playerChess) {
+    this.playerChess = playerChess
   }
 
-  generatePlayerChess (boardGird, gameChess, ctx) {
-    boardGird.drawBoardGridChess(this.chessType, gameChess, ctx)
+  generatePlayerChess (boardGird, ctx) {
+    boardGird.drawBoardGridChess(this.playerChess, ctx)
   }
 
   // generateNextStep(row, col) {}
