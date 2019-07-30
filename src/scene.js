@@ -46,9 +46,9 @@ export default class Scene {
 
   initScene (gameBoard, gameCanvas) {
     // 设置画布
-    this.setCanvas(gameBoard, gameCanvas)
+    this.setCanvas(gameBoard, this.calculateScene().boardGridSize, gameCanvas)
     // 初始化棋盘
-    gameBoard.initBoard(gameCanvas.context)
+    gameBoard.initBoard(this.calculateScene().boardGridSize, gameCanvas.context)
     // 显示场景元素
     this.showSceneEle()
     this.drawSceneEle(
@@ -57,10 +57,10 @@ export default class Scene {
     )
   }
 
-  setCanvas (gameBoard, gameCanvas) {
+  setCanvas (gameBoard, boardGridSize, gameCanvas) {
     // console.log(gameBoard)
     // 获取棋盘大小
-    const boardSize = gameBoard.getBoardSize()
+    const boardSize = gameBoard.getBoardSize(boardGridSize)
     // 设置画布大小
     gameCanvas.setCanvasSize(boardSize)
   }
@@ -87,9 +87,9 @@ export default class Scene {
     // 计算新的棋格大小
     const newBoardGridSize = gameBoard.getBoardGridSize() + resizeCount
     // 重新设置棋格大小
-    gameBoard.setBoardGridSize(newBoardGridSize)
+    gameBoard.setBoardGridsSize(newBoardGridSize)
     // 重新设置画布大小
-    this.setCanvas(gameBoard, gameCanvas)
+    this.setCanvas(gameBoard, gameBoard.getBoardGridSize(), gameCanvas)
     // 重新绘制场景元素
     this.drawSceneEle(gameBoard, resizeCount)
     // 重新绘制棋格

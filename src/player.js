@@ -14,8 +14,8 @@ export default class Player {
     this.chessType = chessType
   }
 
-  generatePlayerChess (boardGird, boardGridSize, gameChess, ctx) {
-    boardGird.drawBoardGridChess(this.chessType, boardGridSize, gameChess, ctx)
+  generatePlayerChess (boardGird, gameChess, ctx) {
+    boardGird.drawBoardGridChess(this.chessType, gameChess, ctx)
   }
 
   // generateNextStep(row, col) {}

@@ -7,11 +7,11 @@ export default class AI {
     this.chessType = chessType
   }
 
-  generateAIChess (gameBoard, boardGridSize, gameChess, ctx) {
+  generateAIChess (gameBoard, gameChess, ctx) {
     // return {row: , col: }
     // const { row, col } = this.getNextStep()
     const row = Math.round(Math.random() * 14)
     const col = Math.round(Math.random() * 14)
-    gameBoard.boardGrids[row][col].drawBoardGridChess(this.chessType, boardGridSize, gameChess, ctx)
+    gameBoard.boardGrids[row][col].drawBoardGridChess(this.chessType, gameChess, ctx)
   }
 }

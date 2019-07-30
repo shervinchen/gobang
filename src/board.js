@@ -15,34 +15,34 @@ export default class Board {
    * @param {Number} boardGridSize 棋格大小
    * @constructor
    */
-  constructor (boardGridSize) {
-    // 定义棋格大小
-    this.boardGridSize = boardGridSize
+  constructor () {
+
   }
 
-  initBoard (ctx) {
+  initBoard (boardGridSize, ctx) {
     // 初始化棋格状态
-    this.boardGrids = this.initBoardGrids(ctx)
+    this.boardGrids = this.initBoardGrids(boardGridSize, ctx)
     console.log(this.boardGrids)
   }
 
   /**
    * 初始化棋格状态
    */
-  initBoardGrids (ctx) {
+  initBoardGrids (boardGridSize, ctx) {
     const grids = []
     for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
       grids[row] = []
       for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
         // 创建棋格
         grids[row][col] = new BoardGrid(
-          row * (this.boardGridSize + BOARD_GRIDS_GAP),
-          col * (this.boardGridSize + BOARD_GRIDS_GAP),
+          row * (boardGridSize + BOARD_GRIDS_GAP),
+          col * (boardGridSize + BOARD_GRIDS_GAP),
+          boardGridSize,
           BOARD_GRID_TYPE_DEFAULT,
           BOARD_GRID_RADIUS
         )
         // 绘制棋格
-        grids[row][col].drawBoardGrid(this.boardGridSize, ctx)
+        grids[row][col].drawBoardGrid(ctx)
       }
     }
     return grids
@@ -51,15 +51,11 @@ export default class Board {
   drawBoardGrids (ctx) {
     for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
       for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
-        this.setBoardGridPosition(
-          this.boardGrids[row][col],
-          row * (this.boardGridSize + BOARD_GRIDS_GAP),
-          col * (this.boardGridSize + BOARD_GRIDS_GAP)
+        this.boardGrids[row][col].setBoardGridPosition(
+          row * (this.boardGrids[row][col].boardGridSize + BOARD_GRIDS_GAP),
+          col * (this.boardGrids[row][col].boardGridSize + BOARD_GRIDS_GAP)
         )
-        this.boardGrids[row][col].drawBoardGrid(
-          this.boardGridSize,
-          ctx
-        )
+        this.boardGrids[row][col].drawBoardGrid(ctx)
       }
     }
   }
@@ -74,7 +70,6 @@ export default class Board {
         }
         this.boardGrids[row][col].drawBoardGridChess(
           this.boardGrids[row][col].boardGridType,
-          this.boardGridSize,
           gameChess,
           ctx
         )
@@ -82,22 +77,21 @@ export default class Board {
     }
   }
 
-  setBoardGridPosition (boardGrid, x, y) {
-    boardGrid.boardGridX = x
-    boardGrid.boardGridY = y
-  }
-
-  setBoardGridSize (boardGridSize) {
-    this.boardGridSize = boardGridSize
+  setBoardGridsSize (boardGridSize) {
+    for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
+      for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
+        this.boardGrids[row][col].setBoardGridSize(boardGridSize)
+      }
+    }
   }
 
   getBoardGridSize () {
-    return this.boardGridSize
+    return this.boardGrids[0][0].boardGridSize
   }
 
-  getBoardSize () {
+  getBoardSize (boardGridSize) {
     return (
-      this.boardGridSize * BOARD_GRIDS_COUNT +
+      boardGridSize * BOARD_GRIDS_COUNT +
       BOARD_GRIDS_GAP * (BOARD_GRIDS_COUNT - 1)
     )
   }

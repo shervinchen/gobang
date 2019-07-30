@@ -26,12 +26,11 @@ export default class Game {
     this.gameScene = new Scene()
     // 计算场景各元素尺寸样式
     const {
-      boardGridSize,
       chessSize,
       chessLineWidth
     } = this.gameScene.calculateScene()
     // 创建棋盘
-    this.gameBoard = new Board(boardGridSize)
+    this.gameBoard = new Board()
     // 创建人类玩家 默认玩家为 cross 棋子
     this.gamePlayer = new Player(CHESS_TYPE_CROSS)
     // 创建AI玩家 默认AI为 circle 棋子
@@ -126,7 +125,6 @@ export default class Game {
           this.gameBoard.boardGrids[row][col].isInBoardGird(
             event.clientX,
             event.clientY,
-            this.gameBoard.boardGridSize,
             this.gameCanvas
           )
         ) {
@@ -140,7 +138,6 @@ export default class Game {
           }
           this.gamePlayer.generatePlayerChess(
             this.gameBoard.boardGrids[row][col],
-            this.gameBoard.boardGridSize,
             this.gameChess,
             this.gameCanvas.context
           )
@@ -149,7 +146,6 @@ export default class Game {
           // 如果未结束
           this.gameAI.generateAIChess(
             this.gameBoard,
-            this.gameBoard.boardGridSize,
             this.gameChess,
             this.gameCanvas.context)
           console.log(row, col)

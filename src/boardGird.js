@@ -5,26 +5,37 @@ import { BOARD_GRID_COLOR } from './constant'
  * 棋格类
  */
 export default class BoardGrid {
-  constructor (boardGridX, boardGridY, boardGridType, boardGridRadius) {
+  constructor (boardGridX, boardGridY, boardGridSize, boardGridType, boardGridRadius) {
     // 棋格坐标
     this.boardGridX = boardGridX
     this.boardGridY = boardGridY
+    // 定义棋格大小
+    this.boardGridSize = boardGridSize
     // 棋格类型
     this.boardGridType = boardGridType
     // 棋格圆角弧度
     this.boardGridRadius = boardGridRadius
   }
 
+  setBoardGridPosition (x, y) {
+    this.boardGridX = x
+    this.boardGridY = y
+  }
+
+  setBoardGridSize (boardGridSize) {
+    this.boardGridSize = boardGridSize
+  }
+
   /**
    * 判断点击的点是否在棋格内
    */
-  isInBoardGird (clientX, clientY, boardGridSize, gameCanvas) {
+  isInBoardGird (clientX, clientY, gameCanvas) {
     const { x, y } = window2Canvas(gameCanvas.canvas, clientX, clientY)
     drawRadiusRect(
       this.boardGridX,
       this.boardGridY,
-      boardGridSize,
-      boardGridSize,
+      this.boardGridSize,
+      this.boardGridSize,
       this.boardGridRadius,
       gameCanvas.context
     )
@@ -34,12 +45,12 @@ export default class BoardGrid {
   /**
    * 绘制棋格
    */
-  drawBoardGrid (boardGridSize, ctx) {
+  drawBoardGrid (ctx) {
     drawRadiusRect(
       this.boardGridX,
       this.boardGridY,
-      boardGridSize,
-      boardGridSize,
+      this.boardGridSize,
+      this.boardGridSize,
       this.boardGridRadius,
       ctx
     )
@@ -59,12 +70,12 @@ export default class BoardGrid {
   /**
    * 绘制棋格上的棋子
    */
-  drawBoardGridChess (chessType, boardGridSize, gameChess, ctx) {
+  drawBoardGridChess (chessType, gameChess, ctx) {
     // let boardGridX =
     gameChess.drawChess(
       this.boardGridX,
       this.boardGridY,
-      boardGridSize,
+      this.boardGridSize,
       chessType,
       ctx
     )
