@@ -29,13 +29,15 @@ export default class Scene {
       clientWidth > SCREEN_WIDTH_RANGE[2] - 1 &&
       clientWidth < SCREEN_WIDTH_RANGE[1]
     ) {
-      boardGridSize = BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT * 2
+      boardGridSize = BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT
     } else if (
       clientWidth > SCREEN_WIDTH_RANGE[3] - 1 &&
       clientWidth < SCREEN_WIDTH_RANGE[2]
     ) {
+      boardGridSize = BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT * 2
+    } else if (clientWidth > SCREEN_WIDTH_RANGE[4] - 1 && clientWidth < SCREEN_WIDTH_RANGE[3]) {
       boardGridSize = BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT * 3
-    } else if (clientWidth < SCREEN_WIDTH_RANGE[3]) {
+    } else if (clientWidth < SCREEN_WIDTH_RANGE[4]) {
       boardGridSize = BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT * 4
     } else {
       boardGridSize = BOARD_GRID_DEFAULT_SIZE

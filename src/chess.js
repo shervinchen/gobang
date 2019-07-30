@@ -1,5 +1,5 @@
 import { drawCircle, drawCross } from './util'
-import { CHESS_CIRCLE_COLOR, CHESS_CROSS_COLOR, CHESS_TYPE_CROSS, CHESS_TYPE_CIRCLE } from './constant'
+import { CHESS_CIRCLE_COLOR, CHESS_CROSS_COLOR, CHESS_CROSS_LINECAP, CHESS_TYPE_CROSS, CHESS_TYPE_CIRCLE } from './constant'
 
 /**
  * 棋子类
@@ -54,7 +54,7 @@ export default class Chess {
   drawCrossChess (boardGirdX, boardGridY, boardGridSize, ctx) {
     const x = boardGirdX + boardGridSize / 2
     const y = boardGridY + boardGridSize / 2
-    drawCross(x, y, this.chessSize, this.chessLineWidth, CHESS_CROSS_COLOR, ctx)
+    drawCross(x, y, this.chessSize, this.chessLineWidth, CHESS_CROSS_COLOR, CHESS_CROSS_LINECAP, ctx)
   }
 
   // initChess () {

@@ -1,4 +1,4 @@
-import { drawRadiusRect } from './util'
+import { drawRadiusRect, window2Canvas } from './util'
 import { BOARD_GRID_COLOR } from './constant'
 
 /**
@@ -18,16 +18,17 @@ export default class BoardGrid {
   /**
    * 判断点击的点是否在棋格内
    */
-  isInBoardGird (x, y, boardGrid, boardGridSize, ctx) {
+  isInBoardGird (clientX, clientY, boardGrid, boardGridSize, gameCanvas) {
+    const { x, y } = window2Canvas(gameCanvas.canvas, clientX, clientY)
     drawRadiusRect(
       boardGrid.boardGridX,
       boardGrid.boardGridY,
       boardGridSize,
       boardGridSize,
       boardGrid.boardGridRadius,
-      ctx
+      gameCanvas.context
     )
-    return ctx.isPointInPath(x, y)
+    return gameCanvas.context.isPointInPath(x, y)
   }
 
   /**

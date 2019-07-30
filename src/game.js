@@ -126,18 +126,15 @@ export default class Game {
       for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
         if (
           this.gameBoard.boardGrids[row][col].isInBoardGird(
-            event.offsetX,
-            event.offsetY,
+            event.clientX,
+            event.clientY,
             this.gameBoard.boardGrids[row][col],
             this.gameBoard.boardGridSize,
-            this.gameCanvas.context
+            this.gameCanvas
           )
         ) {
-          console.log(event.offsetX,
-            event.offsetY,
-            this.gameBoard.boardGrids[row][col],
-            this.gameBoard.boardGridSize,
-            this.gameCanvas.context)
+          // console.log(event.offsetX,
+          //   event.offsetY)
           if (
             this.gameBoard.boardGrids[row][col].boardGridType !==
             BOARD_GRID_TYPE_DEFAULT
