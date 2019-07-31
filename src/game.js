@@ -19,7 +19,7 @@ import {
 /**
  * 游戏主体控制类
  * 初始化棋盘、棋子，定义游戏相关属性、方法
- * 本五子棋采用原始规则（Free-style）具体细节可参考wiki
+ * 本五子棋采用无禁手的原始规则（Free-style），规则具体细节可参考wiki
  */
 export default class Game {
   constructor () {
@@ -131,12 +131,11 @@ export default class Game {
   }
 
   addGameSceneChessListener () {
-    // AI玩家先手，默认让AI落子到中心位置
-    const aiPlayerFirstChessRow = (BOARD_GRIDS_COUNT - 1) / 2
-    const aiPlayerFirstChessCol = (BOARD_GRIDS_COUNT - 1) / 2
-    const aiPlayerFirstChessBoardGrid = this.gameBoard.boardGrids[
-      aiPlayerFirstChessRow
-    ][aiPlayerFirstChessCol]
+    this.addGameSceneChessCrossListener()
+    this.addGameSceneChessCircleListener()
+  }
+
+  addGameSceneChessCrossListener () {
     document.querySelector('#cross').addEventListener(
       'click',
       () => {
@@ -145,12 +144,21 @@ export default class Game {
       },
       false
     )
+  }
+
+  addGameSceneChessCircleListener () {
+    // AI玩家先手，默认让AI落子到中心位置
+    const aiFirstChessRow = (BOARD_GRIDS_COUNT - 1) / 2
+    const aiFirstChessCol = (BOARD_GRIDS_COUNT - 1) / 2
+    const boardGrid = this.gameBoard.boardGrids[aiFirstChessRow][
+      aiFirstChessCol
+    ]
     document.querySelector('#circle').addEventListener(
       'click',
       () => {
         this.initGamePlayer(this.initGameHumanPlayerChess(CHESS_TYPE_CIRCLE))
         this.initGame()
-        this.generateGameAIPlayerChess(aiPlayerFirstChessBoardGrid)
+        this.generateGameAIPlayerChess(boardGrid)
       },
       false
     )
@@ -246,7 +254,7 @@ export default class Game {
 
   checkGamePlayerStatus (gamePlayer) {
     // 判断当前玩家是否胜利
-    this.checkGameStatus(gamePlayer)
+    this.checkGameStatus()
     // 如果当前玩家取得胜利 游戏结束
     if (gamePlayer.playerStatus) {
       this.gameStatus = false
@@ -262,9 +270,9 @@ export default class Game {
     }
   }
 
-  checkGameStatus (gamePlayer) {
-    // 判断当前玩家的棋子是否连成五子或五子以上
-    this.gameBoard.checkBoardGrids(gamePlayer)
+  checkGameStatus () {
+    // 判断当前玩家的棋子棋型是否连成五子或五子以上
+    this.gameBoard.checkBoardGridsChessShape()
   }
 
   startGame () {}

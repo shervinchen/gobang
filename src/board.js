@@ -99,7 +99,7 @@ export default class Board {
     }
   }
 
-  checkBoardGrids (gamePlayer) {
+  checkBoardGridsChessShape () {
     for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
       for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
         // this.boardGrids[row][col]
