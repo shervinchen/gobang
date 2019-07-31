@@ -45,7 +45,7 @@ export default class Game {
     // 是否结束游戏
     // this.isGameEnd = false
   }
-  
+
   initGamePlayer (humanPlayerChess) {
     // 获取人类玩家棋子 如果未传值则为默认棋子
     if (!humanPlayerChess) {

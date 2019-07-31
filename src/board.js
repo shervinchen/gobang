@@ -95,7 +95,7 @@ export default class Board {
       boardGird.setBoardGridChess(gameAIPlayerChess, chessSize, chessLineWidth)
       boardGird.drawBoardGridChess(gameAIPlayerChess, ctx)
     } else {
-
+      return null
     }
   }
 
