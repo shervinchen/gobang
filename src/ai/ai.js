@@ -7,11 +7,15 @@ export default class AI {
     
   }
 
-  getNextStep () {
+  getNextStep (boardGrids) {
     // return {row: , col: }
     // const { row, col } = this.getNextStep()
-    const row = Math.round(Math.random() * 14)
-    const col = Math.round(Math.random() * 14)
+    let row = Math.round(Math.random() * 14)
+    let col = Math.round(Math.random() * 14)
+    while (boardGrids[row][col].boardGridType !== -1) {
+      row = Math.round(Math.random() * 14)
+      col = Math.round(Math.random() * 14)
+    }
     return {row, col}
   }
 }

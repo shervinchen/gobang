@@ -245,7 +245,7 @@ export default class Game {
   generateGameAIPlayerChess (boardGrid) {
     // 未传值时 调用AI模块获取下一步的棋格位置
     if (!boardGrid) {
-      const { row, col } = this.gameAI.getNextStep()
+      const { row, col } = this.gameAI.getNextStep(this.gameBoard.boardGrids)
       boardGrid = this.gameBoard.boardGrids[row][col]
     }
     this.gameAIPlayer.generatePlayerChess(boardGrid, this.gameCanvas.context)
