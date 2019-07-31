@@ -66,7 +66,7 @@ body {
 
 .scene .resize {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
 }
 
 .scene .resize .zoomout, .scene .resize .zoomin {
