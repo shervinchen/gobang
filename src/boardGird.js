@@ -55,6 +55,7 @@ export default class BoardGrid {
    * @memberof BoardGrid
    */
   isInBoardGird (clientX, clientY, gameCanvas) {
+    // event.offsetX,event.offsetY等API在采用dpr适配方案以后，计算出的值有错误，所以弃用此API，采用新方法计算
     const { x, y } = window2Canvas(gameCanvas.canvas, clientX, clientY)
     drawRadiusRect(
       this.boardGridX,

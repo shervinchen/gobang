@@ -50,7 +50,13 @@ export default class Board {
     return grids
   }
 
-  drawBoardGrids (gameHumanPlayerChess, gameAIPlayerChess, chessSize, chessLineWidth, ctx) {
+  drawBoardGrids (
+    gameHumanPlayerChess,
+    gameAIPlayerChess,
+    chessSize,
+    chessLineWidth,
+    ctx
+  ) {
     for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
       for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
         this.boardGrids[row][col].setBoardGridPosition(
@@ -58,26 +64,46 @@ export default class Board {
           col * (this.boardGrids[row][col].boardGridSize + BOARD_GRIDS_GAP)
         )
         this.boardGrids[row][col].drawBoardGrid(ctx)
-        this.drawBoardChess(this.boardGrids[row][col], gameHumanPlayerChess, gameAIPlayerChess, chessSize, chessLineWidth, ctx)
+        this.drawBoardChess(
+          this.boardGrids[row][col],
+          gameHumanPlayerChess,
+          gameAIPlayerChess,
+          chessSize,
+          chessLineWidth,
+          ctx
+        )
       }
     }
   }
 
-  drawBoardChess (boardGird, gameHumanPlayerChess, gameAIPlayerChess, chessSize, chessLineWidth, ctx) {
+  drawBoardChess (
+    boardGird,
+    gameHumanPlayerChess,
+    gameAIPlayerChess,
+    chessSize,
+    chessLineWidth,
+    ctx
+  ) {
     if (boardGird.boardGridType === gameHumanPlayerChess.chessType) {
-      boardGird.setBoardGridChess(gameHumanPlayerChess, chessSize, chessLineWidth)
-      boardGird.drawBoardGridChess(
+      boardGird.setBoardGridChess(
         gameHumanPlayerChess,
-        ctx
+        chessSize,
+        chessLineWidth
       )
+      boardGird.drawBoardGridChess(gameHumanPlayerChess, ctx)
     } else if (boardGird.boardGridType === gameAIPlayerChess.chessType) {
       boardGird.setBoardGridChess(gameAIPlayerChess, chessSize, chessLineWidth)
-      boardGird.drawBoardGridChess(
-        gameAIPlayerChess,
-        ctx
-      )
+      boardGird.drawBoardGridChess(gameAIPlayerChess, ctx)
     } else {
-      return
+
+    }
+  }
+
+  checkBoardGrids (gamePlayer) {
+    for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
+      for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
+        // this.boardGrids[row][col]
+      }
     }
   }
 
