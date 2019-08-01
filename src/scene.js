@@ -44,7 +44,7 @@ export default class Scene {
     return boardGridSize
   }
 
-  initScene (gameBoard, gameCanvas) {
+  initScene (gameBoard) {
     // 显示场景元素
     this.showSceneEle()
     this.drawSceneEle(

@@ -51,8 +51,8 @@ const BOARD_GRID_MAX_SIZE = 42
 // 最小宽度只适配到 320px
 const SCREEN_WIDTH_RANGE = [1440, 1024, 768, 480, 375]
 
-// 定义棋型
-const CHESS_SHAPE = {
+// 定义棋型分数
+const CHESS_SHAPE_SCORE = {
   LONG_ROW: 0, // 长连：连成五个或以上已方棋子
   LIVE_FOUR: 0, // 活四
   RUSH_FOUR: 0, // 冲四
@@ -65,8 +65,10 @@ const CHESS_SHAPE = {
   DIE_TWO: 0 // 死二
 }
 
+// 定义棋型数量
+
 export {
-  CHESS_SHAPE,
+  CHESS_SHAPE_SCORE,
   BOARD_GRID_COLOR,
   BOARD_GRIDS_COUNT,
   BOARD_GRIDS_GAP,

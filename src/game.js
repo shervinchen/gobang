@@ -47,10 +47,6 @@ export default class Game {
   }
 
   initGamePlayer (humanPlayerChess) {
-    // 获取人类玩家棋子 如果未传值则为默认棋子
-    if (!humanPlayerChess) {
-      humanPlayerChess = this.initGameHumanPlayerChess(CHESS_TYPE_CROSS)
-    }
     // 获取AI玩家棋子
     const aiPlayerChess = this.initGameAIPlayerChess(humanPlayerChess.chessType)
     // 创建人类玩家
@@ -65,8 +61,9 @@ export default class Game {
 
   createGame () {
     console.log('game start')
+    const humanPlayerChess = this.initGameHumanPlayerChess(CHESS_TYPE_CROSS)
     // 初始化游戏玩家 默认人类玩家为 cross 棋子
-    this.initGamePlayer()
+    this.initGamePlayer(humanPlayerChess)
     // 初始化游戏
     this.initGame()
     // 初始化游戏场景
@@ -79,7 +76,7 @@ export default class Game {
 
   initGameScene () {
     // 初始化场景
-    this.gameScene.initScene(this.gameBoard, this.gameCanvas)
+    this.gameScene.initScene(this.gameBoard)
   }
 
   initGameCanvas () {
@@ -147,21 +144,24 @@ export default class Game {
   }
 
   addGameSceneChessCircleListener () {
-    // AI玩家先手，默认让AI落子到中心位置
-    const aiFirstChessRow = (BOARD_GRIDS_COUNT - 1) / 2
-    const aiFirstChessCol = (BOARD_GRIDS_COUNT - 1) / 2
-    const boardGrid = this.gameBoard.boardGrids[aiFirstChessRow][
-      aiFirstChessCol
-    ]
     document.querySelector('#circle').addEventListener(
       'click',
       () => {
         this.initGamePlayer(this.initGameHumanPlayerChess(CHESS_TYPE_CIRCLE))
         this.initGame()
-        this.generateGameAIPlayerChess(boardGrid)
+        this.generateGameAIPlayerChess(this.getGameAIFistStep())
       },
       false
     )
+  }
+
+  getGameAIFistStep () {
+    // AI玩家先手，默认让AI落子到中心位置 （以后换成花月、浦月等固定开局，从开局库读取）
+    const row = (BOARD_GRIDS_COUNT - 1) / 2
+    const col = (BOARD_GRIDS_COUNT - 1) / 2
+    return this.gameBoard.boardGrids[row][
+      col
+    ]
   }
 
   addGameSceneResizeListener () {
@@ -230,31 +230,32 @@ export default class Game {
           }
           this.generateGameHumanPlayerChess(boardGrid)
           // 如果未结束 调用AI类 获取AI计算后的落棋位置
-          this.generateGameAIPlayerChess()
+          this.generateGameAIPlayerChess(this.getGameAINextStep())
           return
         }
       }
     }
   }
 
+  getGameAINextStep () {
+    // 调用AI模块获取下一步的棋格位置
+    const { row, col } = this.gameAI.getNextStep(this.gameBoard)
+    return this.gameBoard.boardGrids[row][col]
+  }
+
   generateGameHumanPlayerChess (boardGrid) {
     this.gameHumanPlayer.generatePlayerChess(boardGrid, this.gameCanvas.context)
-    this.checkGamePlayerStatus(this.gameHumanPlayer)
+    this.checkGamePlayerStatus(this.gameHumanPlayer, boardGrid)
   }
 
   generateGameAIPlayerChess (boardGrid) {
-    // 未传值时 调用AI模块获取下一步的棋格位置
-    if (!boardGrid) {
-      const { row, col } = this.gameAI.getNextStep(this.gameBoard.boardGrids)
-      boardGrid = this.gameBoard.boardGrids[row][col]
-    }
     this.gameAIPlayer.generatePlayerChess(boardGrid, this.gameCanvas.context)
-    this.checkGamePlayerStatus(this.gameAIPlayer)
+    this.checkGamePlayerStatus(this.gameAIPlayer, boardGrid)
   }
 
-  checkGamePlayerStatus (gamePlayer) {
+  checkGamePlayerStatus (gamePlayer, boardGrid) {
     // 判断当前玩家是否胜利
-    this.checkGameStatus()
+    this.checkGameStatus(boardGrid)
     // 如果当前玩家取得胜利 游戏结束
     if (gamePlayer.playerStatus) {
       this.gameStatus = false
@@ -270,9 +271,9 @@ export default class Game {
     }
   }
 
-  checkGameStatus () {
-    // 判断当前玩家的棋子棋型是否连成五子或五子以上
-    this.gameBoard.checkBoardGridsChessShape()
+  checkGameStatus (boardGrid) {
+    // 判断当前玩家的棋子形成的棋型是否连成长连
+    this.gameBoard.checkBoardGridChessShape(boardGrid)
   }
 
   startGame () {}
