@@ -99,19 +99,6 @@ export default class Board {
     }
   }
 
-  getBoardGridChessShape (boardGird) {
-    // 计算某一个棋格的棋子周围形成的棋型数量
-  }
-
-  getBoardGridsChessShape () {
-    // 分别计算当前棋局下人类与AI棋子形成的棋型数量
-    for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
-      for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
-        // this.boardGrids[row][col]
-      }
-    }
-  }
-
   setBoardGridsSize (boardGridSize) {
     for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
       for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {

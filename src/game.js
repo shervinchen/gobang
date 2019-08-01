@@ -3,6 +3,7 @@ import Scene from './scene'
 import Board from './board'
 import Player from './player'
 import AI from './ai/ai'
+import { checkChessShape } from './ai/situation'
 import Chess from './chess'
 import {
   CHESS_TYPE_CROSS,
@@ -273,7 +274,7 @@ export default class Game {
 
   checkGameStatus (boardGrid) {
     // 判断当前玩家的棋子形成的棋型是否连成长连
-    this.gameBoard.checkBoardGridChessShape(boardGrid)
+    this.gameBoard.checkChessShape(boardGrid)
   }
 
   startGame () {}
