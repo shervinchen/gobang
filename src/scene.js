@@ -71,34 +71,51 @@ export default class Scene {
       resizeCount / 2}px`
   }
 
-  resizeCanvas (gameBoard, gameHumanPlayerChess, gameAIPlayerChess, resizeCount, gameCanvas) {
+  resizeCanvas (
+    gameBoard,
+    gameHumanPlayerChess,
+    gameAIPlayerChess,
+    resizeCount,
+    gameCanvas
+  ) {
     // 计算新的棋格大小
     const newBoardGridSize = gameBoard.getBoardGridSize() + resizeCount
     // 重新设置棋格大小
     gameBoard.setBoardGridsSize(newBoardGridSize)
-    //重新获取棋盘大小
+    // 重新获取棋盘大小
     const boardSize = gameBoard.getBoardSize(gameBoard.getBoardGridSize())
     // 重新设置画布大小
     gameCanvas.setCanvasSize(boardSize)
     // 重新绘制场景元素
     this.drawSceneEle(gameBoard, resizeCount)
     // 重新绘制棋格与棋子
-    const {chessSize, chessLineWidth} = this.getSceneChessProperty(gameBoard.getBoardGridSize())
-    gameBoard.drawBoardGrids(gameHumanPlayerChess, gameAIPlayerChess, chessSize, chessLineWidth, gameCanvas.context)
+    const { chessSize, chessLineWidth } = this.getSceneChessProperty(
+      gameBoard.getBoardGridSize()
+    )
+    gameBoard.drawBoardGrids(
+      gameHumanPlayerChess,
+      gameAIPlayerChess,
+      chessSize,
+      chessLineWidth,
+      gameCanvas.context
+    )
   }
 
   getSceneChessProperty (boardGridSize) {
     let chessLineWidth = BOARD_GRID_CHESS_DEFAULT_LINEWIDTH
     const percentSize = BOARD_GRID_CHESS_DEFAULT_SIZE / BOARD_GRID_DEFAULT_SIZE
+    // 让棋子半径为偶数，防止绘制出现bug
+    let chessSize = Math.round(boardGridSize * percentSize)
+    chessSize = chessSize % 2 === 0 ? chessSize : chessSize - 1
     // 根据当前棋格大小获取棋子线宽
     if (boardGridSize < BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT) {
       chessLineWidth = BOARD_GRID_CHESS_DEFAULT_LINEWIDTH - 1
     } else {
       chessLineWidth = BOARD_GRID_CHESS_DEFAULT_LINEWIDTH
     }
-    console.log(chessLineWidth)
+    // console.log(chessLineWidth)
     return {
-      chessSize: boardGridSize * percentSize,
+      chessSize,
       chessLineWidth
     }
   }
