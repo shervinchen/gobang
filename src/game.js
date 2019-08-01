@@ -256,7 +256,8 @@ export default class Game {
 
   checkGamePlayerStatus (gamePlayer, boardGrid) {
     // 判断当前玩家是否胜利
-    this.checkGameStatus(boardGrid)
+    // 判断当前玩家的棋子形成的棋型是否连成长连
+    checkChessShape(boardGrid)
     // 如果当前玩家取得胜利 游戏结束
     if (gamePlayer.playerStatus) {
       this.gameStatus = false
@@ -270,11 +271,6 @@ export default class Game {
         return null
       }
     }
-  }
-
-  checkGameStatus (boardGrid) {
-    // 判断当前玩家的棋子形成的棋型是否连成长连
-    this.gameBoard.checkChessShape(boardGrid)
   }
 
   startGame () {}
