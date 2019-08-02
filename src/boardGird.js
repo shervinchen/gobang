@@ -15,6 +15,7 @@ export default class BoardGrid {
    * @param {Number} boardGridY 棋格左上角纵坐标
    * @param {Number} boardGridSize 棋格大小
    * @param {Number} boardGridType 棋格类型
+   * @param {Number} boardGridChess 棋格棋子
    * @param {Number} boardGridRadius 棋格圆角半径
    * @memberof BoardGrid
    */
@@ -23,6 +24,7 @@ export default class BoardGrid {
     boardGridY,
     boardGridSize,
     boardGridType,
+    boardGridChess,
     boardGridRadius
   ) {
     // 棋格坐标
@@ -32,6 +34,8 @@ export default class BoardGrid {
     this.boardGridSize = boardGridSize
     // 棋格类型
     this.boardGridType = boardGridType
+    // 棋格棋子
+    this.boardGridChess = boardGridChess
     // 棋格圆角弧度
     this.boardGridRadius = boardGridRadius
   }
@@ -90,27 +94,31 @@ export default class BoardGrid {
   /**
    * 绘制棋格上的棋子
    *
-   * @param {Number} chessType 棋子类型
    * @param {Object} gameChess 棋子对象
    * @param {Object} ctx 画布内容对象
    * @memberof BoardGrid
    */
-  drawBoardGridChess (gameChess, ctx) {
-    gameChess.drawChess(
+  drawBoardGridChess (ctx) {
+    this.boardGridChess.drawChess(
       this.boardGridX,
       this.boardGridY,
       this.boardGridSize,
       ctx
     )
+  }
+  
+  createBoardGridChess (gameChess, ctx) {
+    this.boardGridChess = gameChess
+    this.drawBoardGridChess(ctx)
     this.boardGridType = gameChess.chessType
   }
 
-  setBoardGridChess (gameChess, chessSize, chessLineWidth) {
+  setBoardGridChess (chessSize, chessLineWidth) {
     // 重新设置棋子属性
-    gameChess.setChessSize(
+    this.boardGridChess.setChessSize(
       chessSize
     )
-    gameChess.setChessLineWidth(
+    this.boardGridChess.setChessLineWidth(
       chessLineWidth
     )
   }

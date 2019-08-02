@@ -3,8 +3,6 @@ import {
   BOARD_GRIDS_COUNT,
   BOARD_GRIDS_GAP,
   BOARD_GRID_TYPE_DEFAULT,
-  BOARD_GRID_TYPE_CIRCLE,
-  BOARD_GRID_TYPE_CROSS,
   BOARD_GRID_RADIUS
 } from './constant'
 
@@ -41,6 +39,7 @@ export default class Board {
           col * (boardGridSize + BOARD_GRIDS_GAP),
           boardGridSize,
           BOARD_GRID_TYPE_DEFAULT,
+          null,
           BOARD_GRID_RADIUS
         )
         // 绘制棋格
@@ -51,8 +50,6 @@ export default class Board {
   }
 
   drawBoardGrids (
-    gameHumanPlayerChess,
-    gameAIPlayerChess,
     chessSize,
     chessLineWidth,
     ctx
@@ -66,8 +63,6 @@ export default class Board {
         this.boardGrids[row][col].drawBoardGrid(ctx)
         this.drawBoardChess(
           this.boardGrids[row][col],
-          gameHumanPlayerChess,
-          gameAIPlayerChess,
           chessSize,
           chessLineWidth,
           ctx
@@ -78,24 +73,13 @@ export default class Board {
 
   drawBoardChess (
     boardGird,
-    gameHumanPlayerChess,
-    gameAIPlayerChess,
     chessSize,
     chessLineWidth,
     ctx
   ) {
-    if (boardGird.boardGridType === gameHumanPlayerChess.chessType) {
-      boardGird.setBoardGridChess(
-        gameHumanPlayerChess,
-        chessSize,
-        chessLineWidth
-      )
-      boardGird.drawBoardGridChess(gameHumanPlayerChess, ctx)
-    } else if (boardGird.boardGridType === gameAIPlayerChess.chessType) {
-      boardGird.setBoardGridChess(gameAIPlayerChess, chessSize, chessLineWidth)
-      boardGird.drawBoardGridChess(gameAIPlayerChess, ctx)
-    } else {
-      return null
+    if (boardGird.boardGridChess) {
+      boardGird.setBoardGridChess(chessSize, chessLineWidth)
+      boardGird.drawBoardGridChess(ctx)
     }
   }
 

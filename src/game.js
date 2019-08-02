@@ -34,13 +34,17 @@ export default class Game {
     this.gameAI = new AI()
   }
 
-  initGame () {
+  initGame (humanPlayerChess) {
     // 游戏状态
     this.gameStatus = true
+    // 初始化游戏玩家 默认人类玩家为 cross 棋子
+    this.initGamePlayer(humanPlayerChess)
     // 初始化游戏画布
     this.initGameCanvas()
     // 初始化游戏棋盘
     this.initGameBoard()
+    // 初始化游戏场景
+    this.initGameScene()
     // 是否开始游戏
     // this.isGameStart = false
     // 是否结束游戏
@@ -63,12 +67,8 @@ export default class Game {
   createGame () {
     console.log('game start')
     const humanPlayerChess = this.initGameHumanPlayerChess(CHESS_TYPE_CROSS)
-    // 初始化游戏玩家 默认人类玩家为 cross 棋子
-    this.initGamePlayer(humanPlayerChess)
     // 初始化游戏
-    this.initGame()
-    // 初始化游戏场景
-    this.initGameScene()
+    this.initGame(humanPlayerChess)
     // 添加场景监听器
     this.addGameSceneListener()
     // 添加棋盘监听器
@@ -137,8 +137,7 @@ export default class Game {
     document.querySelector('#cross').addEventListener(
       'click',
       () => {
-        this.initGamePlayer(this.initGameHumanPlayerChess(CHESS_TYPE_CROSS))
-        this.initGame()
+        this.initGame(this.initGameHumanPlayerChess(CHESS_TYPE_CROSS))
       },
       false
     )
@@ -148,8 +147,7 @@ export default class Game {
     document.querySelector('#circle').addEventListener(
       'click',
       () => {
-        this.initGamePlayer(this.initGameHumanPlayerChess(CHESS_TYPE_CIRCLE))
-        this.initGame()
+        this.initGame(this.initGameHumanPlayerChess(CHESS_TYPE_CIRCLE))
         this.generateGameAIPlayerChess(this.getGameAIFistStep())
       },
       false
@@ -160,9 +158,7 @@ export default class Game {
     // AI玩家先手，默认让AI落子到中心位置 （以后换成花月、浦月等固定开局，从开局库读取）
     const row = (BOARD_GRIDS_COUNT - 1) / 2
     const col = (BOARD_GRIDS_COUNT - 1) / 2
-    return this.gameBoard.boardGrids[row][
-      col
-    ]
+    return this.gameBoard.boardGrids[row][col]
   }
 
   addGameSceneResizeListener () {
@@ -177,8 +173,6 @@ export default class Game {
         if (this.gameBoard.getBoardGridSize() <= BOARD_GRID_MAX_SIZE) {
           this.gameScene.resizeCanvas(
             this.gameBoard,
-            this.gameHumanPlayer.playerChess,
-            this.gameAIPlayer.playerChess,
             BOARD_GRID_RESIZE_COUNT,
             this.gameCanvas
           )
@@ -195,8 +189,6 @@ export default class Game {
         if (this.gameBoard.getBoardGridSize() >= BOARD_GRID_MIN_SIZE) {
           this.gameScene.resizeCanvas(
             this.gameBoard,
-            this.gameHumanPlayer.playerChess,
-            this.gameAIPlayer.playerChess,
             -BOARD_GRID_RESIZE_COUNT,
             this.gameCanvas
           )

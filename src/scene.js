@@ -73,8 +73,6 @@ export default class Scene {
 
   resizeCanvas (
     gameBoard,
-    gameHumanPlayerChess,
-    gameAIPlayerChess,
     resizeCount,
     gameCanvas
   ) {
@@ -93,8 +91,6 @@ export default class Scene {
       gameBoard.getBoardGridSize()
     )
     gameBoard.drawBoardGrids(
-      gameHumanPlayerChess,
-      gameAIPlayerChess,
       chessSize,
       chessLineWidth,
       gameCanvas.context
