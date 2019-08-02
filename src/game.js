@@ -37,6 +37,8 @@ export default class Game {
   initGame (humanPlayerChess) {
     // 游戏状态
     this.gameStatus = true
+    // 计算游戏棋格相关属性
+    this.gameBoardGridProperty = this.gameBoard.calculateBoardGridProperty()
     // 初始化游戏玩家 默认人类玩家为 cross 棋子
     this.initGamePlayer(humanPlayerChess)
     // 初始化游戏画布
@@ -81,22 +83,27 @@ export default class Game {
   }
 
   initGameCanvas () {
-    // console.log(gameBoard)
-    const boardGridSize = this.gameScene.calculateScene().boardGridSize
     // 获取棋盘大小
-    const boardSize = this.gameBoard.getBoardSize(boardGridSize)
+    const boardSize = this.gameBoard.getBoardSize(this.gameBoardGridProperty)
     // 设置画布大小
     this.gameCanvas.setCanvasSize(boardSize)
   }
 
   initGameBoard () {
-    const boardGridSize = this.gameScene.calculateScene().boardGridSize
-    this.gameBoard.initBoard(boardGridSize, this.gameCanvas.context)
+    this.gameBoard.initBoard(
+      this.gameBoardGridProperty,
+      this.gameCanvas.context
+    )
   }
 
   initGameChess (chessType) {
     // 计算场景各元素尺寸样式
-    const { chessSize, chessLineWidth } = this.gameScene.calculateScene()
+    const {
+      chessSize,
+      chessLineWidth
+    } = this.gameBoard.calculateBoardGridChessProperty(
+      this.gameBoardGridProperty
+    )
     // 创建对应类型的棋子
     return new Chess(chessType, chessSize, chessLineWidth)
   }

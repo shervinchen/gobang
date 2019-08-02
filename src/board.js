@@ -3,7 +3,12 @@ import {
   BOARD_GRIDS_COUNT,
   BOARD_GRIDS_GAP,
   BOARD_GRID_TYPE_DEFAULT,
-  BOARD_GRID_RADIUS
+  BOARD_GRID_RADIUS,
+  BOARD_GRID_CHESS_DEFAULT_SIZE,
+  BOARD_GRID_RESIZE_COUNT,
+  BOARD_GRID_CHESS_DEFAULT_LINEWIDTH,
+  SCREEN_WIDTH_RANGE,
+  BOARD_GRID_DEFAULT_SIZE
 } from './constant'
 
 /**
@@ -50,8 +55,6 @@ export default class Board {
   }
 
   drawBoardGrids (
-    chessSize,
-    chessLineWidth,
     ctx
   ) {
     for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
@@ -63,8 +66,6 @@ export default class Board {
         this.boardGrids[row][col].drawBoardGrid(ctx)
         this.drawBoardChess(
           this.boardGrids[row][col],
-          chessSize,
-          chessLineWidth,
           ctx
         )
       }
@@ -73,11 +74,10 @@ export default class Board {
 
   drawBoardChess (
     boardGird,
-    chessSize,
-    chessLineWidth,
     ctx
   ) {
     if (boardGird.boardGridChess) {
+      const { chessSize, chessLineWidth } = this.calculateBoardGridChessProperty(this.getBoardGridSize())
       boardGird.setBoardGridChess(chessSize, chessLineWidth)
       boardGird.drawBoardGridChess(ctx)
     }
@@ -100,5 +100,48 @@ export default class Board {
       boardGridSize * BOARD_GRIDS_COUNT +
       BOARD_GRIDS_GAP * (BOARD_GRIDS_COUNT - 1)
     )
+  }
+
+  // calculateBoardProperty () {
+  //   const boardGridSize = this.calculateBoardGridProperty()
+  //   return boardGridSize
+  // }
+
+  calculateBoardGridProperty () {
+    let boardGridSize = BOARD_GRID_DEFAULT_SIZE
+    // 根据当前屏幕宽度来动态适配棋格大小
+    const clientWidth = document.body.clientWidth
+    const sizes = [
+      BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT,
+      BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT,
+      BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT * 2,
+      BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT * 3,
+      BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT * 4
+    ]
+    for (let i = 0; i < sizes.length; i++) {
+      if (clientWidth < SCREEN_WIDTH_RANGE[i]) {
+        boardGridSize = sizes[i]
+      }
+    }
+    return boardGridSize
+  }
+
+  calculateBoardGridChessProperty (boardGridSize) {
+    let chessLineWidth = BOARD_GRID_CHESS_DEFAULT_LINEWIDTH
+    const percentSize = BOARD_GRID_CHESS_DEFAULT_SIZE / BOARD_GRID_DEFAULT_SIZE
+    // 让棋子半径为偶数，防止绘制出现bug
+    let chessSize = Math.round(boardGridSize * percentSize)
+    chessSize = chessSize % 2 === 0 ? chessSize : chessSize - 1
+    // 根据当前棋格大小获取棋子线宽
+    if (boardGridSize < BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT) {
+      chessLineWidth = BOARD_GRID_CHESS_DEFAULT_LINEWIDTH - 1
+    } else {
+      chessLineWidth = BOARD_GRID_CHESS_DEFAULT_LINEWIDTH
+    }
+    // console.log(chessLineWidth)
+    return {
+      chessSize,
+      chessLineWidth
+    }
   }
 }
