@@ -107,10 +107,10 @@ export default class BoardGrid {
     )
   }
 
-  createBoardGridChess (gameChess, ctx) {
-    this.boardGridChess = gameChess
+  createBoardGridChess (gameChessType, ctx) {
+    this.boardGridChess.chessType = gameChessType
     this.drawBoardGridChess(ctx)
-    this.boardGridType = gameChess.chessType
+    this.boardGridType = gameChessType
   }
 
   setBoardGridChess (chessSize, chessLineWidth) {

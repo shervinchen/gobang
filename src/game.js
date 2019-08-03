@@ -4,7 +4,6 @@ import Board from './board'
 import Player from './player'
 import AI from './ai/ai'
 import { checkChessShape } from './ai/situation'
-import Chess from './chess'
 import {
   CHESS_TYPE_CROSS,
   CHESS_TYPE_CIRCLE,
@@ -35,46 +34,35 @@ export default class Game {
   }
 
   initGame (boardGridSize) {
-    // 游戏状态
-    this.gameStatus = true
-    // 初始化游戏画布
-    this.initGameCanvas(boardGridSize)
-    // 初始化游戏棋盘
-    this.initGameBoard(boardGridSize)
     // 是否开始游戏
     // this.isGameStart = false
     // 是否结束游戏
     // this.isGameEnd = false
   }
 
-  restartGame (humanPlayerChess) {
-    // 游戏状态
-    this.gameStatus = true
-    // 初始化游戏玩家
-    this.initGamePlayer(humanPlayerChess)
-    // 初始化游戏棋盘
-    this.initGameBoard(this.gameBoard.getBoardGridSize())
-  }
-
-  initGamePlayer (humanPlayerChess) {
-    // 获取AI玩家棋子
-    const aiPlayerChess = this.initGameAIPlayerChess(humanPlayerChess.chessType)
+  initGamePlayer (humanPlayerChessType, aiPlayerChessType) {
     // 创建人类玩家
     this.gameHumanPlayer = new Player(
       PLAYER_TYPE_HUMAN,
-      humanPlayerChess,
+      humanPlayerChessType,
       false
     )
     // 创建AI玩家 默认AI为 circle 棋子
-    this.gameAIPlayer = new Player(PLAYER_TYPE_AI, aiPlayerChess, false)
+    this.gameAIPlayer = new Player(PLAYER_TYPE_AI, aiPlayerChessType, false)
   }
 
   createGame () {
     console.log('game start')
-    // 初始化游戏
-    this.initGame(this.gameBoard.calculateBoardGridProperty())
+    // 计算场景各元素尺寸样式
+    const boardGridSize = this.gameBoard.calculateBoardGridProperty()
+    // 初始化游戏状态
+    this.gameStatus = true
+    // 初始化游戏画布
+    this.initGameCanvas(boardGridSize)
+    // 初始化游戏棋盘
+    this.initGameBoard(boardGridSize)
     // 初始化游戏玩家 默认人类玩家为 cross 棋子
-    this.initGamePlayer(this.initGameHumanPlayerChess(CHESS_TYPE_CROSS))
+    this.initGamePlayer(CHESS_TYPE_CROSS, CHESS_TYPE_CIRCLE)
     // 初始化游戏场景
     this.initGameScene()
     // 添加场景监听器
@@ -102,36 +90,6 @@ export default class Game {
     )
   }
 
-  initGameChess (chessType) {
-    // 计算场景各元素尺寸样式
-    const {
-      chessSize,
-      chessLineWidth
-    } = this.gameBoard.calculateBoardGridChessProperty(
-      this.gameBoard.getBoardGridSize()
-    )
-    // console.log(this.gameBoardGridProperty)
-    // 创建对应类型的棋子
-    return new Chess(chessType, chessSize, chessLineWidth)
-  }
-
-  initGameHumanPlayerChess (humanPlayerChessType) {
-    return this.initGameChess(humanPlayerChessType)
-  }
-
-  initGameAIPlayerChess (humanPlayerChessType) {
-    // 根据人类玩家棋子类型判断AI玩家棋子类型
-    let aiPlayerChess = null
-    if (humanPlayerChessType === CHESS_TYPE_CROSS) {
-      aiPlayerChess = this.initGameChess(CHESS_TYPE_CIRCLE)
-    } else if (humanPlayerChessType === CHESS_TYPE_CIRCLE) {
-      aiPlayerChess = this.initGameChess(CHESS_TYPE_CROSS)
-    } else {
-      return null
-    }
-    return aiPlayerChess
-  }
-
   /**
    * 添加场景监听器
    */
@@ -151,8 +109,9 @@ export default class Game {
     document.querySelector('#cross').addEventListener(
       'click',
       () => {
-        this.initGame(this.gameBoard.getBoardGridSize())
-        this.initGamePlayer(this.initGameHumanPlayerChess(CHESS_TYPE_CROSS))
+        this.gameStatus = true
+        this.gameBoard.resetBoardGrids(this.gameCanvas.context)
+        this.initGamePlayer(CHESS_TYPE_CROSS, CHESS_TYPE_CIRCLE)
       },
       false
     )
@@ -162,8 +121,9 @@ export default class Game {
     document.querySelector('#circle').addEventListener(
       'click',
       () => {
-        this.initGame(this.gameBoard.getBoardGridSize())
-        this.initGamePlayer(this.initGameHumanPlayerChess(CHESS_TYPE_CIRCLE))
+        this.gameStatus = true
+        this.gameBoard.resetBoardGrids(this.gameCanvas.context)
+        this.initGamePlayer(CHESS_TYPE_CIRCLE, CHESS_TYPE_CROSS)
         this.generateGameAIPlayerChess(this.getGameAIFistStep())
       },
       false
@@ -186,7 +146,7 @@ export default class Game {
     document.querySelector('#zoomout').addEventListener(
       'click',
       event => {
-        if (this.gameBoard.getBoardGridSize() <= BOARD_GRID_MAX_SIZE) {
+        if (this.gameBoard.getBoardGrid().boardGridSize <= BOARD_GRID_MAX_SIZE) {
           this.gameScene.resizeCanvas(
             this.gameBoard,
             BOARD_GRID_RESIZE_COUNT,
@@ -202,7 +162,7 @@ export default class Game {
     document.querySelector('#zoomin').addEventListener(
       'click',
       event => {
-        if (this.gameBoard.getBoardGridSize() >= BOARD_GRID_MIN_SIZE) {
+        if (this.gameBoard.getBoardGrid().boardGridSize >= BOARD_GRID_MIN_SIZE) {
           this.gameScene.resizeCanvas(
             this.gameBoard,
             -BOARD_GRID_RESIZE_COUNT,

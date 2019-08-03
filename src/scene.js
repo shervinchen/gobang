@@ -17,7 +17,7 @@ export default class Scene {
     this.showSceneEle()
     this.drawSceneEle(
       gameBoard,
-      gameBoard.getBoardGridSize() - BOARD_GRID_DEFAULT_SIZE
+      gameBoard.getBoardGrid().boardGridSize - BOARD_GRID_DEFAULT_SIZE
     )
   }
 
@@ -29,12 +29,12 @@ export default class Scene {
     const elements = document.querySelectorAll('.element')
     const infoEle = document.querySelector('.info')
     elements.forEach(element => {
-      element.style.width = `${gameBoard.getBoardGridSize()}px`
-      element.style.height = `${gameBoard.getBoardGridSize()}px`
-      element.style.lineHeight = `${gameBoard.getBoardGridSize()}px`
-      element.style.fontSize = `${gameBoard.getBoardGridSize()}px`
+      element.style.width = `${gameBoard.getBoardGrid().boardGridSize}px`
+      element.style.height = `${gameBoard.getBoardGrid().boardGridSize}px`
+      element.style.lineHeight = `${gameBoard.getBoardGrid().boardGridSize}px`
+      element.style.fontSize = `${gameBoard.getBoardGrid().boardGridSize}px`
     })
-    infoEle.style.lineHeight = `${gameBoard.getBoardGridSize()}px`
+    infoEle.style.lineHeight = `${gameBoard.getBoardGrid().boardGridSize}px`
     infoEle.style.fontSize = `${parseInt(getComputedStyle(infoEle).fontSize) +
       resizeCount / 2}px`
   }
@@ -45,11 +45,11 @@ export default class Scene {
     gameCanvas
   ) {
     // 计算新的棋格大小
-    const newBoardGridSize = gameBoard.getBoardGridSize() + resizeCount
+    const newBoardGridSize = gameBoard.getBoardGrid().boardGridSize + resizeCount
     // 重新设置棋格大小
     gameBoard.setBoardGridsSize(newBoardGridSize)
     // 重新获取棋盘大小
-    const boardSize = gameBoard.getBoardSize(gameBoard.getBoardGridSize())
+    const boardSize = gameBoard.getBoardSize(gameBoard.getBoardGrid().boardGridSize)
     // 重新设置画布大小
     gameCanvas.setCanvasSize(boardSize)
     // 重新绘制场景元素

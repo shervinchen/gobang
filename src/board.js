@@ -1,4 +1,5 @@
 import BoardGrid from './boardGird'
+import Chess from './chess'
 import {
   BOARD_GRIDS_COUNT,
   BOARD_GRIDS_GAP,
@@ -34,6 +35,12 @@ export default class Board {
    * 初始化棋格状态
    */
   initBoardGrids (boardGridSize, ctx) {
+    const {
+      chessSize,
+      chessLineWidth
+    } = this.calculateBoardGridChessProperty(
+      boardGridSize
+    )
     const grids = []
     for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
       grids[row] = []
@@ -44,7 +51,7 @@ export default class Board {
           col * (boardGridSize + BOARD_GRIDS_GAP),
           boardGridSize,
           BOARD_GRID_TYPE_DEFAULT,
-          null,
+          new Chess(BOARD_GRID_TYPE_DEFAULT, chessSize, chessLineWidth),
           BOARD_GRID_RADIUS
         )
         // 绘制棋格
@@ -52,6 +59,16 @@ export default class Board {
       }
     }
     return grids
+  }
+
+  resetBoardGrids (ctx) {
+    for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
+      for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
+        this.boardGrids[row][col].boardGridType = BOARD_GRID_TYPE_DEFAULT
+        this.boardGrids[row][col].boardGridChess.chessType = BOARD_GRID_TYPE_DEFAULT
+        this.boardGrids[row][col].drawBoardGrid(ctx)
+      }
+    }
   }
 
   drawBoardGrids (
@@ -76,7 +93,7 @@ export default class Board {
     boardGird,
     ctx
   ) {
-    if (boardGird.boardGridChess) {
+    if (boardGird.boardGridChess !== -1) {
       const { chessSize, chessLineWidth } = this.calculateBoardGridChessProperty(boardGird.boardGridSize)
       boardGird.setBoardGridChess(chessSize, chessLineWidth)
       boardGird.drawBoardGridChess(ctx)
@@ -91,8 +108,8 @@ export default class Board {
     }
   }
 
-  getBoardGridSize () {
-    return this.boardGrids[0][0].boardGridSize
+  getBoardGrid () {
+    return this.boardGrids[0][0]
   }
 
   getBoardSize (boardGridSize) {
