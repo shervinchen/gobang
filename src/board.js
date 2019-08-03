@@ -77,7 +77,7 @@ export default class Board {
     ctx
   ) {
     if (boardGird.boardGridChess) {
-      const { chessSize, chessLineWidth } = this.calculateBoardGridChessProperty(this.getBoardGridSize())
+      const { chessSize, chessLineWidth } = this.calculateBoardGridChessProperty(boardGird.boardGridSize)
       boardGird.setBoardGridChess(chessSize, chessLineWidth)
       boardGird.drawBoardGridChess(ctx)
     }
@@ -108,6 +108,7 @@ export default class Board {
   // }
 
   calculateBoardGridProperty () {
+    // 计算游戏棋格相关属性
     let boardGridSize = BOARD_GRID_DEFAULT_SIZE
     // 根据当前屏幕宽度来动态适配棋格大小
     const clientWidth = document.body.clientWidth
@@ -138,7 +139,6 @@ export default class Board {
     } else {
       chessLineWidth = BOARD_GRID_CHESS_DEFAULT_LINEWIDTH
     }
-    // console.log(chessLineWidth)
     return {
       chessSize,
       chessLineWidth

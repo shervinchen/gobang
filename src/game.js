@@ -34,23 +34,26 @@ export default class Game {
     this.gameAI = new AI()
   }
 
-  initGame (humanPlayerChess) {
+  initGame (boardGridSize) {
     // 游戏状态
     this.gameStatus = true
-    // 计算游戏棋格相关属性
-    this.gameBoardGridProperty = this.gameBoard.calculateBoardGridProperty()
-    // 初始化游戏玩家 默认人类玩家为 cross 棋子
-    this.initGamePlayer(humanPlayerChess)
     // 初始化游戏画布
-    this.initGameCanvas()
+    this.initGameCanvas(boardGridSize)
     // 初始化游戏棋盘
-    this.initGameBoard()
-    // 初始化游戏场景
-    this.initGameScene()
+    this.initGameBoard(boardGridSize)
     // 是否开始游戏
     // this.isGameStart = false
     // 是否结束游戏
     // this.isGameEnd = false
+  }
+
+  restartGame (humanPlayerChess) {
+    // 游戏状态
+    this.gameStatus = true
+    // 初始化游戏玩家
+    this.initGamePlayer(humanPlayerChess)
+    // 初始化游戏棋盘
+    this.initGameBoard(this.gameBoard.getBoardGridSize())
   }
 
   initGamePlayer (humanPlayerChess) {
@@ -68,9 +71,12 @@ export default class Game {
 
   createGame () {
     console.log('game start')
-    const humanPlayerChess = this.initGameHumanPlayerChess(CHESS_TYPE_CROSS)
     // 初始化游戏
-    this.initGame(humanPlayerChess)
+    this.initGame(this.gameBoard.calculateBoardGridProperty())
+    // 初始化游戏玩家 默认人类玩家为 cross 棋子
+    this.initGamePlayer(this.initGameHumanPlayerChess(CHESS_TYPE_CROSS))
+    // 初始化游戏场景
+    this.initGameScene()
     // 添加场景监听器
     this.addGameSceneListener()
     // 添加棋盘监听器
@@ -82,16 +88,16 @@ export default class Game {
     this.gameScene.initScene(this.gameBoard)
   }
 
-  initGameCanvas () {
+  initGameCanvas (boardGridSize) {
     // 获取棋盘大小
-    const boardSize = this.gameBoard.getBoardSize(this.gameBoardGridProperty)
+    const boardSize = this.gameBoard.getBoardSize(boardGridSize)
     // 设置画布大小
     this.gameCanvas.setCanvasSize(boardSize)
   }
 
-  initGameBoard () {
+  initGameBoard (boardGridSize) {
     this.gameBoard.initBoard(
-      this.gameBoardGridProperty,
+      boardGridSize,
       this.gameCanvas.context
     )
   }
@@ -102,8 +108,9 @@ export default class Game {
       chessSize,
       chessLineWidth
     } = this.gameBoard.calculateBoardGridChessProperty(
-      this.gameBoardGridProperty
+      this.gameBoard.getBoardGridSize()
     )
+    // console.log(this.gameBoardGridProperty)
     // 创建对应类型的棋子
     return new Chess(chessType, chessSize, chessLineWidth)
   }
@@ -144,7 +151,8 @@ export default class Game {
     document.querySelector('#cross').addEventListener(
       'click',
       () => {
-        this.initGame(this.initGameHumanPlayerChess(CHESS_TYPE_CROSS))
+        this.initGame(this.gameBoard.getBoardGridSize())
+        this.initGamePlayer(this.initGameHumanPlayerChess(CHESS_TYPE_CROSS))
       },
       false
     )
@@ -154,7 +162,8 @@ export default class Game {
     document.querySelector('#circle').addEventListener(
       'click',
       () => {
-        this.initGame(this.initGameHumanPlayerChess(CHESS_TYPE_CIRCLE))
+        this.initGame(this.gameBoard.getBoardGridSize())
+        this.initGamePlayer(this.initGameHumanPlayerChess(CHESS_TYPE_CIRCLE))
         this.generateGameAIPlayerChess(this.getGameAIFistStep())
       },
       false

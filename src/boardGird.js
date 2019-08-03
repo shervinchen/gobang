@@ -106,7 +106,7 @@ export default class BoardGrid {
       ctx
     )
   }
-  
+
   createBoardGridChess (gameChess, ctx) {
     this.boardGridChess = gameChess
     this.drawBoardGridChess(ctx)
