@@ -23,18 +23,22 @@ export default class Board {
    * 定义棋盘属性
    * @constructor
    */
-  constructor () {}
+  constructor () {
+    this.boardSize = this.getBoardSize(this.calculateBoardGridProperty())
+  }
 
-  initBoard (boardGridSize, ctx) {
+  initBoard (ctx) {
     // 初始化棋格状态
-    this.boardGrids = this.initBoardGrids(boardGridSize, ctx)
+    this.boardGrids = this.initBoardGrids(ctx)
     console.log(this.boardGrids)
   }
 
   /**
    * 初始化棋格状态
    */
-  initBoardGrids (boardGridSize, ctx) {
+  initBoardGrids (ctx) {
+    // 计算场景各元素尺寸样式
+    const boardGridSize = this.calculateBoardGridProperty()
     const {
       chessSize,
       chessLineWidth
@@ -71,7 +75,7 @@ export default class Board {
     }
   }
 
-  drawBoardGrids (
+  redrawBoardGrids (
     ctx
   ) {
     for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {

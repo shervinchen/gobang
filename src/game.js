@@ -53,14 +53,12 @@ export default class Game {
 
   createGame () {
     console.log('game start')
-    // 计算场景各元素尺寸样式
-    const boardGridSize = this.gameBoard.calculateBoardGridProperty()
     // 初始化游戏状态
     this.gameStatus = true
     // 初始化游戏画布
-    this.initGameCanvas(boardGridSize)
+    this.initGameCanvas()
     // 初始化游戏棋盘
-    this.initGameBoard(boardGridSize)
+    this.initGameBoard()
     // 初始化游戏玩家 默认人类玩家为 cross 棋子
     this.initGamePlayer(CHESS_TYPE_CROSS, CHESS_TYPE_CIRCLE)
     // 初始化游戏场景
@@ -76,16 +74,15 @@ export default class Game {
     this.gameScene.initScene(this.gameBoard)
   }
 
-  initGameCanvas (boardGridSize) {
+  initGameCanvas () {
     // 获取棋盘大小
-    const boardSize = this.gameBoard.getBoardSize(boardGridSize)
+    const boardSize = this.gameBoard.boardSize
     // 设置画布大小
     this.gameCanvas.setCanvasSize(boardSize)
   }
 
-  initGameBoard (boardGridSize) {
+  initGameBoard () {
     this.gameBoard.initBoard(
-      boardGridSize,
       this.gameCanvas.context
     )
   }

@@ -55,7 +55,7 @@ export default class Scene {
     // 重新绘制场景元素
     this.drawSceneEle(gameBoard, resizeCount)
     // 重新绘制棋格与棋子
-    gameBoard.drawBoardGrids(
+    gameBoard.redrawBoardGrids(
       gameCanvas.context
     )
   }
