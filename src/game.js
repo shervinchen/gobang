@@ -55,10 +55,12 @@ export default class Game {
     console.log('game start')
     // 初始化游戏状态
     this.gameStatus = true
+    // 计算游戏初识棋格大小
+    const boardGridSize = this.gameScene.calculateBoardGridProperty()
     // 初始化游戏画布
-    this.initGameCanvas()
+    this.initGameCanvas(boardGridSize)
     // 初始化游戏棋盘
-    this.initGameBoard()
+    this.initGameBoard(boardGridSize)
     // 初始化游戏玩家 默认人类玩家为 cross 棋子
     this.initGamePlayer(CHESS_TYPE_CROSS, CHESS_TYPE_CIRCLE)
     // 初始化游戏场景
@@ -74,15 +76,25 @@ export default class Game {
     this.gameScene.initScene(this.gameBoard)
   }
 
-  initGameCanvas () {
+  initGameCanvas (boardGridSize) {
     // 获取棋盘大小
-    const boardSize = this.gameBoard.boardSize
+    const boardSize = this.gameBoard.getBoardSize(boardGridSize)
     // 设置画布大小
     this.gameCanvas.setCanvasSize(boardSize)
   }
 
-  initGameBoard () {
-    this.gameBoard.initBoard(
+  initGameBoard (boardGridSize) {
+    // 计算场景各元素尺寸样式
+    const {
+      chessSize,
+      chessLineWidth
+    } = this.gameScene.calculateBoardGridChessProperty(
+      boardGridSize
+    )
+    this.gameBoard.initBoardGrids(
+      boardGridSize,
+      chessSize,
+      chessLineWidth,
       this.gameCanvas.context
     )
   }
@@ -143,8 +155,8 @@ export default class Game {
     document.querySelector('#zoomout').addEventListener(
       'click',
       event => {
-        if (this.gameBoard.getBoardGrid().boardGridSize <= BOARD_GRID_MAX_SIZE) {
-          this.gameScene.resizeCanvas(
+        if (this.gameBoard.boardGrids[0][0].boardGridSize <= BOARD_GRID_MAX_SIZE) {
+          this.gameScene.resizeScene(
             this.gameBoard,
             BOARD_GRID_RESIZE_COUNT,
             this.gameCanvas
@@ -159,8 +171,8 @@ export default class Game {
     document.querySelector('#zoomin').addEventListener(
       'click',
       event => {
-        if (this.gameBoard.getBoardGrid().boardGridSize >= BOARD_GRID_MIN_SIZE) {
-          this.gameScene.resizeCanvas(
+        if (this.gameBoard.boardGrids[0][0].boardGridSize >= BOARD_GRID_MIN_SIZE) {
+          this.gameScene.resizeScene(
             this.gameBoard,
             -BOARD_GRID_RESIZE_COUNT,
             this.gameCanvas

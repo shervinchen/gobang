@@ -49,6 +49,19 @@ export default class BoardGrid {
     this.boardGridSize = boardGridSize
   }
 
+  redrawBoardGrid (
+    ctx
+  ) {
+    this.drawBoardGrid(ctx)
+  }
+
+  redrawBoardGridChess (chessSize, chessLineWidth, ctx) {
+    if (this.boardGridChess !== -1) {
+      this.setBoardGridChessProperty(chessSize, chessLineWidth)
+      this.drawBoardGridChess(ctx)
+    }
+  }
+
   /**
    * 判断点击的点是否在棋格内
    *
@@ -107,13 +120,13 @@ export default class BoardGrid {
     )
   }
 
-  createBoardGridChess (gameChessType, ctx) {
+  setBoardGridChess (gameChessType, ctx) {
     this.boardGridChess.chessType = gameChessType
     this.drawBoardGridChess(ctx)
     this.boardGridType = gameChessType
   }
 
-  setBoardGridChess (chessSize, chessLineWidth) {
+  setBoardGridChessProperty (chessSize, chessLineWidth) {
     // 重新设置棋子属性
     this.boardGridChess.setChessSize(
       chessSize
