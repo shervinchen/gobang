@@ -61,9 +61,4 @@ export default class Board {
       BOARD_GRIDS_GAP * (BOARD_GRIDS_COUNT - 1)
     )
   }
-
-  // calculateBoardProperty () {
-  //   const boardGridSize = this.calculateBoardGridProperty()
-  //   return boardGridSize
-  // }
 }

@@ -64,16 +64,16 @@ export default class Game {
     // 初始化游戏玩家 默认人类玩家为 cross 棋子
     this.initGamePlayer(CHESS_TYPE_CROSS, CHESS_TYPE_CIRCLE)
     // 初始化游戏场景
-    this.initGameScene()
+    this.initGameScene(boardGridSize)
     // 添加场景监听器
     this.addGameSceneListener()
     // 添加棋盘监听器
     this.addBoardListener()
   }
 
-  initGameScene () {
+  initGameScene (boardGridSize) {
     // 初始化场景
-    this.gameScene.initScene(this.gameBoard)
+    this.gameScene.initScene(boardGridSize)
   }
 
   initGameCanvas (boardGridSize) {
@@ -88,9 +88,7 @@ export default class Game {
     const {
       chessSize,
       chessLineWidth
-    } = this.gameScene.calculateBoardGridChessProperty(
-      boardGridSize
-    )
+    } = this.gameScene.calculateBoardGridChessProperty(boardGridSize)
     this.gameBoard.initBoardGrids(
       boardGridSize,
       chessSize,
@@ -155,11 +153,17 @@ export default class Game {
     document.querySelector('#zoomout').addEventListener(
       'click',
       event => {
-        if (this.gameBoard.boardGrids[0][0].boardGridSize <= BOARD_GRID_MAX_SIZE) {
-          this.gameScene.resizeScene(
-            this.gameBoard,
-            BOARD_GRID_RESIZE_COUNT,
-            this.gameCanvas
+        // 获取旧的棋格大小
+        const oldBoardGridSize = this.gameBoard.boardGrids[0][0].boardGridSize
+        const { newBoardGridSize, newBoardSize } = this.getGameSize(
+          oldBoardGridSize,
+          BOARD_GRID_RESIZE_COUNT
+        )
+        if (oldBoardGridSize <= BOARD_GRID_MAX_SIZE) {
+          this.resizeGame(
+            newBoardGridSize,
+            newBoardSize,
+            BOARD_GRID_RESIZE_COUNT
           )
         }
       },
@@ -171,15 +175,44 @@ export default class Game {
     document.querySelector('#zoomin').addEventListener(
       'click',
       event => {
-        if (this.gameBoard.boardGrids[0][0].boardGridSize >= BOARD_GRID_MIN_SIZE) {
-          this.gameScene.resizeScene(
-            this.gameBoard,
-            -BOARD_GRID_RESIZE_COUNT,
-            this.gameCanvas
+        const oldBoardGridSize = this.gameBoard.boardGrids[0][0].boardGridSize
+        const { newBoardGridSize, newBoardSize } = this.getGameSize(
+          oldBoardGridSize,
+          -BOARD_GRID_RESIZE_COUNT
+        )
+        if (oldBoardGridSize >= BOARD_GRID_MIN_SIZE) {
+          this.resizeGame(
+            newBoardGridSize,
+            newBoardSize,
+            -BOARD_GRID_RESIZE_COUNT
           )
         }
       },
       false
+    )
+  }
+
+  getGameSize (oldBoardGridSize, resizeCount) {
+    // 计算新的棋格大小
+    const newBoardGridSize = oldBoardGridSize + resizeCount
+    // 重新获取棋盘大小
+    const newBoardSize = this.gameBoard.getBoardSize(newBoardGridSize)
+    return { newBoardGridSize, newBoardSize }
+  }
+
+  resizeGame (newBoardGridSize, newBoardSize, resizeCount) {
+    // 重设场景
+    this.gameScene.resizeScene(
+      newBoardGridSize,
+      newBoardSize,
+      resizeCount,
+      this.gameCanvas
+    )
+    // 重设棋格与棋子
+    this.gameScene.resizeBoardGrid(
+      this.gameBoard,
+      newBoardGridSize,
+      this.gameCanvas
     )
   }
 
