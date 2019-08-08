@@ -126,7 +126,7 @@ export default class Game {
         this.gameStatus = true
         this.gameBoard.resetBoardGrids(this.gameCanvas.context)
         this.initGamePlayer(CHESS_TYPE_CIRCLE, CHESS_TYPE_CROSS)
-        this.generateGameAIPlayerChess(this.getGameAIFistStep())
+        this.gameAIPlayer.generatePlayerChess(this.getGameAIFistStep(), this.gameCanvas.context)
       },
       false
     )
@@ -231,9 +231,9 @@ export default class Game {
           if (boardGrid.boardGridType !== BOARD_GRID_TYPE_DEFAULT) {
             return
           }
-          this.generateGameHumanPlayerChess(boardGrid)
+          this.gameHumanPlayer.generatePlayerChess(boardGrid, this.gameCanvas.context)
           // 如果未结束 调用AI类 获取AI计算后的落棋位置
-          this.generateGameAIPlayerChess(this.getGameAINextStep())
+          this.gameAIPlayer.generatePlayerChess(this.getGameAINextStep(), this.gameCanvas.context)
           return
         }
       }
@@ -244,35 +244,6 @@ export default class Game {
     // 调用AI模块获取下一步的棋格位置
     const { row, col } = this.gameAI.getNextStep(this.gameBoard)
     return this.gameBoard.boardGrids[row][col]
-  }
-
-  generateGameHumanPlayerChess (boardGrid) {
-    this.gameHumanPlayer.generatePlayerChess(boardGrid, this.gameCanvas.context)
-    this.checkGamePlayerStatus(this.gameHumanPlayer, boardGrid)
-  }
-
-  generateGameAIPlayerChess (boardGrid) {
-    this.gameAIPlayer.generatePlayerChess(boardGrid, this.gameCanvas.context)
-    this.checkGamePlayerStatus(this.gameAIPlayer, boardGrid)
-  }
-
-  checkGamePlayerStatus (gamePlayer, boardGrid) {
-    // 判断当前玩家是否胜利
-    // 判断当前玩家的棋子形成的棋型是否连成长连
-    checkChessShape(boardGrid)
-    // 如果当前玩家取得胜利 游戏结束
-    if (gamePlayer.playerStatus) {
-      this.gameStatus = false
-      if (gamePlayer.playerType === PLAYER_TYPE_HUMAN) {
-        // 如果是人类玩家
-        // 绘制 you win 文字
-      } else if (gamePlayer.playerType === PLAYER_TYPE_AI) {
-        // 如果AI玩家
-        // 绘制 you lose 文字
-      } else {
-        return null
-      }
-    }
   }
 
   calculateBoardGridSize () {
