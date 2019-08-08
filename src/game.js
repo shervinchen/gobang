@@ -13,7 +13,9 @@ import {
   BOARD_GRID_RESIZE_COUNT,
   BOARD_GRID_MAX_SIZE,
   PLAYER_TYPE_HUMAN,
-  PLAYER_TYPE_AI
+  PLAYER_TYPE_AI,
+  SCREEN_WIDTH_RANGE,
+  BOARD_GRID_DEFAULT_SIZE
 } from './constant'
 
 /**
@@ -56,7 +58,7 @@ export default class Game {
     // 初始化游戏状态
     this.gameStatus = true
     // 计算游戏初识棋格大小
-    const boardGridSize = this.gameScene.calculateBoardGridProperty()
+    const boardGridSize = this.calculateBoardGridSize()
     // 初始化游戏画布
     this.initGameCanvas(boardGridSize)
     // 初始化游戏棋盘
@@ -84,15 +86,8 @@ export default class Game {
   }
 
   initGameBoard (boardGridSize) {
-    // 计算场景各元素尺寸样式
-    const {
-      chessSize,
-      chessLineWidth
-    } = this.gameScene.calculateBoardGridChessProperty(boardGridSize)
     this.gameBoard.initBoardGrids(
       boardGridSize,
-      chessSize,
-      chessLineWidth,
       this.gameCanvas.context
     )
   }
@@ -160,6 +155,7 @@ export default class Game {
           BOARD_GRID_RESIZE_COUNT
         )
         if (oldBoardGridSize <= BOARD_GRID_MAX_SIZE) {
+          // 重设游戏场景
           this.resizeGame(
             newBoardGridSize,
             newBoardSize,
@@ -201,18 +197,14 @@ export default class Game {
   }
 
   resizeGame (newBoardGridSize, newBoardSize, resizeCount) {
-    // 重设场景
-    this.gameScene.resizeScene(
-      newBoardGridSize,
-      newBoardSize,
-      resizeCount,
-      this.gameCanvas
-    )
+    // 重新设置画布大小
+    this.gameCanvas.setCanvasSize(newBoardSize)
+    // 重新绘制场景元素
+    this.gameScene.drawSceneEle(newBoardGridSize, resizeCount)
     // 重设棋格与棋子
-    this.gameScene.resizeBoardGrid(
-      this.gameBoard,
+    this.gameBoard.resizeBoardGrids(
       newBoardGridSize,
-      this.gameCanvas
+      this.gameCanvas.context
     )
   }
 
@@ -281,6 +273,26 @@ export default class Game {
         return null
       }
     }
+  }
+
+  calculateBoardGridSize () {
+    // 计算游戏棋格相关属性
+    let boardGridSize = BOARD_GRID_DEFAULT_SIZE
+    // 根据当前屏幕宽度来动态适配棋格大小
+    const clientWidth = document.body.clientWidth
+    const sizes = [
+      BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT,
+      BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT,
+      BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT * 2,
+      BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT * 3,
+      BOARD_GRID_DEFAULT_SIZE - BOARD_GRID_RESIZE_COUNT * 4
+    ]
+    for (let i = 0; i < sizes.length; i++) {
+      if (clientWidth < SCREEN_WIDTH_RANGE[i]) {
+        boardGridSize = sizes[i]
+      }
+    }
+    return boardGridSize
   }
 
   startGame () {}
