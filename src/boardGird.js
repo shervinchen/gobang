@@ -1,5 +1,5 @@
 import { drawRadiusRect, window2Canvas } from './util'
-import { BOARD_GRID_COLOR } from './constant'
+import { BOARD_GRID_COLOR, BOARD_GRID_TYPE_DEFAULT } from './constant'
 
 /**
  * 棋格类
@@ -55,9 +55,8 @@ export default class BoardGrid {
     this.drawBoardGrid(ctx)
   }
 
-  redrawBoardGridChess (chessSize, chessLineWidth, ctx) {
-    if (this.boardGridChess !== -1) {
-      this.setBoardGridChessProperty(chessSize, chessLineWidth)
+  redrawBoardGridChess (ctx) {
+    if (this.boardGridType !== BOARD_GRID_TYPE_DEFAULT) {
       this.drawBoardGridChess(ctx)
     }
   }

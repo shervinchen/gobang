@@ -85,11 +85,11 @@ export default class Board {
           row * (newBoardGridSize + BOARD_GRIDS_GAP),
           col * (newBoardGridSize + BOARD_GRIDS_GAP)
         )
+        // 重新设置棋子属性
+        boardGrid.setBoardGridChessProperty(chessSize, chessLineWidth)
         // 重新绘制棋格与棋子
         boardGrid.redrawBoardGrid(ctx)
         boardGrid.redrawBoardGridChess(
-          chessSize,
-          chessLineWidth,
           ctx
         )
       }

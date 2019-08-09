@@ -3,8 +3,7 @@ import {
   CHESS_CIRCLE_COLOR,
   CHESS_CROSS_COLOR,
   CHESS_CROSS_LINECAP,
-  CHESS_TYPE_CROSS,
-  CHESS_TYPE_CIRCLE
+  DRAW_CHESS_FUNC,
 } from './constant'
 
 /**
@@ -37,17 +36,10 @@ export default class Chess {
   }
 
   drawChess (boardGirdX, boardGridY, boardGridSize, ctx) {
-    if (this.chessType === CHESS_TYPE_CROSS) {
-      this.drawCrossChess(boardGirdX, boardGridY, boardGridSize, ctx)
-    } else if (this.chessType === CHESS_TYPE_CIRCLE) {
-      this.drawCircleChess(boardGirdX, boardGridY, boardGridSize, ctx)
-    } else {
-      return null
-    }
-    // console.log(boardGirdX, boardGridY, this.chessType, this.chessSize)
+    this[DRAW_CHESS_FUNC[this.chessType]](boardGirdX, boardGridY, boardGridSize, ctx)
   }
 
-  drawCircleChess (boardGirdX, boardGridY, boardGridSize, ctx) {
+  [DRAW_CHESS_FUNC.CIRCLE] (boardGirdX, boardGridY, boardGridSize, ctx) {
     const x = boardGirdX + boardGridSize / 2
     const y = boardGridY + boardGridSize / 2
     drawCircle(x, y, this.chessSize / 2, ctx)
@@ -56,7 +48,7 @@ export default class Chess {
     ctx.stroke()
   }
 
-  drawCrossChess (boardGirdX, boardGridY, boardGridSize, ctx) {
+  [DRAW_CHESS_FUNC.CROSS] (boardGirdX, boardGridY, boardGridSize, ctx) {
     const x = boardGirdX + boardGridSize / 2
     const y = boardGridY + boardGridSize / 2
     drawCross(
