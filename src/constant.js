@@ -8,7 +8,7 @@ const BOARD_GRIDS_COUNT = 15
 const BOARD_GRIDS_GAP = 1
 
 // 棋格类型
-const BOARD_GRID_TYPE_DEFAULT = 'NONE'
+const BOARD_GRID_TYPE_DEFAULT = 0
 const BOARD_GRID_TYPE_CIRCLE = 'CIRCLE'
 const BOARD_GRID_TYPE_CROSS = 'CROSS'
 
@@ -20,10 +20,10 @@ const PLAYER_TYPE_AI = 0
 const BOARD_GRID_RADIUS = 4
 
 // cross类型的棋子（先手）
-const CHESS_TYPE_CROSS = 'CROSS'
+const CHESS_TYPE_CROSS = 1
 
 // circle类型的棋子（后手）
-const CHESS_TYPE_CIRCLE = 'CIRCLE'
+const CHESS_TYPE_CIRCLE = 2
 
 // 绘制棋子的函数名
 const DRAW_CHESS_FUNC = {

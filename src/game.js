@@ -231,9 +231,9 @@ export default class Game {
           if (boardGrid.boardGridType !== BOARD_GRID_TYPE_DEFAULT) {
             return
           }
-          this.gameHumanPlayer.generatePlayerChess(boardGrid, this.gameCanvas.context)
+          this.gameHumanPlayer.generatePlayerChess(this.gameBoard.boardGrids, { row, col }, this.gameCanvas.context)
           // 如果未结束 调用AI类 获取AI计算后的落棋位置
-          this.gameAIPlayer.generatePlayerChess(this.getGameAINextStep(), this.gameCanvas.context)
+          this.gameAIPlayer.generatePlayerChess(this.gameBoard.boardGrids, this.getGameAINextStep(), this.gameCanvas.context)
           return
         }
       }
@@ -243,7 +243,7 @@ export default class Game {
   getGameAINextStep () {
     // 调用AI模块获取下一步的棋格位置
     const { row, col } = this.gameAI.getNextStep(this.gameBoard)
-    return this.gameBoard.boardGrids[row][col]
+    return { row, col }
   }
 
   calculateBoardGridSize () {

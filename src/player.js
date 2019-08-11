@@ -1,4 +1,4 @@
-import { figureChessShape } from './ai/situation'
+import { calculateChessShape } from './ai/situation'
 
 /*
   玩家
@@ -18,15 +18,15 @@ export default class Player {
   //   this.playerChess = playerChess
   // }
 
-  generatePlayerChess (boardGird, ctx) {
-    boardGird.setBoardGridChess(this.playerChessType, ctx)
-    this.checkPlayerStatus(boardGird)
+  generatePlayerChess (boardGrids, position, ctx) {
+    boardGrids[position.row][position.col].setBoardGridChess(this.playerChessType, ctx)
+    this.checkPlayerStatus(boardGrids, position)
   }
 
-  checkPlayerStatus (boardGrid) {
+  checkPlayerStatus (boardGrids, position) {
     // 判断当前玩家是否胜利
     // 判断当前玩家的棋子形成的棋型是否连成长连
-    if (figureChessShape(this.playerChessType, boardGrid).LONG_ROW !== 0) {
+    if (calculateChessShape(this.playerChessType, boardGrids, position).LONG_ROW !== 0) {
       
     }
     // 如果当前玩家取得胜利 游戏结束

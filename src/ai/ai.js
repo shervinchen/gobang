@@ -12,7 +12,7 @@ export default class AI {
     // const { row, col } = this.getNextStep()
     let row = Math.round(Math.random() * 14)
     let col = Math.round(Math.random() * 14)
-    while (gameBoard.boardGrids[row][col].boardGridType !== 'NONE') {
+    while (gameBoard.boardGrids[row][col].boardGridType !== 0) {
       row = Math.round(Math.random() * 14)
       col = Math.round(Math.random() * 14)
     }

@@ -2,8 +2,8 @@
  * 窗口点击事件坐标值转换为画布上的坐标
  * 该方法不止是将canvas边界框的坐标从窗口坐标中减去
  * 而且在canvas元素大小与绘图元素大小不相符时，还对这两个坐标进行了缩放
- * 
- * 
+ *
+ *
  * @export
  * @param {Object} canvas 画布对象
  * @param {*} clientX event.clientX
@@ -24,14 +24,16 @@ export function window2Canvas (canvas, clientX, clientY) {
 
 export function getPixelRatio (context) {
   // 浏览器在渲染canvas之前存储画布信息的像素比
-  const devicePixelRatio = window.devicePixelRatio || 1;
-  const backingStoreRatio = context.backingStorePixelRatio ||
-      context.webkitBackingStorePixelRatio ||
-      context.mozBackingStorePixelRatio ||
-      context.msBackingStorePixelRatio ||
-      context.oBackingStorePixelRatio ||
-      context.backingStorePixelRatio || 1;
-  return devicePixelRatio / backingStoreRatio;
+  const devicePixelRatio = window.devicePixelRatio || 1
+  const backingStoreRatio =
+    context.backingStorePixelRatio ||
+    context.webkitBackingStorePixelRatio ||
+    context.mozBackingStorePixelRatio ||
+    context.msBackingStorePixelRatio ||
+    context.oBackingStorePixelRatio ||
+    context.backingStorePixelRatio ||
+    1
+  return devicePixelRatio / backingStoreRatio
 }
 
 /**
@@ -79,4 +81,34 @@ export function drawCross (x, y, size, width, color, cap, ctx) {
   ctx.lineCap = cap
   ctx.stroke()
   ctx.closePath()
+}
+
+/** Function that count occurrences of a substring in a string;
+ * @param {String} string               The string
+ * @param {String} subString            The sub string to search for
+ * @param {Boolean} [allowOverlapping]  Optional. (Default:false)
+ *
+ * @author Vitim.us https://gist.github.com/victornpb/7736865/edit
+ * @see Unit Test https://jsfiddle.net/Victornpb/5axuh96u/
+ * @see http://stackoverflow.com/questions/4009756/how-to-count-string-occurrence-in-string/7924240#7924240
+ */
+export function occurrences (string, subString, allowOverlapping) {
+  string += ''
+  subString += ''
+  if (subString.length <= 0) return string.length + 1
+
+  var n = 0
+
+  var pos = 0
+
+  var step = allowOverlapping ? 1 : subString.length
+
+  while (true) {
+    pos = string.indexOf(subString, pos)
+    if (pos >= 0) {
+      ++n
+      pos += step
+    } else break
+  }
+  return n
 }
