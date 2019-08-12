@@ -1,5 +1,5 @@
 import { BOARD_GRIDS_COUNT } from '../constant'
-import CHESS_SHAPES from './chessShape'
+import { CHESS_CROSS_SHAPES, CHESS_CIRCLE_SHAPES } from './chessShape'
 import { occurrences } from '../util'
 
 // export function checkChessShape (boardGird) {
@@ -43,12 +43,12 @@ export function calculateChessShape (chessType, boardGrids, position) {
       leftRightChessType += boardGrids[index][col].boardGridType
     }
   }
-  // console.log(leftRightChessType, CHESS_SHAPES)
-  if (leftRightChessType.indexOf(CHESS_SHAPES.FIVE) !== -1) {
+  // console.log(leftRightChessType, CHESS_CROSS_SHAPES)
+  if (leftRightChessType.indexOf(CHESS_CROSS_SHAPES.FIVE) !== -1) {
     chessShapeCount.FIVE += 1
   }
 
-  if (leftRightChessType.indexOf(CHESS_SHAPES.FOUR) !== -1) {
+  if (leftRightChessType.indexOf(CHESS_CROSS_SHAPES.FOUR) !== -1) {
     chessShapeCount.FOUR += 1
   }
 
@@ -72,10 +72,10 @@ function x (
   chessCount,
   chessType
 ) {
-  for (let index = 0; index < CHESS_SHAPES[CHESS_SHAPE].length; index++) {
+  for (let index = 0; index < CHESS_CROSS_SHAPES[CHESS_SHAPE].length; index++) {
     // 获取当前有多少个己方棋子
     const count = y(leftRightChessType, chessType)
-    const str = CHESS_SHAPES[CHESS_SHAPE][index]
+    const str = CHESS_CROSS_SHAPES[CHESS_SHAPE][index]
     if (leftRightChessType.indexOf(str) !== -1) {
       chessShapeCount[CHESS_SHAPE] += occurrences(leftRightChessType, str, true)
       if (str !== [...str].reverse().join('')) {
@@ -97,10 +97,10 @@ function x (
       continue
     }
     // if (
-    //   CHESS_SHAPES[CHESS_SHAPE][index] !==
-    //     [...CHESS_SHAPES[CHESS_SHAPE][index]].reverse().join('') &&
+    //   CHESS_CROSS_SHAPES[CHESS_SHAPE][index] !==
+    //     [...CHESS_CROSS_SHAPES[CHESS_SHAPE][index]].reverse().join('') &&
     //   leftRightChessType.indexOf(
-    //     [...CHESS_SHAPES[CHESS_SHAPE][index]].reverse().join('')
+    //     [...CHESS_CROSS_SHAPES[CHESS_SHAPE][index]].reverse().join('')
     //   ) !== -1
     // ) {
     //   chessShapeCount[CHESS_SHAPE] += 1
