@@ -7,7 +7,8 @@ export default {
   BLOCKED_ONE: 1,
   BLOCKED_TWO: 10,
   BLOCKED_THREE: 100,
-  BLOCKED_FOUR: 10000
+  BLOCKED_FOUR: 10000,
+  DOUBLE_BLOCKED_FOUR: 100000
 }
 
 // board_scores = [
