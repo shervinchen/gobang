@@ -1,4 +1,4 @@
-import { BOARD_GRIDS_COUNT } from '../constant'
+import { BOARD_GRIDS_COUNT, CHESS_SHAPE_SEARCH_RANGE } from '../constant'
 import { CHESS_CROSS_SHAPES, CHESS_CIRCLE_SHAPES } from './chessShape'
 import { occurrences } from '../util'
 
@@ -38,9 +38,9 @@ export function calculateSingleChessShape (chessType, boardGrids, position) {
   const { row, col } = position
   // 左右方向
   let leftRightChessShape = ''
-  for (let index = row - 4; index <= row + 4; index++) {
+  for (let index = row - (CHESS_SHAPE_SEARCH_RANGE - 1) / 2 ; index <= row + (CHESS_SHAPE_SEARCH_RANGE - 1) / 2; index++) {
     if (index < 0 || index > BOARD_GRIDS_COUNT - 1) {
-      continue
+      leftRightChessShape += 2
     } else {
       leftRightChessShape += boardGrids[index][col].boardGridType
     }
@@ -48,9 +48,9 @@ export function calculateSingleChessShape (chessType, boardGrids, position) {
 
   // 上下
   let upDownChessShape = ''
-  for (let index = col - 4; index <= col + 4; index++) {
+  for (let index = col - (CHESS_SHAPE_SEARCH_RANGE - 1) / 2; index <= col + (CHESS_SHAPE_SEARCH_RANGE - 1) / 2; index++) {
     if (index < 0 || index > BOARD_GRIDS_COUNT - 1) {
-      continue
+      upDownChessShape += 2
     } else {
       upDownChessShape += boardGrids[row][index].boardGridType
     }
@@ -58,34 +58,31 @@ export function calculateSingleChessShape (chessType, boardGrids, position) {
 
   // 左上右下
   let leftUpRightDownChessShape = ''
-  for (let i = row - 4; i <= row + 4; i++) {
-    for (let j = col - 4; j <= col + 4; j++) {
-      if (i < 0 || i > BOARD_GRIDS_COUNT - 1 || j < 0 || j > BOARD_GRIDS_COUNT - 1) {
-        continue
-      } else {
-        leftUpRightDownChessShape += boardGrids[i][j].boardGridType
-      }
+  for (let index = row - (CHESS_SHAPE_SEARCH_RANGE - 1) / 2; index <= row + (CHESS_SHAPE_SEARCH_RANGE - 1) / 2; index++) {
+    if (index < 0 || index > BOARD_GRIDS_COUNT - 1) {
+      leftUpRightDownChessShape += 2
+    } else {
+      leftUpRightDownChessShape += boardGrids[index][index].boardGridType
     }
   }
 
   // 右上左下
   let rightUpLeftDownChessShape = ''
-  for (let i = row + 4; i >= row - 4; i--) {
-    for (let j = col - 4; j <= col + 4; j++) {
-      if (i < 0 || i > BOARD_GRIDS_COUNT - 1 || j < 0 || j > BOARD_GRIDS_COUNT - 1) {
-        continue
-      } else {
-        rightUpLeftDownChessShape += boardGrids[i][j].boardGridType
-      }
+  for (let index = row - (CHESS_SHAPE_SEARCH_RANGE - 1) / 2; index <= row + (CHESS_SHAPE_SEARCH_RANGE - 1) / 2; index++) {
+    if (index < 0 || index > BOARD_GRIDS_COUNT - 1) {
+      rightUpLeftDownChessShape += 2
+    } else {
+      rightUpLeftDownChessShape += boardGrids[index][row + col - index].boardGridType
     }
   }
   
   // console.log(leftRightChessShape, CHESS_CROSS_SHAPES)
-  getSingleChessShapeCount(chessShapeCount, leftRightChessShape)
-  getSingleChessShapeCount(chessShapeCount, upDownChessShape)
-  getSingleChessShapeCount(chessShapeCount, leftUpRightDownChessShape)
-  getSingleChessShapeCount(chessShapeCount, rightUpLeftDownChessShape)
-  console.log(chessShapeCount)
+  getSingleChessShapeCount(chessShapeCount, leftRightChessShape, chessType)
+  getSingleChessShapeCount(chessShapeCount, upDownChessShape, chessType)
+  getSingleChessShapeCount(chessShapeCount, leftUpRightDownChessShape, chessType)
+  getSingleChessShapeCount(chessShapeCount, rightUpLeftDownChessShape, chessType)
+  // console.log(chessShapeCount)
+  console.log(leftRightChessShape, upDownChessShape, leftUpRightDownChessShape, rightUpLeftDownChessShape)
 
   return chessShapeCount
 }
@@ -94,40 +91,50 @@ function getSingleChessShape () {
   
 }
 
-function getSingleChessShapeCount (chessShapeCount, chessShape) {
+function getSingleChessShapeCount (chessShapeCount, chessShape, chessType) {
   // 连五
   if (chessShape.indexOf(CHESS_CROSS_SHAPES.FIVE) !== -1) {
     chessShapeCount.FIVE += 1
+    return
   }
   if (chessShape.indexOf(CHESS_CROSS_SHAPES.FOUR) !== -1) {
     // 活四
     chessShapeCount.FOUR += 1
+    return
   }
   if (x(chessShape, chessShapeCount, 'DOUBLE_BLOCKED_FOUR', chessType)) {
     // 双冲四
     chessShapeCount.DOUBLE_BLOCKED_FOUR += 1
+    return
   }
   if (x(chessShape, chessShapeCount, 'BLOCKED_FOUR', chessType)) {
     // 冲四
     chessShapeCount.BLOCKED_FOUR += 1
+    return
   }
   if (x(chessShape, chessShapeCount, 'THREE', chessType)) {
     chessShapeCount.THREE += 1
+    return
   }
   if (x(chessShape, chessShapeCount, 'BLOCKED_THREE', chessType)) {
     chessShapeCount.BLOCKED_THREE += 1
+    return
   }
   if (x(chessShape, chessShapeCount, 'TWO', chessType)) {
     chessShapeCount.TWO += 1
+    return
   }
   if (x(chessShape, chessShapeCount, 'BLOCKED_TWO', chessType)) {
     chessShapeCount.BLOCKED_TWO += 1
+    return
   }
   if (x(chessShape, chessShapeCount, 'ONE', chessType)) {
     chessShapeCount.ONE += 1
+    return
   }
   if (x(chessShape, chessShapeCount, 'BLOCKED_ONE', chessType)) {
     chessShapeCount.BLOCKED_ONE += 1
+    return
   }
 }
 

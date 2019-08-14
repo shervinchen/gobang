@@ -1,4 +1,4 @@
-import { calculateChessShape } from './ai/situation'
+import { calculateSingleChessShape } from './ai/situation'
 
 /*
   玩家
@@ -26,7 +26,7 @@ export default class Player {
   checkPlayerStatus (boardGrids, position) {
     // 判断当前玩家是否胜利
     // 判断当前玩家的棋子形成的棋型是否连成长连
-    if (calculateChessShape(this.playerChessType, boardGrids, position).LONG_ROW !== 0) {
+    if (calculateSingleChessShape(this.playerChessType, boardGrids, position).FIVE !== 0) {
       
     }
     // 如果当前玩家取得胜利 游戏结束
