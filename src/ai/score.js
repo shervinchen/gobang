@@ -1,4 +1,4 @@
-export default {
+const CHESS_SHAPES_SCORE = {
   ONE: 10,
   TWO: 100,
   THREE: 1000,
@@ -10,6 +10,8 @@ export default {
   BLOCKED_FOUR: 10000,
   DOUBLE_BLOCKED_FOUR: 100000
 }
+
+export { CHESS_SHAPES_SCORE }
 
 // board_scores = [
 //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
