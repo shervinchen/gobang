@@ -23,7 +23,7 @@ function getSingleChessShape (boardGrids, position, barrier) {
   // 得到当前位置
   const { row, col } = position
   // 保存四个方向的棋型
-  let singleChessShapes = ['', '', '', '']
+  const singleChessShapes = ['', '', '', '']
   for (let index = row - (CHESS_SHAPE_SEARCH_RANGE - 1) / 2; index <= row + (CHESS_SHAPE_SEARCH_RANGE - 1) / 2; index++) {
     if (index < 0 || index > BOARD_GRIDS_COUNT - 1) {
       singleChessShapes[0] += barrier
@@ -55,7 +55,7 @@ function getSingleChessShape (boardGrids, position, barrier) {
       singleChessShapes[3] += boardGrids[index][row + col - index].boardGridType
     }
   }
-  console.log(singleChessShapes)
+  // console.log(singleChessShapes)
 
   return singleChessShapes
 }

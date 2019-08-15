@@ -9,9 +9,9 @@ import { CHESS_SHAPES_SCORE } from './score'
 export function evaluateSingleChessShapes (chessType, boardGrids, position) {
   const chessShapesCount = calculateSingleChessShapes(chessType, boardGrids, position)
   let singleChessShapesScore = 0
-  console.log(chessShapesCount)
+  // console.log('---------------', chessShapesCount)
   for (const chessShapeName in chessShapesCount) {
-    console.log('---------', chessShapesCount[chessShapeName])
+    // console.log('---------', chessShapesCount[chessShapeName])
     if (chessShapesCount.hasOwnProperty(chessShapeName)) {
       singleChessShapesScore = singleChessShapesScore + chessShapesCount[chessShapeName] * CHESS_SHAPES_SCORE[chessShapeName]
     }
