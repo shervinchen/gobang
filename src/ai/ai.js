@@ -2,7 +2,7 @@ import {
   BOARD_GRIDS_COUNT,
 } from '../constant'
 
-import { evaluateSingleChessShapes } from './evaluate'
+import { evaluateSingleChessShapes, evaluateAllChessShapes } from './evaluate'
 
 /*
   AI
@@ -25,32 +25,66 @@ export default class AI {
     // }
     // return {row, col}
 
+    // const board_scores = [
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    //   [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+    //   [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
+    //   [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
+    //   [0, 1, 2, 3, 4, 4, 4, 4, 4, 4, 4, 3, 2, 1, 0],
+    //   [0, 1, 2, 3, 4, 4, 4, 4, 4, 4, 4, 3, 2, 1, 0],
+    //   [0, 1, 2, 3, 4, 5, 6, 6, 6, 5, 4, 3, 2, 1, 0],
+    //   [0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1, 0],
+    //   [0, 1, 2, 3, 4, 5, 6, 6, 6, 5, 4, 3, 2, 1, 0],
+    //   [0, 1, 2, 3, 4, 5, 6, 6, 6, 5, 4, 3, 2, 1, 0],
+    //   [0, 1, 2, 3, 4, 5, 6, 6, 6, 5, 4, 3, 2, 1, 0],
+    //   [0, 1, 2, 3, 4, 5, 6, 6, 6, 5, 4, 3, 2, 1, 0],
+    //   [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
+    //   [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    // ]
+    // let arr = []
+    // for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
+    //   for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
+    //     // const old = gameBoard.boardGrids[row][col].boardGridType
+    //     if (gameBoard.boardGrids[row][col].boardGridType === 0) {
+    //       gameBoard.boardGrids[row][col].boardGridType = 2
+    //       // console.log(evaluateSingleChessShapes(2, gameBoard.boardGrids, {row, col}))
+    //       arr.push({ score: evaluateSingleChessShapes(2, gameBoard.boardGrids, { row, col }) + board_scores[row][col], row, col })
+    //       gameBoard.boardGrids[row][col].boardGridType = 0
+    //     } else {
+    //       arr.push(0)
+    //     }
+    //   }
+    // }
+    // arr.sort((a, b) => {
+    //   return b.score - a.score
+    // })
+    // console.log(arr)
+    // return { row: arr[0].row, col: arr[0].col }
+
     const board_scores = [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
       [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
-      [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
+      [0, 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 1, 0],
       [0, 1, 2, 3, 4, 4, 4, 4, 4, 4, 4, 3, 2, 1, 0],
-      [0, 1, 2, 3, 4, 4, 4, 4, 4, 4, 4, 3, 2, 1, 0],
+      [0, 1, 2, 3, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1, 0],
       [0, 1, 2, 3, 4, 5, 6, 6, 6, 5, 4, 3, 2, 1, 0],
       [0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1, 0],
       [0, 1, 2, 3, 4, 5, 6, 6, 6, 5, 4, 3, 2, 1, 0],
-      [0, 1, 2, 3, 4, 5, 6, 6, 6, 5, 4, 3, 2, 1, 0],
-      [0, 1, 2, 3, 4, 5, 6, 6, 6, 5, 4, 3, 2, 1, 0],
-      [0, 1, 2, 3, 4, 5, 6, 6, 6, 5, 4, 3, 2, 1, 0],
+      [0, 1, 2, 3, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1, 0],
+      [0, 1, 2, 3, 4, 4, 4, 4, 4, 4, 4, 3, 2, 1, 0],
+      [0, 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 1, 0],
       [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
       [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ]
-
     let arr = []
     for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
       for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
-        // const old = gameBoard.boardGrids[row][col].boardGridType
         if (gameBoard.boardGrids[row][col].boardGridType === 0) {
           gameBoard.boardGrids[row][col].boardGridType = 2
-          // console.log(evaluateSingleChessShapes(2, gameBoard.boardGrids, {row, col}))
-          arr.push({ score: evaluateSingleChessShapes(2, gameBoard.boardGrids, { row, col }) + board_scores[row][col], row, col })
+          arr.push({ score: evaluateAllChessShapes(2, gameBoard.boardGrids) + board_scores[row][col], row, col })
           gameBoard.boardGrids[row][col].boardGridType = 0
         } else {
           arr.push(0)

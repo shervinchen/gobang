@@ -12,14 +12,14 @@ export function calculateSingleChessShapes (chessType, boardGrids, position) {
   // 获取己方静态棋型表
   const chessShapesTable = chessType === CHESS_TYPE_CROSS ? CHESS_CROSS_SHAPES : CHESS_CIRCLE_SHAPES
   // 获取当前棋子四个方向的棋型
-  const singleChessShapes = getSingleChessShape(boardGrids, position, barrier)
+  const singleChessShapes = getSingleChessShapes(boardGrids, position, barrier)
 
   // console.log('--------', getSingleChessShapesCount(singleChessShapes, chessShapesTable))
 
   return getSingleChessShapesCount(singleChessShapes, chessShapesTable)
 }
 
-function getSingleChessShape (boardGrids, position, barrier) {
+function getSingleChessShapes (boardGrids, position, barrier) {
   // 得到当前位置
   const { row, col } = position
   // 保存四个方向的棋型
@@ -88,7 +88,7 @@ function getSingleChessShapesCount (singleChessShapes, chessShapesTable) {
   singleChessShapes.forEach((singleChessShape) => {
     for (const chessShapeName in chessShapesCount) {
       if (chessShapesCount.hasOwnProperty(chessShapeName)) {
-        if (checkSingleChessShape(singleChessShape, chessShapeName, chessShapesTable)) {
+        if (checkChessShape(singleChessShape, chessShapeName, chessShapesTable)) {
           chessShapesCount[chessShapeName] += 1
           break
         }
@@ -143,9 +143,11 @@ function getSingleChessShapesCount (singleChessShapes, chessShapesTable) {
     // }
 }
 
-function checkSingleChessShape (singleChessShape, chessShapeName, chessShapesTable) {
+function checkChessShape (chessShape, chessShapeName, chessShapesTable) {
+  // 棋型判断函数
+  // 同级别棋型只要匹配成功其中一个，跳过其他棋型的匹配
   for (let index = 0; index < chessShapesTable[chessShapeName].length; index++) {
-    if (singleChessShape.indexOf(chessShapesTable[chessShapeName][index]) !== -1) {
+    if (chessShape.indexOf(chessShapesTable[chessShapeName][index]) !== -1) {
       // chessShapeCount[CHESS_SHAPE] += 1
       return true
     }
@@ -197,9 +199,80 @@ function y (leftRightChessShape, chessType) {
   return count
 }
 
-export function calculateAllChessShapes (boardGirds) {
+export function calculateAllChessShapes (chessType, boardGirds) {
+  const aiChessShapesTable = chessType === CHESS_TYPE_CROSS ? CHESS_CROSS_SHAPES : CHESS_CIRCLE_SHAPES
+  const humanChessShapesTable = chessType === CHESS_TYPE_CROSS ? CHESS_CIRCLE_SHAPES : CHESS_CROSS_SHAPES
+  const allChessShapes = getAllChessShapes(boardGirds)
+
+  // console.log(allChessShapes)
+
+  return getAllChessShapesCount(allChessShapes, humanChessShapesTable, aiChessShapesTable)
+}
+
+function getAllChessShapes(boardGrids) {
+  // 分别判断当前棋局下人类与AI棋子形成的棋型数量
+
+  // 保存所有路数的棋型
+  const allChessShapes = []
+
+  // 扫描所有列
+  for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
+    let colChessShape = ''
+    for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
+      colChessShape += boardGrids[row][col].boardGridType
+    }
+    allChessShapes.push(colChessShape)
+  }
+
+  // 扫描所有行
+  for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
+    let rowChessShape = ''
+    for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
+      rowChessShape += boardGrids[row][col].boardGridType
+    }
+    allChessShapes.push(rowChessShape)
+  }
+
+  // 扫描所有左对角线
+  for (let index = 0; index <= 2 * (BOARD_GRIDS_COUNT - 1); index++) {
+    let leftDiagonalChessShape = ''
+    for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
+      for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
+        if (row + col === index) {
+          leftDiagonalChessShape += boardGrids[row][col].boardGridType
+          break
+        }
+      }
+    }
+    allChessShapes.push(leftDiagonalChessShape)
+  }
+
+  // 扫描所有右对角线
+  for (let index = 1 - BOARD_GRIDS_COUNT; index < BOARD_GRIDS_COUNT; index++) {
+    let rightDiagonalChessShape = ''
+    for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
+      for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
+        if (row - col === index) {
+          rightDiagonalChessShape += boardGrids[row][col].boardGridType
+          break
+        }
+      }
+    }
+    allChessShapes.push(rightDiagonalChessShape)
+  }
+
+  return allChessShapes
+}
+
+// 29 + 29 + 15 + 15
+// 0,0 1,0 2,0 3,0
+// 0,1 1,1 2,1 3,1
+// 0,2 1,2 2,2 3,2
+// 0,3 1,3 2,3 3,3
+
+function getAllChessShapesCount (allChessShapes, humanChessShapesTable, aiChessShapesTable) {
   // 当前棋局双方所有棋型数量
-  let chessShapes = {
+  let chessShapesCount = {
     // 长连：连成五个或以上已方棋子
     // LONG_ROW: {
     //   HUMAN: 0,
@@ -251,12 +324,19 @@ export function calculateAllChessShapes (boardGirds) {
       AI: 0
     }
   }
-  // 分别判断当前棋局下人类与AI棋子形成的棋型数量
-  for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
-    for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
-      // this.boardGrids[row][col]
+  
+  allChessShapes.forEach((chessShape) => {
+    for (const chessShapeName in chessShapesCount) {
+      if (chessShapesCount.hasOwnProperty(chessShapeName)) {
+        if (checkChessShape(chessShape, chessShapeName, humanChessShapesTable)) {
+          chessShapesCount[chessShapeName].HUMAN += 1
+        }
+        if (checkChessShape(chessShape, chessShapeName, aiChessShapesTable)) {
+          chessShapesCount[chessShapeName].AI += 1
+        }
+      }
     }
-  }
-
-  return chessShapes
+  })
+  // console.log(chessShapesCount)
+  return chessShapesCount
 }
