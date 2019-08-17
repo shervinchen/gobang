@@ -4,7 +4,7 @@ import {
 
 import { evaluateSingleChessShapes, evaluateAllChessShapes } from './evaluate'
 
-import { minimax } from './search'
+import { minimax, generateLegalMoves } from './search'
 
 /*
   AI
@@ -64,6 +64,7 @@ export default class AI {
     // console.log(arr)
     // return { row: arr[0].row, col: arr[0].col }
 
+    // console.log(getLegalMoves(gameBoard.boardGrids))
     // const board_scores = [
     //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     //   [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
@@ -89,9 +90,22 @@ export default class AI {
     //       arr.push({ score: evaluateAllChessShapes(2, gameBoard.boardGrids) + board_scores[row][col], row, col })
     //       gameBoard.boardGrids[row][col].boardGridType = 0
     //     } else {
-    //       arr.push(0)
+    //       arr.push({ score: -1, row, col })
     //     }
     //   }
+    // }
+    // arr.sort((a, b) => {
+    //   return b.score - a.score
+    // })
+    // // console.log(arr)
+    // return { row: arr[0].row, col: arr[0].col }
+
+    // let arr = []
+    // const legalMoves = generateLegalMoves(gameBoard.boardGrids)
+    // for (let index = 0; index < legalMoves.length; index++) {
+    //   gameBoard.boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 2
+    //   arr.push({ score: minimax(1, 2, gameBoard.boardGrids), row: legalMoves[index].row, col: legalMoves[index].col })
+    //   gameBoard.boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
     // }
     // arr.sort((a, b) => {
     //   return b.score - a.score
@@ -99,22 +113,7 @@ export default class AI {
     // console.log(arr)
     // return { row: arr[0].row, col: arr[0].col }
 
-    let arr = []
-    for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
-      for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
-        if (gameBoard.boardGrids[row][col].boardGridType === 0) {
-          gameBoard.boardGrids[row][col].boardGridType = 2
-          arr.push({ score: minimax(1, gameBoard.boardGrids, 2, 2), row, col })
-          gameBoard.boardGrids[row][col].boardGridType = 0
-        } else {
-          arr.push(0)
-        }
-      }
-    }
-    arr.sort((a, b) => {
-      return b.score - a.score
-    })
-    console.log(arr)
-    return { row: arr[0].row, col: arr[0].col }
+    const { row, col } = minimax(1, 2, gameBoard.boardGrids)
+    return { row, col }
   }
 }

@@ -38,6 +38,7 @@ export function evaluateAllChessShapes (chessType, boardGrids) {
     chessShapesCount[chessShapeName].HUMAN *
     CHESS_SHAPES_SCORE[chessShapeName]
     if (chessShapesCount.hasOwnProperty(chessShapeName)) {
+      console.log('---------------', aiScore, humanScore)
       allChessShapesScore = allChessShapesScore + (aiScore - humanScore)
     }
   }
