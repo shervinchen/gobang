@@ -37,69 +37,78 @@ import { BOARD_GRIDS_COUNT, INFINITY } from '../constant'
 //   return f
 // }
 
-export function minimax (depth, aiChessType, boardGrids) {
-  if (aiChessType === 2) {
-    return max(depth, boardGrids)
+export function minimax (depth, chessType, boardGrids) {
+  if (chessType === 1) {
+    return max(depth, boardGrids, chessType, chessType)
   } else {
-    return min(depth, boardGrids)
+    return min(depth, boardGrids, chessType, 3 - chessType)
   }
 }
 
-function max (depth, boardGrids) {
+function max (depth, boardGrids, chessType, firstChessType) {
   let best = -INFINITY
   if (depth <= 0) {
-    return evaluateAllChessShapes(2, boardGrids)
+    return { val: evaluateAllChessShapes(firstChessType, boardGrids) }
   }
   let row = -1
   let col = -1
   const legalMoves = generateLegalMoves(boardGrids)
   for (let index = 0; index < legalMoves.length; index++) {
-    boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 2
-    const val = min(depth - 1, boardGrids)
+    boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = chessType
+    const val = min(depth - 1, boardGrids, 3 - chessType, firstChessType).val
     boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
-    console.log(val, legalMoves[index].row, legalMoves[index].col)
+    console.log('-----------max------------', val, legalMoves[index].row, legalMoves[index].col)
     if (val > best) {
       best = val
       row = legalMoves[index].row
       col = legalMoves[index].col
     }
   }
-  // while (MovesLeft()) {
-  //   MakeNextMove()
-  //   val = Min(depth - 1)
-  //   UnmakeMove()
-  //   if (val > best) {
-  //     best = val
-  //   }
-  // }
   return { val: best, row, col }
 }
 
-function min (depth, boardGrids) {
+function min (depth, boardGrids, chessType, firstChessType) {
   let best = INFINITY // 注意这里不同于“最大”算法
   if (depth <= 0) {
-    return evaluateAllChessShapes(2, boardGrids)
+    return { val: evaluateAllChessShapes(firstChessType, boardGrids) }
   }
+  let row = -1
+  let col = -1
   const legalMoves = generateLegalMoves(boardGrids)
   for (let index = 0; index < legalMoves.length; index++) {
-    boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 1
-    const val = max(depth - 1, boardGrids).val
+    boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = chessType
+    const val = max(depth - 1, boardGrids, 3 - chessType, firstChessType).val
     boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
+    // console.log('-----------min------------', val, legalMoves[index].row, legalMoves[index].col)
     if (val < best) {
       best = val
+      row = legalMoves[index].row
+      col = legalMoves[index].col
     }
   }
-  // generateLegalMoves()
-  // while (MovesLeft()) {
-  //   MakeNextMove()
-  //   val = Max(depth - 1)
-  //   UnmakeMove()
-  //   if (val < best) {
-  //     // 注意这里不同于“最大”算法
-  //     best = val
-  //   }
-  // }
-  return best
+  return { val: best, row, col }
+}
+
+export function negamax (depth, chessType, boardGrids) {
+  let best = -INFINITY
+  if (depth <= 0) {
+    return { val: evaluateAllChessShapes(chessType, boardGrids) }
+  }
+  let row = -1
+  let col = -1
+
+  const legalMoves = generateLegalMoves(boardGrids)
+  for (let index = 0; index < legalMoves.length; index++) {
+    boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = chessType
+    const val = -negamax(depth - 1, 3 - chessType, boardGrids).val
+    boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
+    if (val > best) {
+      best = val
+      row = legalMoves[index].row
+      col = legalMoves[index].col
+    }
+  }
+  return { val: best, row, col }
 }
 
 export function generateLegalMoves (boardGrids) {

@@ -126,7 +126,7 @@ export default class Game {
         this.gameStatus = true
         this.gameBoard.resetBoardGrids(this.gameCanvas.context)
         this.initGamePlayer(CHESS_TYPE_CIRCLE, CHESS_TYPE_CROSS)
-        this.gameAIPlayer.generatePlayerChess(this.getGameAIFistStep(), this.gameCanvas.context)
+        this.gameAIPlayer.generatePlayerChess(this.gameBoard.boardGrids, this.getGameAIFistStep(), this.gameCanvas.context)
       },
       false
     )
@@ -136,7 +136,8 @@ export default class Game {
     // AI玩家先手，默认让AI落子到中心位置 （以后换成花月、浦月等固定开局，从开局库读取）
     const row = (BOARD_GRIDS_COUNT - 1) / 2
     const col = (BOARD_GRIDS_COUNT - 1) / 2
-    return this.gameBoard.boardGrids[row][col]
+    // return this.gameBoard.boardGrids[row][col]
+    return { row, col }
   }
 
   addGameSceneResizeListener () {
@@ -242,7 +243,7 @@ export default class Game {
 
   getGameAINextStep () {
     // 调用AI模块获取下一步的棋格位置
-    const { row, col } = this.gameAI.getNextStep(this.gameBoard)
+    const { row, col } = this.gameAI.getNextStep(this.gameAIPlayer.playerChessType, this.gameBoard)
     return { row, col }
   }
 

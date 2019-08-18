@@ -4,18 +4,16 @@ import {
 
 import { evaluateSingleChessShapes, evaluateAllChessShapes } from './evaluate'
 
-import { minimax, generateLegalMoves } from './search'
+import { negamax, minimax, generateLegalMoves } from './search'
 
 /*
   AI
   结合搜索、评估后的结果，得出下回合棋子位置
 */
 export default class AI {
-  constructor () {
-    
-  }
+  constructor () {}
 
-  getNextStep (gameBoard) {
+  getNextStep (chessType, gameBoard) {
     // return {row: , col: }
     // const { row, col } = this.getNextStep()
 
@@ -65,23 +63,23 @@ export default class AI {
     // return { row: arr[0].row, col: arr[0].col }
 
     // console.log(getLegalMoves(gameBoard.boardGrids))
-    // const board_scores = [
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    //   [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-    //   [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
-    //   [0, 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 1, 0],
-    //   [0, 1, 2, 3, 4, 4, 4, 4, 4, 4, 4, 3, 2, 1, 0],
-    //   [0, 1, 2, 3, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1, 0],
-    //   [0, 1, 2, 3, 4, 5, 6, 6, 6, 5, 4, 3, 2, 1, 0],
-    //   [0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1, 0],
-    //   [0, 1, 2, 3, 4, 5, 6, 6, 6, 5, 4, 3, 2, 1, 0],
-    //   [0, 1, 2, 3, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1, 0],
-    //   [0, 1, 2, 3, 4, 4, 4, 4, 4, 4, 4, 3, 2, 1, 0],
-    //   [0, 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 1, 0],
-    //   [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
-    //   [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    // ]
+    const board_scores = [
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+      [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
+      [0, 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 1, 0],
+      [0, 1, 2, 3, 4, 4, 4, 4, 4, 4, 4, 3, 2, 1, 0],
+      [0, 1, 2, 3, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1, 0],
+      [0, 1, 2, 3, 4, 5, 6, 6, 6, 5, 4, 3, 2, 1, 0],
+      [0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1, 0],
+      [0, 1, 2, 3, 4, 5, 6, 6, 6, 5, 4, 3, 2, 1, 0],
+      [0, 1, 2, 3, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1, 0],
+      [0, 1, 2, 3, 4, 4, 4, 4, 4, 4, 4, 3, 2, 1, 0],
+      [0, 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 1, 0],
+      [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
+      [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ]
     // let arr = []
     // for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
     //   for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
@@ -91,13 +89,14 @@ export default class AI {
     //       gameBoard.boardGrids[row][col].boardGridType = 0
     //     } else {
     //       arr.push({ score: -1, row, col })
+    //       // arr.push(0)
     //     }
     //   }
     // }
     // arr.sort((a, b) => {
     //   return b.score - a.score
     // })
-    // // console.log(arr)
+    // console.log(arr)
     // return { row: arr[0].row, col: arr[0].col }
 
     // let arr = []
@@ -113,7 +112,8 @@ export default class AI {
     // console.log(arr)
     // return { row: arr[0].row, col: arr[0].col }
 
-    const { row, col } = minimax(1, 2, gameBoard.boardGrids)
+    // const { row, col } = minimax(1, chessType, gameBoard.boardGrids)
+    const { row, col } = negamax(2, chessType, gameBoard.boardGrids)
     return { row, col }
   }
 }
