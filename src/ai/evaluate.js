@@ -3,6 +3,7 @@ import {
   calculateAllChessShapes
 } from './situation'
 import { CHESS_SHAPES_SCORE } from './score'
+import { BOARD_SCORES } from '../constant'
 
 /*
   局面评估
@@ -25,6 +26,7 @@ export function evaluateSingleChessShapes (chessType, boardGrids, position) {
         chessShapesCount[chessShapeName] * CHESS_SHAPES_SCORE[chessShapeName]
     }
   }
+  // return singleChessShapesScore + BOARD_SCORES[position.row][position.col]
   return singleChessShapesScore
 }
 

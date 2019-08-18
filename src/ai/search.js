@@ -1,4 +1,4 @@
-import { evaluateAllChessShapes } from './evaluate'
+import { evaluateAllChessShapes, evaluateSingleChessShapes } from './evaluate'
 
 import { BOARD_GRIDS_COUNT, INFINITY } from '../constant'
 
@@ -54,10 +54,17 @@ function max (depth, boardGrids, chessType, firstChessType) {
   let col = -1
   const legalMoves = generateLegalMoves(boardGrids)
   for (let index = 0; index < legalMoves.length; index++) {
-    boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = chessType
+    boardGrids[legalMoves[index].row][
+      legalMoves[index].col
+    ].boardGridType = chessType
     const val = min(depth - 1, boardGrids, 3 - chessType, firstChessType).val
     boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
-    console.log('-----------max------------', val, legalMoves[index].row, legalMoves[index].col)
+    console.log(
+      '-----------max------------',
+      val,
+      legalMoves[index].row,
+      legalMoves[index].col
+    )
     if (val > best) {
       best = val
       row = legalMoves[index].row
@@ -76,7 +83,9 @@ function min (depth, boardGrids, chessType, firstChessType) {
   let col = -1
   const legalMoves = generateLegalMoves(boardGrids)
   for (let index = 0; index < legalMoves.length; index++) {
-    boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = chessType
+    boardGrids[legalMoves[index].row][
+      legalMoves[index].col
+    ].boardGridType = chessType
     const val = max(depth - 1, boardGrids, 3 - chessType, firstChessType).val
     boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
     // console.log('-----------min------------', val, legalMoves[index].row, legalMoves[index].col)
@@ -99,7 +108,9 @@ export function negamax (depth, chessType, boardGrids) {
 
   const legalMoves = generateLegalMoves(boardGrids)
   for (let index = 0; index < legalMoves.length; index++) {
-    boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = chessType
+    boardGrids[legalMoves[index].row][
+      legalMoves[index].col
+    ].boardGridType = chessType
     const val = -negamax(depth - 1, 3 - chessType, boardGrids).val
     boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
     if (val > best) {
@@ -109,6 +120,62 @@ export function negamax (depth, chessType, boardGrids) {
     }
   }
   return { val: best, row, col }
+}
+
+export function alphaBeta (depth, alpha, beta, chessType, firstChessType, boardGrids) {
+  if (depth === 0) {
+    return { val: evaluateAllChessShapes(chessType, boardGrids) }
+    // return { val: evaluateAllChessShapes(aiChessType, boardGrids) }
+  }
+  let row = -1
+  let col = -1
+  const legalMoves = sortLegalMoves(chessType, boardGrids)
+  for (let index = 0; index < legalMoves.length; index++) {
+    boardGrids[legalMoves[index].row][
+      legalMoves[index].col
+    ].boardGridType = chessType
+    const val = -alphaBeta(depth - 1, -beta, -alpha, 3 - chessType, firstChessType, boardGrids)
+      .val
+    boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
+    console.log(
+      '-----------------------',
+      val,
+      legalMoves[index].row,
+      legalMoves[index].col
+    )
+    if (val >= beta) {
+      return { val: beta }
+    }
+    if (val > alpha) {
+      row = legalMoves[index].row
+      col = legalMoves[index].col
+      alpha = val
+    }
+  }
+  return { val: alpha, row, col }
+}
+
+function sortLegalMoves (chessType, boardGrids) {
+  const legalMoves = generateLegalMoves(boardGrids)
+  for (let index = 0; index < legalMoves.length; index++) {
+    legalMoves[index].score = evaluateSingleChessShapes(chessType, boardGrids, { row: legalMoves[index].row, col: legalMoves[index].col })
+  }
+  // return legalMoves
+  // if (chessType === 1) {
+  //   // MAX层从大到小排序
+  //   return legalMoves.sort((a, b) => {
+  //     return b.score - a.score
+  //   })
+  // } else {
+  //   // MIN层从小到大排序
+  //   return legalMoves.sort((a, b) => {
+  //     return a.score - b.score
+  //   })
+  // }
+  return legalMoves.sort((a, b) => {
+    return b.score - a.score
+  })
+  // .splice(0, 50)
 }
 
 export function generateLegalMoves (boardGrids) {
