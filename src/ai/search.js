@@ -172,6 +172,11 @@ function sortLegalMoves (chessType, boardGrids) {
   //     return a.score - b.score
   //   })
   // }
+
+  // const sortLegalMoves = legalMoves.sort((a, b) => {
+  //   return b.score - a.score
+  // })
+  // return sortLegalMoves.length < 30 ? sortLegalMoves : sortLegalMoves.splice(0, 30)
   return legalMoves.sort((a, b) => {
     return b.score - a.score
   })
@@ -191,9 +196,9 @@ export function generateLegalMoves (boardGrids) {
         gridTypes.push(
           row - 2 >= 0 ? boardGrids[row - 2][col].boardGridType : 0
         )
-        gridTypes.push(
-          row - 3 >= 0 ? boardGrids[row - 3][col].boardGridType : 0
-        )
+        // gridTypes.push(
+        //   row - 3 >= 0 ? boardGrids[row - 3][col].boardGridType : 0
+        // )
 
         gridTypes.push(
           row + 1 < BOARD_GRIDS_COUNT
@@ -205,11 +210,11 @@ export function generateLegalMoves (boardGrids) {
             ? boardGrids[row + 2][col].boardGridType
             : 0
         )
-        gridTypes.push(
-          row + 3 < BOARD_GRIDS_COUNT
-            ? boardGrids[row + 3][col].boardGridType
-            : 0
-        )
+        // gridTypes.push(
+        //   row + 3 < BOARD_GRIDS_COUNT
+        //     ? boardGrids[row + 3][col].boardGridType
+        //     : 0
+        // )
 
         // 竖向各三格
         gridTypes.push(
@@ -218,9 +223,9 @@ export function generateLegalMoves (boardGrids) {
         gridTypes.push(
           col - 2 >= 0 ? boardGrids[row][col - 2].boardGridType : 0
         )
-        gridTypes.push(
-          col - 3 >= 0 ? boardGrids[row][col - 3].boardGridType : 0
-        )
+        // gridTypes.push(
+        //   col - 3 >= 0 ? boardGrids[row][col - 3].boardGridType : 0
+        // )
 
         gridTypes.push(
           col + 1 < BOARD_GRIDS_COUNT
@@ -232,18 +237,18 @@ export function generateLegalMoves (boardGrids) {
             ? boardGrids[row][col + 2].boardGridType
             : 0
         )
-        gridTypes.push(
-          col + 3 < BOARD_GRIDS_COUNT
-            ? boardGrids[row][col + 3].boardGridType
-            : 0
-        )
+        // gridTypes.push(
+        //   col + 3 < BOARD_GRIDS_COUNT
+        //     ? boardGrids[row][col + 3].boardGridType
+        //     : 0
+        // )
 
         // 右斜各三格
-        gridTypes.push(
-          row - 3 >= 0 && col - 3 >= 0
-            ? boardGrids[row - 3][col - 3].boardGridType
-            : 0
-        )
+        // gridTypes.push(
+        //   row - 3 >= 0 && col - 3 >= 0
+        //     ? boardGrids[row - 3][col - 3].boardGridType
+        //     : 0
+        // )
         gridTypes.push(
           row - 2 >= 0 && col - 2 >= 0
             ? boardGrids[row - 2][col - 2].boardGridType
@@ -265,18 +270,18 @@ export function generateLegalMoves (boardGrids) {
             ? boardGrids[row + 2][col + 2].boardGridType
             : 0
         )
-        gridTypes.push(
-          row + 3 < BOARD_GRIDS_COUNT && col + 3 < BOARD_GRIDS_COUNT
-            ? boardGrids[row + 3][col + 3].boardGridType
-            : 0
-        )
+        // gridTypes.push(
+        //   row + 3 < BOARD_GRIDS_COUNT && col + 3 < BOARD_GRIDS_COUNT
+        //     ? boardGrids[row + 3][col + 3].boardGridType
+        //     : 0
+        // )
 
         // 左斜各三格
-        gridTypes.push(
-          row - 3 >= 0 && col + 3 < BOARD_GRIDS_COUNT
-            ? boardGrids[row - 3][col + 3].boardGridType
-            : 0
-        )
+        // gridTypes.push(
+        //   row - 3 >= 0 && col + 3 < BOARD_GRIDS_COUNT
+        //     ? boardGrids[row - 3][col + 3].boardGridType
+        //     : 0
+        // )
         gridTypes.push(
           row - 2 >= 0 && col + 2 < BOARD_GRIDS_COUNT
             ? boardGrids[row - 2][col + 2].boardGridType
@@ -298,11 +303,11 @@ export function generateLegalMoves (boardGrids) {
             ? boardGrids[row + 2][col - 2].boardGridType
             : 0
         )
-        gridTypes.push(
-          row + 3 < BOARD_GRIDS_COUNT && col - 3 >= 0
-            ? boardGrids[row + 3][col - 3].boardGridType
-            : 0
-        )
+        // gridTypes.push(
+        //   row + 3 < BOARD_GRIDS_COUNT && col - 3 >= 0
+        //     ? boardGrids[row + 3][col - 3].boardGridType
+        //     : 0
+        // )
 
         // 马步8个格
         gridTypes.push(
