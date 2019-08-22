@@ -4,6 +4,8 @@ import { BOARD_GRIDS_COUNT, INFINITY } from '../constant'
 
 import { CHESS_SHAPES_SCORE } from './score'
 
+import { calculateAllChessShapes } from './situation'
+
 /*
   搜索
   定义搜索树相关结构，遍历当前棋局所有位置
@@ -39,66 +41,144 @@ import { CHESS_SHAPES_SCORE } from './score'
 //   return f
 // }
 
-export function minimax (depth, chessType, boardGrids) {
-  if (chessType === 1) {
-    return max(depth, boardGrids, chessType, chessType)
-  } else {
-    return min(depth, boardGrids, chessType, 3 - chessType)
-  }
-}
-
-function max (depth, boardGrids, chessType, firstChessType) {
+export function minimax (depth, boardGrids, aiChessType) {
   let best = -INFINITY
-  if (depth <= 0) {
-    return { val: evaluateAllChessShapes(firstChessType, boardGrids) }
-  }
-  let row = -1
-  let col = -1
-  const legalMoves = generateLegalMoves(boardGrids)
+  const legalMoves = sortLegalMoves(aiChessType, boardGrids)
+  let bestPoints = []
+
   for (let index = 0; index < legalMoves.length; index++) {
     boardGrids[legalMoves[index].row][
       legalMoves[index].col
-    ].boardGridType = chessType
-    const val = min(depth - 1, boardGrids, 3 - chessType, firstChessType).val
-    boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
-    console.log(
-      '-----------max------------',
-      val,
-      legalMoves[index].row,
-      legalMoves[index].col
-    )
+    ].boardGridType = aiChessType // 尝试下一个子
+    const val = min(depth - 1, -INFINITY, INFINITY, boardGrids, aiChessType) // 找最大值
+    // 如果跟之前的一个好，则把当前位子加入待选位子
+    if (val === best) {
+      bestPoints.push({ row: legalMoves[index].row, col: legalMoves[index].col })
+    }
+    // 找到一个更好的分，就把以前存的位子全部清除
     if (val > best) {
       best = val
-      row = legalMoves[index].row
-      col = legalMoves[index].col
+      bestPoints = []
+      bestPoints.push({ row: legalMoves[index].row, col: legalMoves[index].col })
     }
+    boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0 // 记得把尝试下的子移除
   }
-  return { val: best, row, col }
+  // 在分数最高的几个位置中随机选择一个
+  return bestPoints[Math.floor(bestPoints.length * Math.random())]
 }
 
-function min (depth, boardGrids, chessType, firstChessType) {
-  let best = INFINITY // 注意这里不同于“最大”算法
-  if (depth <= 0) {
-    return { val: evaluateAllChessShapes(firstChessType, boardGrids) }
+function min (depth, alpha, beta, boardGrids, aiChessType) {
+  if (depth <= 0 || win(boardGrids, aiChessType)) {
+    return evaluateAllChessShapes(aiChessType, boardGrids)// 重点来了，评价函数，这个函数返回的是对当前局势的估分。
   }
-  let row = -1
-  let col = -1
-  const legalMoves = generateLegalMoves(boardGrids)
+  let best = INFINITY
+  const legalMoves = sortLegalMoves(aiChessType, boardGrids)
   for (let index = 0; index < legalMoves.length; index++) {
     boardGrids[legalMoves[index].row][
       legalMoves[index].col
-    ].boardGridType = chessType
-    const val = max(depth - 1, boardGrids, 3 - chessType, firstChessType).val
+    ].boardGridType = 3 - aiChessType
+    const val = max(depth - 1, best < alpha ? best : alpha, beta, boardGrids, aiChessType)
+    console.log(val)
     boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
-    // console.log('-----------min------------', val, legalMoves[index].row, legalMoves[index].col)
     if (val < best) {
       best = val
-      row = legalMoves[index].row
-      col = legalMoves[index].col
+    }
+    // AB剪枝
+    if (val < beta) {
+      break
     }
   }
-  return { val: best, row, col }
+  return best
 }
+
+function max (depth, alpha, beta, boardGrids, aiChessType) {
+  if (depth <= 0 || win(boardGrids, aiChessType)) {
+    return evaluateAllChessShapes(aiChessType, boardGrids)// 重点来了，评价函数，这个函数返回的是对当前局势的估分。
+  }
+  let best = -INFINITY
+  const legalMoves = sortLegalMoves(aiChessType, boardGrids)
+  for (let index = 0; index < legalMoves.length; index++) {
+    boardGrids[legalMoves[index].row][
+      legalMoves[index].col
+    ].boardGridType = aiChessType
+    const val = min(depth - 1, alpha, best > beta ? best : beta, boardGrids, aiChessType)
+    boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
+    if (val > best) {
+      best = val
+    }
+    // AB 剪枝
+    if (val > alpha) {
+      break
+    }
+  }
+  return best
+}
+
+function win (boardGrids, aiChessType) {
+  const chessShapesCount = calculateAllChessShapes(aiChessType, boardGrids)
+  return chessShapesCount.FIVE.AI !== 0 || chessShapesCount.FIVE.HUMAN !== 0
+}
+
+// export function minimax (depth, chessType, boardGrids) {
+//   if (chessType === 1) {
+//     return max(depth, boardGrids, chessType, chessType)
+//   } else {
+//     return min(depth, boardGrids, chessType, 3 - chessType)
+//   }
+// }
+
+// function max (depth, boardGrids, chessType, firstChessType) {
+//   let best = -INFINITY
+//   if (depth <= 0) {
+//     return { val: evaluateAllChessShapes(firstChessType, boardGrids) }
+//   }
+//   let row = -1
+//   let col = -1
+//   const legalMoves = generateLegalMoves(boardGrids)
+//   for (let index = 0; index < legalMoves.length; index++) {
+//     boardGrids[legalMoves[index].row][
+//       legalMoves[index].col
+//     ].boardGridType = chessType
+//     const val = min(depth - 1, boardGrids, 3 - chessType, firstChessType).val
+//     boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
+//     console.log(
+//       '-----------max------------',
+//       val,
+//       legalMoves[index].row,
+//       legalMoves[index].col
+//     )
+//     if (val > best) {
+//       best = val
+//       row = legalMoves[index].row
+//       col = legalMoves[index].col
+//     }
+//   }
+//   return { val: best, row, col }
+// }
+
+// function min (depth, boardGrids, chessType, firstChessType) {
+//   let best = INFINITY // 注意这里不同于“最大”算法
+//   if (depth <= 0) {
+//     return { val: evaluateAllChessShapes(firstChessType, boardGrids) }
+//   }
+//   let row = -1
+//   let col = -1
+//   const legalMoves = generateLegalMoves(boardGrids)
+//   for (let index = 0; index < legalMoves.length; index++) {
+//     boardGrids[legalMoves[index].row][
+//       legalMoves[index].col
+//     ].boardGridType = chessType
+//     const val = max(depth - 1, boardGrids, 3 - chessType, firstChessType).val
+//     boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
+//     // console.log('-----------min------------', val, legalMoves[index].row, legalMoves[index].col)
+//     if (val < best) {
+//       best = val
+//       row = legalMoves[index].row
+//       col = legalMoves[index].col
+//     }
+//   }
+//   return { val: best, row, col }
+// }
 
 export function negamax (depth, chessType, boardGrids) {
   let best = -INFINITY
@@ -167,11 +247,26 @@ function sortLegalMoves (aiChessType, boardGrids) {
   //   return b.score - a.score
   // })
 
+  // const twoblockfours = []
+  // const blockfour = []
+  // else if (aiScore >= CHESS_SHAPES_SCORE.BLOCKED_FOUR) {
+  //   blockfour.unshift(legalMoves[index])
+  // } else if (humanScore >= CHESS_SHAPES_SCORE.BLOCKED_FOUR) {
+  //   blockfour.push(legalMoves[index])
+  // }
+  // if (twoblockfours.length) {
+  //   return twoblockfours
+  // }
+  // else if (aiScore >= 2 * CHESS_SHAPES_SCORE.FOUR) {
+  //   twoblockfours.unshift(legalMoves[index])
+  // } else if (humanScore >= 2 * CHESS_SHAPES_SCORE.FOUR) {
+  //   twoblockfours.push(legalMoves[index])
+  // } 
+  // ...blockfour,
+
   const fives = []
   const fours = []
-  const twoblockfours = []
   const twothrees = []
-  const blockfour = []
   const threes = []
   const twos = []
   const neighbors = []
@@ -187,18 +282,10 @@ function sortLegalMoves (aiChessType, boardGrids) {
       fours.unshift(legalMoves[index])
     } else if (humanScore >= CHESS_SHAPES_SCORE.FOUR) {
       fours.push(legalMoves[index])
-    } else if (aiScore >= 2 * CHESS_SHAPES_SCORE.FOUR) {
-      twoblockfours.unshift(legalMoves[index])
-    } else if (humanScore >= 2 * CHESS_SHAPES_SCORE.FOUR) {
-      twoblockfours.push(legalMoves[index])
     } else if (aiScore >= 2 * CHESS_SHAPES_SCORE.THREE) {
       twothrees.unshift(legalMoves[index])
     } else if (humanScore >= 2 * CHESS_SHAPES_SCORE.THREE) {
       twothrees.push(legalMoves[index])
-    } else if (aiScore >= CHESS_SHAPES_SCORE.BLOCKED_FOUR) {
-      blockfour.unshift(legalMoves[index])
-    } else if (humanScore >= CHESS_SHAPES_SCORE.BLOCKED_FOUR) {
-      blockfour.push(legalMoves[index])
     } else if (aiScore >= CHESS_SHAPES_SCORE.THREE) {
       threes.unshift(legalMoves[index])
     } else if (humanScore >= CHESS_SHAPES_SCORE.THREE) {
@@ -217,13 +304,10 @@ function sortLegalMoves (aiChessType, boardGrids) {
   if (fours.length) {
     return fours
   }
-  if (twoblockfours.length) {
-    return twoblockfours
-  }
   if (twothrees.length) {
     return twothrees
   }
-  return [...blockfour, ...threes, ...twos, ...neighbors]
+  return [...threes, ...twos, ...neighbors]
   // .splice(0, 50)
   // return legalMoves
   // if (chessType === 1) {
@@ -256,22 +340,81 @@ export function generateLegalMoves (boardGrids) {
           row - 1 >= 0 ? boardGrids[row - 1][col].boardGridType : 0
         )
         gridTypes.push(
-          row - 2 >= 0 ? boardGrids[row - 2][col].boardGridType : 0
-        )
-        // gridTypes.push(
-        //   row - 3 >= 0 ? boardGrids[row - 3][col].boardGridType : 0
-        // )
-
-        gridTypes.push(
           row + 1 < BOARD_GRIDS_COUNT
             ? boardGrids[row + 1][col].boardGridType
             : 0
+        )
+        gridTypes.push(
+          col - 1 >= 0 ? boardGrids[row][col - 1].boardGridType : 0
+        )
+        gridTypes.push(
+          col + 1 < BOARD_GRIDS_COUNT
+            ? boardGrids[row][col + 1].boardGridType
+            : 0
+        )
+        gridTypes.push(
+          row - 1 >= 0 && col - 1 >= 0
+            ? boardGrids[row - 1][col - 1].boardGridType
+            : 0
+        )
+        gridTypes.push(
+          row + 1 < BOARD_GRIDS_COUNT && col + 1 < BOARD_GRIDS_COUNT
+            ? boardGrids[row + 1][col + 1].boardGridType
+            : 0
+        )
+        gridTypes.push(
+          row - 1 >= 0 && col + 1 < BOARD_GRIDS_COUNT
+            ? boardGrids[row - 1][col + 1].boardGridType
+            : 0
+        )
+        gridTypes.push(
+          row + 1 < BOARD_GRIDS_COUNT && col - 1 >= 0
+            ? boardGrids[row + 1][col - 1].boardGridType
+            : 0
+        )
+
+        gridTypes.push(
+          row - 2 >= 0 ? boardGrids[row - 2][col].boardGridType : 0
         )
         gridTypes.push(
           row + 2 < BOARD_GRIDS_COUNT
             ? boardGrids[row + 2][col].boardGridType
             : 0
         )
+        gridTypes.push(
+          col - 2 >= 0 ? boardGrids[row][col - 2].boardGridType : 0
+        )
+        gridTypes.push(
+          col + 2 < BOARD_GRIDS_COUNT
+            ? boardGrids[row][col + 2].boardGridType
+            : 0
+        )
+        gridTypes.push(
+          row - 2 >= 0 && col - 2 >= 0
+            ? boardGrids[row - 2][col - 2].boardGridType
+            : 0
+        )
+        gridTypes.push(
+          row + 2 < BOARD_GRIDS_COUNT && col + 2 < BOARD_GRIDS_COUNT
+            ? boardGrids[row + 2][col + 2].boardGridType
+            : 0
+        )
+        gridTypes.push(
+          row - 2 >= 0 && col + 2 < BOARD_GRIDS_COUNT
+            ? boardGrids[row - 2][col + 2].boardGridType
+            : 0
+        )
+        gridTypes.push(
+          row + 2 < BOARD_GRIDS_COUNT && col - 2 >= 0
+            ? boardGrids[row + 2][col - 2].boardGridType
+            : 0
+        )
+        // gridTypes.push(
+        //   row - 3 >= 0 ? boardGrids[row - 3][col].boardGridType : 0
+        // )
+
+        
+        
         // gridTypes.push(
         //   row + 3 < BOARD_GRIDS_COUNT
         //     ? boardGrids[row + 3][col].boardGridType
@@ -279,26 +422,14 @@ export function generateLegalMoves (boardGrids) {
         // )
 
         // 竖向各三格
-        gridTypes.push(
-          col - 1 >= 0 ? boardGrids[row][col - 1].boardGridType : 0
-        )
-        gridTypes.push(
-          col - 2 >= 0 ? boardGrids[row][col - 2].boardGridType : 0
-        )
+        
+        
         // gridTypes.push(
         //   col - 3 >= 0 ? boardGrids[row][col - 3].boardGridType : 0
         // )
 
-        gridTypes.push(
-          col + 1 < BOARD_GRIDS_COUNT
-            ? boardGrids[row][col + 1].boardGridType
-            : 0
-        )
-        gridTypes.push(
-          col + 2 < BOARD_GRIDS_COUNT
-            ? boardGrids[row][col + 2].boardGridType
-            : 0
-        )
+        
+        
         // gridTypes.push(
         //   col + 3 < BOARD_GRIDS_COUNT
         //     ? boardGrids[row][col + 3].boardGridType
@@ -311,27 +442,7 @@ export function generateLegalMoves (boardGrids) {
         //     ? boardGrids[row - 3][col - 3].boardGridType
         //     : 0
         // )
-        gridTypes.push(
-          row - 2 >= 0 && col - 2 >= 0
-            ? boardGrids[row - 2][col - 2].boardGridType
-            : 0
-        )
-        gridTypes.push(
-          row - 1 >= 0 && col - 1 >= 0
-            ? boardGrids[row - 1][col - 1].boardGridType
-            : 0
-        )
-
-        gridTypes.push(
-          row + 1 < BOARD_GRIDS_COUNT && col + 1 < BOARD_GRIDS_COUNT
-            ? boardGrids[row + 1][col + 1].boardGridType
-            : 0
-        )
-        gridTypes.push(
-          row + 2 < BOARD_GRIDS_COUNT && col + 2 < BOARD_GRIDS_COUNT
-            ? boardGrids[row + 2][col + 2].boardGridType
-            : 0
-        )
+        
         // gridTypes.push(
         //   row + 3 < BOARD_GRIDS_COUNT && col + 3 < BOARD_GRIDS_COUNT
         //     ? boardGrids[row + 3][col + 3].boardGridType
@@ -344,27 +455,7 @@ export function generateLegalMoves (boardGrids) {
         //     ? boardGrids[row - 3][col + 3].boardGridType
         //     : 0
         // )
-        gridTypes.push(
-          row - 2 >= 0 && col + 2 < BOARD_GRIDS_COUNT
-            ? boardGrids[row - 2][col + 2].boardGridType
-            : 0
-        )
-        gridTypes.push(
-          row - 1 >= 0 && col + 1 < BOARD_GRIDS_COUNT
-            ? boardGrids[row - 1][col + 1].boardGridType
-            : 0
-        )
-
-        gridTypes.push(
-          row + 1 < BOARD_GRIDS_COUNT && col - 1 >= 0
-            ? boardGrids[row + 1][col - 1].boardGridType
-            : 0
-        )
-        gridTypes.push(
-          row + 2 < BOARD_GRIDS_COUNT && col - 2 >= 0
-            ? boardGrids[row + 2][col - 2].boardGridType
-            : 0
-        )
+        
         // gridTypes.push(
         //   row + 3 < BOARD_GRIDS_COUNT && col - 3 >= 0
         //     ? boardGrids[row + 3][col - 3].boardGridType

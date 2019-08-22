@@ -115,7 +115,10 @@ export default class AI {
 
     // const { row, col } = minimax(1, chessType, gameBoard.boardGrids)
     // const { row, col } = negamax(2, chessType, gameBoard.boardGrids)
-    const { row, col } = alphaBeta(4, -INFINITY, INFINITY, chessType, chessType, gameBoard.boardGrids)
+
+    // const { row, col } = alphaBeta(4, -INFINITY, INFINITY, chessType, chessType, gameBoard.boardGrids)
+
+    const { row, col } = minimax(5, gameBoard.boardGrids, chessType)
     return { row, col }
   }
 }

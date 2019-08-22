@@ -209,7 +209,7 @@ export function calculateAllChessShapes (chessType, boardGirds) {
   return getAllChessShapesCount(allChessShapes, humanChessShapesTable, aiChessShapesTable)
 }
 
-function getAllChessShapes(boardGrids) {
+function getAllChessShapes (boardGrids) {
   // 分别判断当前棋局下人类与AI棋子形成的棋型数量
 
   // 保存所有路数的棋型
