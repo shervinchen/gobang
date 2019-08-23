@@ -50,7 +50,7 @@ export function minimax (depth, boardGrids, aiChessType) {
     boardGrids[legalMoves[index].row][
       legalMoves[index].col
     ].boardGridType = aiChessType // 尝试下一个子
-    const val = min(depth - 1, -INFINITY, INFINITY, boardGrids, aiChessType) // 找最大值
+    const val = min(depth - 1, INFINITY, best > -INFINITY ? best : -INFINITY, boardGrids, aiChessType) // 找最大值
     // 如果跟之前的一个好，则把当前位子加入待选位子
     if (val === best) {
       bestPoints.push({ row: legalMoves[index].row, col: legalMoves[index].col })
@@ -299,15 +299,26 @@ function sortLegalMoves (aiChessType, boardGrids) {
     }
   }
   if (fives.length) {
-    return fives
+    return fives[0]
   }
   if (fours.length) {
-    return fours
+    return fours[0]
   }
   if (twothrees.length) {
-    return twothrees
+    return twothrees.concat(threes)
   }
-  return [...threes, ...twos, ...neighbors]
+
+  let result = threes.concat(
+    twos.concat(
+      neighbors
+    )
+  );
+
+  // if (result.length > 30 ) {
+  //   return result.slice(0, 30);
+  // }
+
+  return result
   // .splice(0, 50)
   // return legalMoves
   // if (chessType === 1) {

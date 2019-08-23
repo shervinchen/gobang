@@ -118,7 +118,7 @@ export default class AI {
 
     // const { row, col } = alphaBeta(4, -INFINITY, INFINITY, chessType, chessType, gameBoard.boardGrids)
 
-    const { row, col } = minimax(5, gameBoard.boardGrids, chessType)
+    const { row, col } = minimax(4, gameBoard.boardGrids, chessType)
     return { row, col }
   }
 }
