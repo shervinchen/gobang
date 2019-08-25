@@ -14,8 +14,6 @@ export function calculateSingleChessShapes (chessType, boardGrids, position) {
   // 获取当前棋子四个方向的棋型
   const singleChessShapes = getSingleChessShapes(boardGrids, position, barrier)
 
-  // console.log('--------', getSingleChessShapesCount(singleChessShapes, chessShapesTable))
-
   return getSingleChessShapesCount(singleChessShapes, chessShapesTable)
 }
 
@@ -60,7 +58,7 @@ function getSingleChessShapes (boardGrids, position, barrier) {
   return singleChessShapes
 }
 
-function getSingleChessShapesCount (singleChessShapes, chessShapesTable) {
+export function getSingleChessShapesCount (singleChessShapes, chessShapesTable) {
   let chessShapesCount = {
     // 长连：连成五个以上已方棋子
     // LONG_ROW: 0,

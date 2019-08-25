@@ -5,6 +5,9 @@ import {
 
 import { evaluateSingleChessShapes, evaluateAllChessShapes } from './evaluate'
 
+import { getSingleChessShapesCount } from './situation'
+import { CHESS_CROSS_SHAPES } from './chessShape'
+
 import { negamax, minimax, alphaBeta, generateLegalMoves } from './search'
 
 /*
@@ -116,9 +119,10 @@ export default class AI {
     // const { row, col } = minimax(1, chessType, gameBoard.boardGrids)
     // const { row, col } = negamax(2, chessType, gameBoard.boardGrids)
 
-    // const { row, col } = alphaBeta(4, -INFINITY, INFINITY, chessType, chessType, gameBoard.boardGrids)
+    const { row, col } = alphaBeta(4, -INFINITY, INFINITY, chessType, chessType, gameBoard.boardGrids)
 
-    const { row, col } = minimax(4, gameBoard.boardGrids, chessType)
+    // console.log('--------', getSingleChessShapesCount(['211111'], CHESS_CROSS_SHAPES))
+    // const { row, col } = minimax(4, gameBoard.boardGrids, chessType)
     return { row, col }
   }
 }
