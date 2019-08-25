@@ -119,7 +119,14 @@ export default class AI {
     // const { row, col } = minimax(1, chessType, gameBoard.boardGrids)
     // const { row, col } = negamax(2, chessType, gameBoard.boardGrids)
 
-    const { row, col } = alphaBeta(4, -INFINITY, INFINITY, chessType, chessType, gameBoard.boardGrids)
+    const { row, col } = alphaBeta(6, -INFINITY, INFINITY, chessType, chessType, gameBoard.boardGrids)
+    // 悔棋
+    // 判断输赢
+    // 优化重构现有代码
+    // 加入测试逻辑的代码  测试ab剪枝搜索的结果
+    // 实现迭代加深
+
+    // 进度条 （或者显示搜索了多少局面节点、花费的时间）
 
     // console.log('--------', getSingleChessShapesCount(['211111'], CHESS_CROSS_SHAPES))
     // const { row, col } = minimax(4, gameBoard.boardGrids, chessType)
