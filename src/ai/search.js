@@ -201,19 +201,19 @@ function win (boardGrids, aiChessType) {
 //   return { val: best, row, col }
 // }
 
-export function alphaBeta (depth, alpha, beta, chessType, aiChessType, boardGrids) {
+export function alphaBeta (depth, alpha, beta, chessType, aiChessType, boardGrids, playerSteps) {
   // || win()
   if (depth === 0) {
     return { val: evaluateAllChessShapes(aiChessType, boardGrids) }
   }
   let row = -1
   let col = -1
-  const legalMoves = generateMoves(chessType, aiChessType, boardGrids)
+  const legalMoves = generateMoves(chessType, aiChessType, boardGrids, playerSteps)
   for (let index = 0; index < legalMoves.length; index++) {
     boardGrids[legalMoves[index].row][
       legalMoves[index].col
     ].boardGridType = chessType
-    const val = -alphaBeta(depth - 1, -beta, -alpha, 3 - chessType, aiChessType, boardGrids)
+    const val = -alphaBeta(depth - 1, -beta, -alpha, 3 - chessType, aiChessType, boardGrids, playerSteps)
       .val
     boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
     console.log(

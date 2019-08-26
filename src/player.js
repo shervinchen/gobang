@@ -18,8 +18,9 @@ export default class Player {
   //   this.playerChess = playerChess
   // }
 
-  generatePlayerChess (boardGrids, position, ctx) {
+  generatePlayerChess (boardGrids, position, ctx, playerSteps) {
     boardGrids[position.row][position.col].setBoardGridChess(this.playerChessType, ctx)
+    playerSteps.push(boardGrids[position.row][position.col])
     this.checkPlayerStatus(boardGrids, position)
   }
 
