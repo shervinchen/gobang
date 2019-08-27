@@ -119,7 +119,11 @@ export default class AI {
     // const { row, col } = minimax(1, chessType, gameBoard.boardGrids)
     // const { row, col } = negamax(2, chessType, gameBoard.boardGrids)
 
+    // 在几个相同的最高分数位置中随机选择一个
+    // let bestPositions = []
     const { row, col } = alphaBeta(6, -INFINITY, INFINITY, chessType, chessType, gameBoard.boardGrids, gamePlayerSteps)
+    // const { row, col } = bestPositions[Math.floor(bestPositions.length * Math.random())]
+    // console.log(bestPositions.sort((a, b) => { return b.val - a.val }))
 
     // 储存搜索到的所有最大值节点  随机选择一个  避免ai重复相同的局面位置
     // 悔棋
