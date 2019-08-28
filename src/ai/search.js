@@ -206,6 +206,9 @@ export function alphaBeta (depth, alpha, beta, chessType, aiChessType, boardGrid
   if (depth === 0) {
     return { val: evaluateAllChessShapes(aiChessType, boardGrids) }
   }
+  // 最佳位置
+  let row = null
+  let col = null
   const legalMoves = generateMoves(chessType, aiChessType, boardGrids, playerSteps)
   for (let index = 0; index < legalMoves.length; index++) {
     boardGrids[legalMoves[index].row][
@@ -221,23 +224,26 @@ export function alphaBeta (depth, alpha, beta, chessType, aiChessType, boardGrid
       legalMoves[index].col
     )
     // 如果跟之前的一个好，则把当前位子加入待选位子
-    // if (bestPositions.length !== 0) {
-    //   if (val === bestPositions[0].alpha) {
-    //     bestPositions.unshift({ row: legalMoves[index].row, col: legalMoves[index].col, alpha: val })
+    // if (depth === d) {
+    //   if (val === alpha) {
+    //     bestPositions.push({ row: legalMoves[index].row, col: legalMoves[index].col })
     //   }
     // }
     if (val >= beta) {
-      // bestPositions = []
-      // bestPositions.push({ row: legalMoves[index].row, col: legalMoves[index].col, val })
       return { val: beta }
     }
     // 找到更好的分后 就把以前存的位置全部清除  只保存最新的位置
     if (val > alpha) {
       alpha = val
-      // const row = legalMoves[index].row
-      // const col = legalMoves[index].col
+      // if (depth === d) {
+        // bestPositions = []
+        // bestPositions.push({ row: legalMoves[index].row, col: legalMoves[index].col })
+      // }
+      // 只保存第一个最高分数的位置 忽略后面分数相同的位置
+      row = legalMoves[index].row
+      col = legalMoves[index].col
     }
   }
 
-  return { val: alpha, row: bestPositions.row, col: bestPositions.col }
+  return { val: alpha, row, col }
 }

@@ -120,15 +120,17 @@ export default class AI {
     // const { row, col } = negamax(2, chessType, gameBoard.boardGrids)
 
     // 在几个相同的最高分数位置中随机选择一个
+    // 位置随机 需要在ab搜索外层加一层循环  单独搜索第一层的每个点 然后分别计算价值  比较消耗性能  暂时不考虑做随机
+    // 后期可以考虑引入一些开局 做成开局库   ai前几手随机使用固定的开局即可
     // let bestPositions = []
-    const { row, col } = alphaBeta(6, -INFINITY, INFINITY, chessType, chessType, gameBoard.boardGrids, gamePlayerSteps)
+    // bestPositions = alphaBeta(6, -INFINITY, INFINITY, chessType, chessType, gameBoard.boardGrids, gamePlayerSteps).bestPositions
     // const { row, col } = bestPositions[Math.floor(bestPositions.length * Math.random())]
     // console.log(bestPositions.sort((a, b) => { return b.val - a.val }))
 
     // 储存搜索到的所有最大值节点  随机选择一个  避免ai重复相同的局面位置
     // 悔棋
     // 复盘功能 （可以向前悔棋、向后下棋）
-    // 判断输赢
+    // 判断输赢 平局
     // 优化重构现有代码
     // 加入测试逻辑的代码  测试ab剪枝搜索的结果
     // 实现迭代加深
@@ -138,6 +140,6 @@ export default class AI {
 
     // console.log('--------', getSingleChessShapesCount(['211111'], CHESS_CROSS_SHAPES))
     // const { row, col } = minimax(4, gameBoard.boardGrids, chessType)
-    return { row, col }
+    return alphaBeta(6, -INFINITY, INFINITY, chessType, chessType, gameBoard.boardGrids, gamePlayerSteps)
   }
 }
