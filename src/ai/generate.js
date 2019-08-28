@@ -57,25 +57,25 @@ export function generateMoves (chessType, aiChessType, boardGrids, playerSteps) 
         // }
         const score = Math.max(scoreAI, scoreHuman)
         if (scoreAI >= CHESS_SHAPES_SCORE.FIVE) {
-          fives.push({ row, col })
+          fives.push({ row, col, score })
         } else if (scoreHuman >= CHESS_SHAPES_SCORE.FIVE) {
-          fives.push({ row, col })
+          fives.push({ row, col, score })
         } else if (scoreAI >= CHESS_SHAPES_SCORE.FOUR) {
-          aiFours.push({ row, col })
+          aiFours.push({ row, col, score })
         } else if (scoreHuman >= CHESS_SHAPES_SCORE.FOUR) {
-          humanFours.push({ row, col })
+          humanFours.push({ row, col, score })
         } else if (scoreAI >= CHESS_SHAPES_SCORE.BLOCKED_FOUR) {
-          aiBlockedFours.push({ row, col })
+          aiBlockedFours.push({ row, col, score })
         } else if (scoreHuman >= CHESS_SHAPES_SCORE.BLOCKED_FOUR) {
-          humanBlockedFours.push({ row, col })
+          humanBlockedFours.push({ row, col, score })
         } else if (scoreAI >= 2 * CHESS_SHAPES_SCORE.THREE) {
-          aiTwoThrees.push({ row, col })
+          aiTwoThrees.push({ row, col, score })
         } else if (scoreHuman >= 2 * CHESS_SHAPES_SCORE.THREE) {
-          humanTwoThrees.push({ row, col })
+          humanTwoThrees.push({ row, col, score })
         } else if (scoreAI >= CHESS_SHAPES_SCORE.THREE) {
-          aiThrees.push({ row, col })
+          aiThrees.push({ row, col, score })
         } else if (scoreHuman >= CHESS_SHAPES_SCORE.THREE) {
-          humanThrees.push({ row, col })
+          humanThrees.push({ row, col, score })
         } else if (scoreAI >= CHESS_SHAPES_SCORE.TWO) {
           aiTwos.unshift({ row, col, score })
         } else if (scoreHuman >= CHESS_SHAPES_SCORE.TWO) {

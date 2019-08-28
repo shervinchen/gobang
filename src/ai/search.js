@@ -223,22 +223,11 @@ export function alphaBeta (depth, alpha, beta, chessType, aiChessType, boardGrid
       legalMoves[index].row,
       legalMoves[index].col
     )
-    // 如果跟之前的一个好，则把当前位子加入待选位子
-    // if (depth === d) {
-    //   if (val === alpha) {
-    //     bestPositions.push({ row: legalMoves[index].row, col: legalMoves[index].col })
-    //   }
-    // }
     if (val >= beta) {
       return { val: beta }
     }
-    // 找到更好的分后 就把以前存的位置全部清除  只保存最新的位置
     if (val > alpha) {
       alpha = val
-      // if (depth === d) {
-        // bestPositions = []
-        // bestPositions.push({ row: legalMoves[index].row, col: legalMoves[index].col })
-      // }
       // 只保存第一个最高分数的位置 忽略后面分数相同的位置
       row = legalMoves[index].row
       col = legalMoves[index].col
@@ -247,3 +236,15 @@ export function alphaBeta (depth, alpha, beta, chessType, aiChessType, boardGrid
 
   return { val: alpha, row, col }
 }
+
+// 如果跟之前的一个好，则把当前位子加入待选位子
+// if (depth === d) {
+//   if (val === alpha) {
+//     bestPositions.push({ row: legalMoves[index].row, col: legalMoves[index].col })
+//   }
+// }
+// 找到更好的分后 就把以前存的位置全部清除  只保存最新的位置
+// if (depth === d) {
+// bestPositions = []
+// bestPositions.push({ row: legalMoves[index].row, col: legalMoves[index].col })
+// }
