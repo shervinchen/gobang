@@ -2,6 +2,7 @@ import { INFINITY } from '../constant'
 import { evaluateAllChessShapes } from './evaluate'
 import { calculateAllChessShapes } from './situation'
 import { generateMoves } from './generate'
+import { CHESS_SHAPES_SCORE } from './score'
 
 /*
   搜索
@@ -111,11 +112,6 @@ function max (depth, alpha, beta, boardGrids, aiChessType) {
   return best
 }
 
-function win (boardGrids, aiChessType) {
-  const chessShapesCount = calculateAllChessShapes(aiChessType, boardGrids)
-  return chessShapesCount.FIVE.AI !== 0 || chessShapesCount.FIVE.HUMAN !== 0
-}
-
 // export function minimax (depth, chessType, boardGrids) {
 //   if (chessType === 1) {
 //     return max(depth, boardGrids, chessType, chessType)
@@ -201,40 +197,92 @@ function win (boardGrids, aiChessType) {
 //   return { val: best, row, col }
 // }
 
-export function alphaBeta (depth, alpha, beta, chessType, aiChessType, boardGrids, playerSteps) {
+function win (boardGrids, aiChessType) {
+  // const chessShapesCount = calculateAllChessShapes(aiChessType, boardGrids)
+  // return chessShapesCount.FIVE.AI !== 0 || chessShapesCount.FIVE.HUMAN !== 0
+}
+
+export function alphaBeta (depth, alpha, beta, chessType, aiChessType, step, boardGrids, playerSteps) {
   // || win()
-  if (depth === 0) {
-    return { val: evaluateAllChessShapes(aiChessType, boardGrids) }
+  const allChessShapesScore = evaluateAllChessShapes(aiChessType, boardGrids)
+  if (depth === 0 || allChessShapesScore >= CHESS_SHAPES_SCORE.FIVE || allChessShapesScore <= -CHESS_SHAPES_SCORE.FIVE) {
+    return { val: allChessShapesScore, finalStep: step }
   }
   // 最佳位置
   let row = null
   let col = null
+  let resultStep = 0
   const legalMoves = generateMoves(chessType, aiChessType, boardGrids, playerSteps)
   for (let index = 0; index < legalMoves.length; index++) {
     boardGrids[legalMoves[index].row][
       legalMoves[index].col
     ].boardGridType = chessType
-    const val = -alphaBeta(depth - 1, -beta, -alpha, 3 - chessType, aiChessType, boardGrids, playerSteps)
-      .val
+    let { val, finalStep } = alphaBeta(depth - 1, -beta, -alpha, 3 - chessType, aiChessType, step + 1, boardGrids, playerSteps)
+    val = -val
     boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
     console.log(
       '-----------------------',
       val,
+      step,
       legalMoves[index].row,
       legalMoves[index].col
     )
     if (val >= beta) {
-      return { val: beta }
+      return { val: beta, finalStep: step }
     }
     if (val > alpha) {
       alpha = val
+      resultStep = finalStep
       // 只保存第一个最高分数的位置 忽略后面分数相同的位置
       row = legalMoves[index].row
       col = legalMoves[index].col
     }
   }
 
-  return { val: alpha, row, col }
+  return { val: alpha, row, col, finalStep: resultStep }
+}
+
+export function search (depth, alpha, beta, chessType, aiChessType, boardGrids, playerSteps, legalMoves) {
+  for (let index = 0; index < legalMoves.length; index++) {
+    boardGrids[legalMoves[index].row][
+      legalMoves[index].col
+    ].boardGridType = chessType
+    const result = alphaBeta(depth - 1, -beta, -alpha, 3 - chessType, aiChessType, 1, boardGrids, playerSteps)
+    result.val = -result.val
+    boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
+    legalMoves[index].val = result.val
+    legalMoves[index].step = result.finalStep
+    if (result.val > alpha) {
+      alpha = result.val
+    }
+  }
+  return alpha
+}
+
+export function searchAll (depth, chessType, aiChessType, boardGrids, playerSteps) {
+  let best
+  const legalMoves = generateMoves(chessType, aiChessType, boardGrids, playerSteps)
+  for (let index = 2; index <= depth; index += 2) {
+    best = search(index, -INFINITY, INFINITY, chessType, aiChessType, boardGrids, playerSteps, legalMoves)
+    if (best >= CHESS_SHAPES_SCORE.FIVE) {
+      break
+    }
+  }
+  legalMoves.sort((a, b) => {
+    if (a.val === b.val) {
+      // 大于零是优势，尽快获胜，因此取步数短的
+      // 小于0是劣势，尽量拖延，因此取步数长的
+      if (a.val >= 0) {
+        if (a.step !== b.step) return a.step - b.step
+        else return b.val - a.val // 否则 选取当前分最高的（直接评分)
+      } else {
+        if (a.step !== b.step) return b.step - a.step
+        else return b.val - a.val // 否则 选取当前分最高的（直接评分)
+      }
+    } else return (b.val - a.val)
+  })
+  console.log(legalMoves)
+  return legalMoves[0]
 }
 
 // 如果跟之前的一个好，则把当前位子加入待选位子

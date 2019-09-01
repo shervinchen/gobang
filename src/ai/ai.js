@@ -8,7 +8,7 @@ import { evaluateSingleChessShapes, evaluateAllChessShapes } from './evaluate'
 import { getSingleChessShapesCount } from './situation'
 import { CHESS_CROSS_SHAPES } from './chessShape'
 
-import { negamax, minimax, alphaBeta, generateLegalMoves } from './search'
+import { negamax, minimax, alphaBeta, generateLegalMoves, searchAll } from './search'
 
 /*
   AI
@@ -140,6 +140,8 @@ export default class AI {
 
     // console.log('--------', getSingleChessShapesCount(['211111'], CHESS_CROSS_SHAPES))
     // const { row, col } = minimax(4, gameBoard.boardGrids, chessType)
-    return alphaBeta(6, -INFINITY, INFINITY, chessType, chessType, gameBoard.boardGrids, gamePlayerSteps)
+
+    // return alphaBeta(6, -INFINITY, INFINITY, chessType, chessType, gameBoard.boardGrids, gamePlayerSteps)
+    return searchAll(6, chessType, chessType, gameBoard.boardGrids, gamePlayerSteps)
   }
 }
