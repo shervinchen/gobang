@@ -202,44 +202,47 @@ function win (boardGrids, aiChessType) {
   // return chessShapesCount.FIVE.AI !== 0 || chessShapesCount.FIVE.HUMAN !== 0
 }
 
+let resultStep = 0
+
 export function alphaBeta (depth, alpha, beta, chessType, aiChessType, step, boardGrids, playerSteps) {
   // || win()
-  const allChessShapesScore = evaluateAllChessShapes(aiChessType, boardGrids)
-  if (depth === 0 || allChessShapesScore >= CHESS_SHAPES_SCORE.FIVE || allChessShapesScore <= -CHESS_SHAPES_SCORE.FIVE) {
-    return { val: allChessShapesScore, finalStep: step }
+  // || allChessShapesScore >= CHESS_SHAPES_SCORE.FIVE || allChessShapesScore <= -CHESS_SHAPES_SCORE.FIVE
+  // const allChessShapesScore = evaluateAllChessShapes(aiChessType, boardGrids)
+  if (depth === 0) {
+    resultStep = step
+    return { val: evaluateAllChessShapes(aiChessType, boardGrids) }
   }
   // 最佳位置
   let row = null
   let col = null
-  let resultStep = 0
   const legalMoves = generateMoves(chessType, aiChessType, boardGrids, playerSteps)
   for (let index = 0; index < legalMoves.length; index++) {
     boardGrids[legalMoves[index].row][
       legalMoves[index].col
     ].boardGridType = chessType
-    let { val, finalStep } = alphaBeta(depth - 1, -beta, -alpha, 3 - chessType, aiChessType, step + 1, boardGrids, playerSteps)
+    let { val } = alphaBeta(depth - 1, -beta, -alpha, 3 - chessType, aiChessType, step + 1, boardGrids, playerSteps)
     val = -val
     boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
-    console.log(
-      '-----------------------',
-      val,
-      step,
-      legalMoves[index].row,
-      legalMoves[index].col
-    )
+    // console.log(
+    //   '-----------------------',
+    //   val,
+    //   step,
+    //   legalMoves[index].row,
+    //   legalMoves[index].col
+    // )
     if (val >= beta) {
-      return { val: beta, finalStep: step }
+      // resultStep = step
+      return { val: beta }
     }
     if (val > alpha) {
       alpha = val
-      resultStep = finalStep
       // 只保存第一个最高分数的位置 忽略后面分数相同的位置
       row = legalMoves[index].row
       col = legalMoves[index].col
     }
   }
 
-  return { val: alpha, row, col, finalStep: resultStep }
+  return { val: alpha, row, col }
 }
 
 export function search (depth, alpha, beta, chessType, aiChessType, boardGrids, playerSteps, legalMoves) {
@@ -247,11 +250,12 @@ export function search (depth, alpha, beta, chessType, aiChessType, boardGrids, 
     boardGrids[legalMoves[index].row][
       legalMoves[index].col
     ].boardGridType = chessType
+    resultStep = 0
     const result = alphaBeta(depth - 1, -beta, -alpha, 3 - chessType, aiChessType, 1, boardGrids, playerSteps)
     result.val = -result.val
     boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
     legalMoves[index].val = result.val
-    legalMoves[index].step = result.finalStep
+    legalMoves[index].step = resultStep
     if (result.val > alpha) {
       alpha = result.val
     }
@@ -264,10 +268,12 @@ export function searchAll (depth, chessType, aiChessType, boardGrids, playerStep
   const legalMoves = generateMoves(chessType, aiChessType, boardGrids, playerSteps)
   for (let index = 2; index <= depth; index += 2) {
     best = search(index, -INFINITY, INFINITY, chessType, aiChessType, boardGrids, playerSteps, legalMoves)
-    if (best >= CHESS_SHAPES_SCORE.FIVE) {
+    console.log('迭代了', index, best)
+    if (best >= CHESS_SHAPES_SCORE.FOUR) {
       break
     }
   }
+  console.log(legalMoves)
   legalMoves.sort((a, b) => {
     if (a.val === b.val) {
       // 大于零是优势，尽快获胜，因此取步数短的
@@ -281,7 +287,6 @@ export function searchAll (depth, chessType, aiChessType, boardGrids, playerStep
       }
     } else return (b.val - a.val)
   })
-  console.log(legalMoves)
   return legalMoves[0]
 }
 
