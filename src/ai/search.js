@@ -204,12 +204,12 @@ function win (boardGrids, aiChessType) {
 
 let resultStep = 0
 
-export function alphaBeta (depth, alpha, beta, chessType, aiChessType, step, boardGrids, playerSteps) {
+export function alphaBeta (depth, alpha, beta, chessType, aiChessType, boardGrids, playerSteps) {
   // || win()
   // || allChessShapesScore >= CHESS_SHAPES_SCORE.FIVE || allChessShapesScore <= -CHESS_SHAPES_SCORE.FIVE
   // const allChessShapesScore = evaluateAllChessShapes(aiChessType, boardGrids)
   if (depth === 0) {
-    resultStep = step
+    // resultStep = step
     return { val: evaluateAllChessShapes(aiChessType, boardGrids) }
   }
   // 最佳位置
@@ -220,16 +220,14 @@ export function alphaBeta (depth, alpha, beta, chessType, aiChessType, step, boa
     boardGrids[legalMoves[index].row][
       legalMoves[index].col
     ].boardGridType = chessType
-    let { val } = alphaBeta(depth - 1, -beta, -alpha, 3 - chessType, aiChessType, step + 1, boardGrids, playerSteps)
-    val = -val
+    const val = -alphaBeta(depth - 1, -beta, -alpha, 3 - chessType, aiChessType, boardGrids, playerSteps).val
     boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
-    // console.log(
-    //   '-----------------------',
-    //   val,
-    //   step,
-    //   legalMoves[index].row,
-    //   legalMoves[index].col
-    // )
+    console.log(
+      '-----------------------',
+      val,
+      legalMoves[index].row,
+      legalMoves[index].col
+    )
     if (val >= beta) {
       // resultStep = step
       return { val: beta }
@@ -245,20 +243,58 @@ export function alphaBeta (depth, alpha, beta, chessType, aiChessType, step, boa
   return { val: alpha, row, col }
 }
 
-export function search (depth, alpha, beta, chessType, aiChessType, boardGrids, playerSteps, legalMoves) {
+function r (depth, alpha, beta, chessType, aiChessType, step, boardGrids, playerSteps) {
+  // || win()
+  // || allChessShapesScore >= CHESS_SHAPES_SCORE.FIVE || allChessShapesScore <= -CHESS_SHAPES_SCORE.FIVE
+  const allChessShapesScore = evaluateAllChessShapes(aiChessType, boardGrids)
+  if (depth === 0 || allChessShapesScore >= CHESS_SHAPES_SCORE.FOUR || allChessShapesScore <= -CHESS_SHAPES_SCORE.FOUR) {
+    return { val: allChessShapesScore, step }
+  }
+  let best = { val: -INFINITY, step }
+  const legalMoves = generateMoves(chessType, aiChessType, boardGrids, playerSteps)
   for (let index = 0; index < legalMoves.length; index++) {
     boardGrids[legalMoves[index].row][
       legalMoves[index].col
     ].boardGridType = chessType
-    resultStep = 0
-    const result = alphaBeta(depth - 1, -beta, -alpha, 3 - chessType, aiChessType, 1, boardGrids, playerSteps)
+    let v = r(depth - 1, -beta, -alpha, 3 - chessType, aiChessType, step + 1, boardGrids, playerSteps)
+    v.val = -v.val
+    boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
+    // console.log(
+    //   '-----------------------',
+    //   val,
+    //   step,
+    //   legalMoves[index].row,
+    //   legalMoves[index].col
+    // )
+    if(v.val > best.val) {
+      best = v
+    }
+    alpha = Math.max(best.val, alpha)
+    if (v.val >= beta) {
+      v.val = INFINITY - 1
+      return v
+    }
+  }
+
+  return best
+}
+
+function search (depth, alpha, beta, chessType, aiChessType, boardGrids, playerSteps, legalMoves) {
+  for (let index = 0; index < legalMoves.length; index++) {
+    boardGrids[legalMoves[index].row][
+      legalMoves[index].col
+    ].boardGridType = chessType
+    // resultStep = 0
+    // alpha = -INFINITY
+    const result = r(depth - 1, -beta, -alpha, 3 - chessType, aiChessType, 1, boardGrids, playerSteps)
     result.val = -result.val
+    alpha = Math.max(alpha, result.val)
     boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
     legalMoves[index].val = result.val
-    legalMoves[index].step = resultStep
-    if (result.val > alpha) {
-      alpha = result.val
-    }
+    legalMoves[index].step = result.step
+    // if (result.val > alpha) {
+    //   alpha = result.val
+    // }
   }
   return alpha
 }
@@ -273,7 +309,6 @@ export function searchAll (depth, chessType, aiChessType, boardGrids, playerStep
       break
     }
   }
-  console.log(legalMoves)
   legalMoves.sort((a, b) => {
     if (a.val === b.val) {
       // 大于零是优势，尽快获胜，因此取步数短的
@@ -287,6 +322,7 @@ export function searchAll (depth, chessType, aiChessType, boardGrids, playerStep
       }
     } else return (b.val - a.val)
   })
+  console.log(legalMoves)
   return legalMoves[0]
 }
 
