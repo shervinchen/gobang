@@ -210,7 +210,7 @@ export function alphaBeta (depth, alpha, beta, chessType, aiChessType, boardGrid
   // const allChessShapesScore = evaluateAllChessShapes(aiChessType, boardGrids)
   if (depth === 0) {
     // resultStep = step
-    return { val: evaluateAllChessShapes(aiChessType, boardGrids) }
+    return { val: evaluateAllChessShapes(aiChessType, chessType, boardGrids) }
   }
   // 最佳位置
   let row = null
@@ -246,7 +246,7 @@ export function alphaBeta (depth, alpha, beta, chessType, aiChessType, boardGrid
 function r (depth, alpha, beta, chessType, aiChessType, step, boardGrids, playerSteps) {
   // || win()
   // || allChessShapesScore >= CHESS_SHAPES_SCORE.FIVE || allChessShapesScore <= -CHESS_SHAPES_SCORE.FIVE
-  const allChessShapesScore = evaluateAllChessShapes(aiChessType, boardGrids)
+  const allChessShapesScore = evaluateAllChessShapes(aiChessType, chessType, boardGrids)
   if (depth === 0 || allChessShapesScore >= CHESS_SHAPES_SCORE.FOUR || allChessShapesScore <= -CHESS_SHAPES_SCORE.FOUR) {
     return { val: allChessShapesScore, step }
   }
@@ -279,7 +279,7 @@ function r (depth, alpha, beta, chessType, aiChessType, step, boardGrids, player
   return best
 }
 
-function search (depth, alpha, beta, chessType, aiChessType, boardGrids, playerSteps, legalMoves) {
+function search (depth, alpha, beta, chessType, aiChessType, boardGrids, playerSteps, legalMoves, startTime) {
   for (let index = 0; index < legalMoves.length; index++) {
     boardGrids[legalMoves[index].row][
       legalMoves[index].col
@@ -292,6 +292,11 @@ function search (depth, alpha, beta, chessType, aiChessType, boardGrids, playerS
     boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
     legalMoves[index].val = result.val
     legalMoves[index].step = result.step
+    // 超时判定
+    if ((+ new Date()) - startTime > 100 * 1000) {
+      console.log('timeout...')
+      break // 超时，退出循环
+    }
     // if (result.val > alpha) {
     //   alpha = result.val
     // }
@@ -302,8 +307,9 @@ function search (depth, alpha, beta, chessType, aiChessType, boardGrids, playerS
 export function searchAll (depth, chessType, aiChessType, boardGrids, playerSteps) {
   let best
   const legalMoves = generateMoves(chessType, aiChessType, boardGrids, playerSteps)
+  const startTime = (+ new Date())
   for (let index = 2; index <= depth; index += 2) {
-    best = search(index, -INFINITY, INFINITY, chessType, aiChessType, boardGrids, playerSteps, legalMoves)
+    best = search(index, -INFINITY, INFINITY, chessType, aiChessType, boardGrids, playerSteps, legalMoves, startTime)
     console.log('迭代了', index, best)
     if (best >= CHESS_SHAPES_SCORE.FOUR) {
       break
