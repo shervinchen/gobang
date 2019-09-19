@@ -139,6 +139,8 @@ export default class Game {
     const row = (BOARD_GRIDS_COUNT - 1) / 2
     const col = (BOARD_GRIDS_COUNT - 1) / 2
     // return this.gameBoard.boardGrids[row][col]
+    
+    // return { row: 8, col: 8 }
     return { row, col }
   }
 
