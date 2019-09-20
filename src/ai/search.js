@@ -266,59 +266,62 @@ function search (depth, alpha, beta, chessType, aiChessType, boardGrids, playerS
   return alpha
 }
 
-function alphaBeta (depth, alpha, beta, chessType, aiChessType, boardGrids, playerSteps, startTime) {
+// 最佳位置
+let bestMove = null
+function alphaBeta (depth, maxDepth, alpha, beta, chessType, aiChessType, boardGrids, playerSteps, startTime) {
   // || win()
   // || allChessShapesScore >= CHESS_SHAPES_SCORE.FIVE || allChessShapesScore <= -CHESS_SHAPES_SCORE.FIVE
-  // const allChessShapesScore = evaluateAllChessShapes(aiChessType, boardGrids)
+  // const allChessShapesScore = evaluateAllChessShapes(aiChessType, chessType, boardGrids)
   // 超时判定
   if ((+ new Date()) - startTime > CONFIG.TIME_LIMIT * 1000) {
     console.log('timeout...')
     isTimeOut = true
-    return { val: -INFINITY } // 超时，退出循环
+    return -INFINITY // 超时，退出循环
   }
   if (depth === 0) {
     // resultStep = step
-    return { val: evaluateAllChessShapes(aiChessType, chessType, boardGrids)}
+    return evaluateAllChessShapes(aiChessType, chessType, boardGrids)
   }
-  let bestMove = null
   const legalMoves = generateMoves(chessType, aiChessType, boardGrids, playerSteps)
   for (let index = 0; index < legalMoves.length; index++) {
     boardGrids[legalMoves[index].row][
       legalMoves[index].col
     ].boardGridType = chessType
-    const val = -alphaBeta(depth - 1, -beta, -alpha, 3 - chessType, aiChessType, boardGrids, playerSteps, startTime).val
+    const val = -alphaBeta(depth - 1, maxDepth, -beta, -alpha, 3 - chessType, aiChessType, boardGrids, playerSteps, startTime)
     boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
-    console.log(
-      '-----------------------',
-      val,
-      legalMoves[index].row,
-      legalMoves[index].col
-    )
+    // console.log(
+    //   '-----------------------',
+    //   val,
+    //   legalMoves[index].row,
+    //   legalMoves[index].col
+    // )
     if (val >= beta) {
       // resultStep = step
-      return { val: beta }
+      return beta
     }
     if (val > alpha) {
       alpha = val
-      // 只保存第一个最高分数的位置 忽略后面分数相同的位置
-      bestMove = { row: legalMoves[index].row, col: legalMoves[index].col }
+      if (depth === maxDepth) {
+        // 只保存第一个最高分数的位置 忽略后面分数相同的位置
+        bestMove = { row: legalMoves[index].row, col: legalMoves[index].col }
+        console.log('searching', depth, bestMove)
+      }
     }
   }
 
-  return { val: alpha, bestMove }
+  return alpha
 }
 
 
 // 超时标识
 let isTimeOut = false
-export function searchAll (maxDepth, chessType, aiChessType, boardGrids, playerSteps) {
+export function searchAll (chessType, aiChessType, boardGrids, playerSteps) {
   // let best
   // const legalMoves = generateMoves(chessType, aiChessType, boardGrids, playerSteps)
-  const startTime = (+ new Date())
   isTimeOut = false
-  // 最佳位置
-  let bestMove = null
-  for (let depth = 2; depth <= maxDepth; depth += 2) {
+  const startTime = (+ new Date())
+  // let bestVal = 0
+  for (let depth = 2; depth <= CONFIG.MAX_DEPTH; depth += 2) {
     // best = search(index, -INFINITY, INFINITY, chessType, aiChessType, boardGrids, playerSteps, legalMoves, startTime)
     // console.log('迭代了', index, best)
     // if (best >= CHESS_SHAPES_SCORE.FOUR) {
@@ -326,12 +329,18 @@ export function searchAll (maxDepth, chessType, aiChessType, boardGrids, playerS
     // }
     // let row = null
     // let col = null
-    bestMove = alphaBeta(depth, -INFINITY, INFINITY, chessType, aiChessType, boardGrids, playerSteps, startTime).bestMove
+    // bestVal = 
+    alphaBeta(depth, depth, -INFINITY, INFINITY, chessType, aiChessType, boardGrids, playerSteps, startTime)
+    // console.log(depth, bestMove)
     // 超时判定
     if ((+ new Date()) - startTime > CONFIG.TIME_LIMIT * 1000) {
       console.log('timeout...')
       break // 超时，退出循环
     }
+    // 如果已经胜利 退出循环
+    // if (bestVal >= CHESS_SHAPES_SCORE.FOUR) {
+    //   break
+    // }
   }
   console.log('search end', (+ new Date()) - startTime)
   // legalMoves.sort((a, b) => {

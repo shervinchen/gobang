@@ -142,6 +142,6 @@ export default class AI {
     // const { row, col } = minimax(4, gameBoard.boardGrids, chessType)
 
     // return alphaBeta(6, -INFINITY, INFINITY, chessType, chessType, gameBoard.boardGrids, gamePlayerSteps)
-    return searchAll(6, chessType, chessType, gameBoard.boardGrids, gamePlayerSteps)
+    return searchAll(chessType, chessType, gameBoard.boardGrids, gamePlayerSteps)
   }
 }
