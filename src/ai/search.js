@@ -276,18 +276,34 @@ function alphaBeta (depth, maxDepth, alpha, beta, chessType, aiChessType, boardG
   if ((+ new Date()) - startTime > CONFIG.TIME_LIMIT * 1000) {
     console.log('timeout...')
     isTimeOut = true
-    return -INFINITY // 超时，退出循环
+    return chessType === aiChessType ? -INFINITY : INFINITY // 超时，退出循环
   }
   if (depth === 0) {
-    // resultStep = step
     return evaluateAllChessShapes(aiChessType, chessType, boardGrids)
   }
-  const legalMoves = generateMoves(chessType, aiChessType, boardGrids, playerSteps)
+  let legalMoves = []
+  if (depth === maxDepth) {
+  //   if (historyTable.length !== 0) {
+  //     legalMoves = historyTable
+  //     historyTable = []
+  //   } else {
+  //     legalMoves = generateMoves(chessType, aiChessType, boardGrids, playerSteps)
+  //   }
+    // 先搜索上一次最好的点
+    legalMoves = historyMove.concat(generateMoves(chessType, aiChessType, boardGrids, playerSteps))
+  } else {
+    legalMoves = generateMoves(chessType, aiChessType, boardGrids, playerSteps)
+  }
+  // const legalMoves = generateMoves(chessType, aiChessType, boardGrids, playerSteps)
   for (let index = 0; index < legalMoves.length; index++) {
     boardGrids[legalMoves[index].row][
       legalMoves[index].col
     ].boardGridType = chessType
     const val = -alphaBeta(depth - 1, maxDepth, -beta, -alpha, 3 - chessType, aiChessType, boardGrids, playerSteps, startTime)
+    if (depth === maxDepth) {
+      // historyTable.push({ row: legalMoves[index].row, col: legalMoves[index].col, val })
+      // console.log({ row: legalMoves[index].row, col: legalMoves[index].col, val })
+    }
     boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
     // console.log(
     //   '-----------------------',
@@ -296,7 +312,6 @@ function alphaBeta (depth, maxDepth, alpha, beta, chessType, aiChessType, boardG
     //   legalMoves[index].col
     // )
     if (val >= beta) {
-      // resultStep = step
       return beta
     }
     if (val > alpha) {
@@ -304,6 +319,7 @@ function alphaBeta (depth, maxDepth, alpha, beta, chessType, aiChessType, boardG
       if (depth === maxDepth) {
         // 只保存第一个最高分数的位置 忽略后面分数相同的位置
         bestMove = { row: legalMoves[index].row, col: legalMoves[index].col }
+        historyMove = [bestMove]
         console.log('searching', depth, bestMove)
       }
     }
@@ -312,38 +328,51 @@ function alphaBeta (depth, maxDepth, alpha, beta, chessType, aiChessType, boardG
   return alpha
 }
 
-
 // 超时标识
 let isTimeOut = false
+let historyMove = []
 export function searchAll (chessType, aiChessType, boardGrids, playerSteps) {
-  // let best
-  // const legalMoves = generateMoves(chessType, aiChessType, boardGrids, playerSteps)
   isTimeOut = false
   const startTime = (+ new Date())
-  // let bestVal = 0
+  let bestVal = 0
   for (let depth = 2; depth <= CONFIG.MAX_DEPTH; depth += 2) {
-    // best = search(index, -INFINITY, INFINITY, chessType, aiChessType, boardGrids, playerSteps, legalMoves, startTime)
-    // console.log('迭代了', index, best)
-    // if (best >= CHESS_SHAPES_SCORE.FOUR) {
-    //   break
+    bestVal = alphaBeta(depth, depth, -INFINITY, INFINITY, chessType, aiChessType, boardGrids, playerSteps, startTime)
+    // if (depth !== CONFIG.MAX_DEPTH) {
+    //   console.log(historyTable)
+    //   historyTable.sort((a, b) => {
+    //     return b.val - a.val
+    //   })
+    // } else {
+    //   historyTable = []
     // }
-    // let row = null
-    // let col = null
-    // bestVal = 
-    alphaBeta(depth, depth, -INFINITY, INFINITY, chessType, aiChessType, boardGrids, playerSteps, startTime)
-    // console.log(depth, bestMove)
+    // 如果任意一方已经胜利 退出循环
+    if (bestVal > CHESS_SHAPES_SCORE.FIVE || bestVal < -CHESS_SHAPES_SCORE.FIVE) {
+      break
+    }
     // 超时判定
     if ((+ new Date()) - startTime > CONFIG.TIME_LIMIT * 1000) {
-      console.log('timeout...')
+      console.log('timeout...', bestVal)
       break // 超时，退出循环
     }
-    // 如果已经胜利 退出循环
-    // if (bestVal >= CHESS_SHAPES_SCORE.FOUR) {
-    //   break
-    // }
+    console.log(bestVal)
   }
-  console.log('search end', (+ new Date()) - startTime)
-  // legalMoves.sort((a, b) => {
+  historyMove = []
+  console.log('search end', (+ new Date()) - startTime, bestMove)
+  return bestMove
+}
+
+// resultStep = step
+
+// best = search(index, -INFINITY, INFINITY, chessType, aiChessType, boardGrids, playerSteps, legalMoves, startTime)
+// console.log('迭代了', index, best)
+// if (best >= CHESS_SHAPES_SCORE.FOUR) {
+//   break
+// }
+// let row = null
+// let col = null
+// bestVal = 
+
+// legalMoves.sort((a, b) => {
   //   if (a.val === b.val) {
   //     // 大于零是优势，尽快获胜，因此取步数短的
   //     // 小于0是劣势，尽量拖延，因此取步数长的
@@ -357,8 +386,6 @@ export function searchAll (chessType, aiChessType, boardGrids, playerSteps) {
   //   } else return (b.val - a.val)
   // })
   // console.log(legalMoves)
-  return bestMove
-}
 
 // 如果跟之前的一个好，则把当前位子加入待选位子
 // if (depth === d) {
