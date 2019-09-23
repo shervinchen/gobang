@@ -18,8 +18,9 @@ export default class Player {
   //   this.playerChess = playerChess
   // }
 
-  generatePlayerChess (boardGrids, position, ctx, playerSteps) {
+  generatePlayerChess (boardGrids, position, ctx, playerSteps, gameAI, aiChessType) {
     boardGrids[position.row][position.col].setBoardGridChess(this.playerChessType, ctx)
+    gameAI.zobrist.go(position.row, position.col, aiChessType, this.playerChessType)
     playerSteps.push(boardGrids[position.row][position.col])
     this.checkPlayerStatus(boardGrids, position)
   }

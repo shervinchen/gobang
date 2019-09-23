@@ -73,6 +73,12 @@ export default class Game {
     this.addBoardListener()
     // 初始化棋子储存器  保存玩家和AI的每一步棋子  可以获取步数
     this.gamePlayerSteps = []
+    // 初始化游戏AI
+    this.initGameAI()
+  }
+
+  initGameAI () {
+    this.gameAI.initAI()
   }
 
   initGameScene (boardGridSize) {
@@ -116,6 +122,7 @@ export default class Game {
         this.gameStatus = true
         this.gameBoard.resetBoardGrids(this.gameCanvas.context)
         this.initGamePlayer(CHESS_TYPE_CROSS, CHESS_TYPE_CIRCLE)
+        this.initGameAI()
       },
       false
     )
@@ -128,7 +135,8 @@ export default class Game {
         this.gameStatus = true
         this.gameBoard.resetBoardGrids(this.gameCanvas.context)
         this.initGamePlayer(CHESS_TYPE_CIRCLE, CHESS_TYPE_CROSS)
-        this.gameAIPlayer.generatePlayerChess(this.gameBoard.boardGrids, this.getGameAIFistStep(), this.gameCanvas.context, this.gamePlayerSteps)
+        this.initGameAI()
+        this.gameAIPlayer.generatePlayerChess(this.gameBoard.boardGrids, this.getGameAIFistStep(), this.gameCanvas.context, this.gamePlayerSteps, this.gameAI, this.gameAIPlayer.playerChessType)
       },
       false
     )
@@ -236,9 +244,9 @@ export default class Game {
           if (boardGrid.boardGridType !== BOARD_GRID_TYPE_DEFAULT) {
             return
           }
-          this.gameHumanPlayer.generatePlayerChess(this.gameBoard.boardGrids, { row, col }, this.gameCanvas.context, this.gamePlayerSteps)
+          this.gameHumanPlayer.generatePlayerChess(this.gameBoard.boardGrids, { row, col }, this.gameCanvas.context, this.gamePlayerSteps, this.gameAI, this.gameAIPlayer.playerChessType)
           // 如果未结束 调用AI类 获取AI计算后的落棋位置
-          this.gameAIPlayer.generatePlayerChess(this.gameBoard.boardGrids, this.getGameAINextStep(), this.gameCanvas.context, this.gamePlayerSteps)
+          this.gameAIPlayer.generatePlayerChess(this.gameBoard.boardGrids, this.getGameAINextStep(), this.gameCanvas.context, this.gamePlayerSteps, this.gameAI, this.gameAIPlayer.playerChessType)
           return
         }
       }

@@ -9,13 +9,21 @@ import { getSingleChessShapesCount } from './situation'
 import { CHESS_CROSS_SHAPES } from './chessShape'
 
 import { negamax, minimax, alphaBeta, generateLegalMoves, searchAll } from './search'
+import Zobrist from './zobrist'
 
 /*
   AI
   结合搜索、评估后的结果，得出下回合棋子位置
 */
 export default class AI {
-  constructor () {}
+  constructor () {
+    this.zobrist = new Zobrist()
+  }
+
+  initAI () {
+    this.zobrist.init()
+    // console.log(this.zobrist.code)
+  }
 
   getNextStep (chessType, gameBoard, gamePlayerSteps) {
     // return {row: , col: }
@@ -142,6 +150,6 @@ export default class AI {
     // const { row, col } = minimax(4, gameBoard.boardGrids, chessType)
 
     // return alphaBeta(6, -INFINITY, INFINITY, chessType, chessType, gameBoard.boardGrids, gamePlayerSteps)
-    return searchAll(chessType, chessType, gameBoard.boardGrids, gamePlayerSteps)
+    return searchAll(chessType, chessType, gameBoard.boardGrids, gamePlayerSteps, this.zobrist)
   }
 }
