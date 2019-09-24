@@ -290,6 +290,56 @@ import {
 //   return alpha
 // }
 
+// export function alphaBeta (depth, alpha, beta, chessType, aiChessType, boardGrids, playerSteps) {
+//   // || win()
+//   // || allChessShapesScore >= CHESS_SHAPES_SCORE.FIVE || allChessShapesScore <= -CHESS_SHAPES_SCORE.FIVE
+//   // const allChessShapesScore = evaluateAllChessShapes(aiChessType, chessType, boardGrids)
+//   // // 超时判定
+//   // if ((+ new Date()) - startTime > CONFIG.TIME_LIMIT * 1000) {
+//   //   console.log('timeout...')
+//   //   isTimeOut = true
+//   //   return -INFINITY // 超时，退出循环
+//   // }
+//   if (depth === 0) {
+//     // resultStep = step
+//     return { val: evaluateAllChessShapes(aiChessType, chessType, boardGrids) }
+//   }
+//   // 最佳位置
+//   let row = null
+//   let col = null
+//   const legalMoves = generateMoves(chessType, aiChessType, boardGrids, playerSteps)
+//   for (let index = 0; index < legalMoves.length; index++) {
+//     boardGrids[legalMoves[index].row][
+//       legalMoves[index].col
+//     ].boardGridType = chessType
+//     const val = -alphaBeta(depth - 1, -beta, -alpha, 3 - chessType, aiChessType, boardGrids, playerSteps).val
+//     boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
+//     // console.log(
+//     //   '-----------------------',
+//     //   val,
+//     //   legalMoves[index].row,
+//     //   legalMoves[index].col
+//     // )
+//     if (val >= beta) {
+//       // resultStep = step
+//       return { val: beta }
+//     }
+//     if (val > alpha) {
+//       alpha = val
+//       // if (depth === maxDepth) {
+//         // 只保存第一个最高分数的位置 忽略后面分数相同的位置
+//         row = legalMoves[index].row
+//         col = legalMoves[index].col
+//         // console.log('searching', depth, bestMove)
+//       // }
+//     }
+//   }
+
+//   return { val: alpha, row, col }
+// }
+
+
+
 // 最佳位置
 let bestMove = null
 function alphaBeta(depth, maxDepth, alpha, beta, chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist) {
