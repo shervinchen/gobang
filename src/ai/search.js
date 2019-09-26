@@ -342,28 +342,30 @@ import {
 
 // 最佳位置
 let bestMove = null
-function alphaBeta(depth, maxDepth, alpha, beta, chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist) {
+function alphaBeta (depth, maxDepth, alpha, beta, chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist) {
   // || win()
   // || allChessShapesScore >= CHESS_SHAPES_SCORE.FIVE || allChessShapesScore <= -CHESS_SHAPES_SCORE.FIVE
   // const allChessShapesScore = evaluateAllChessShapes(aiChessType, chessType, boardGrids)
+  // 是否找到 PV 节点
+  let isFoundPv = false
   // 超时判定
   if ((+new Date()) - startTime > CONFIG.TIME_LIMIT * 1000) {
     console.log('timeout...')
     isTimeOut = true
-    return { val: chessType === aiChessType ? -INFINITY : INFINITY } // 超时，退出循环
+    return chessType === aiChessType ? -INFINITY : INFINITY // 超时，退出循环
   }
   // 使用置换表中的缓存
-  const cache = Cache[zobrist.code]
-  if (cache) {
-    if(cache.depth >= depth) { // 如果缓存中的结果搜索深度不比当前小，则结果完全可用
-      // 记得clone，因为这个分数会在搜索过程中被修改，会使缓存中的值不正确
-      return { val: cache.val }
-    }
-  }
+  // const cache = Cache[zobrist.code]
+  // if (cache) {
+  //   if(cache.depth >= depth) { // 如果缓存中的结果搜索深度不比当前小，则结果完全可用
+  //     // 记得clone，因为这个分数会在搜索过程中被修改，会使缓存中的值不正确
+  //     return { val: cache.val }
+  //   }
+  // }
   if (depth === 0) {
-    return { val: evaluateAllChessShapes(aiChessType, chessType, boardGrids)}
+    return evaluateAllChessShapes(aiChessType, chessType, boardGrids)
   }
-  let best = { val: -INFINITY }
+  // let best = { val: -INFINITY }
   let legalMoves = generateMoves(chessType, aiChessType, boardGrids, playerSteps)
   if (depth === maxDepth) {
     // 先搜索上一次最好的点
@@ -373,23 +375,32 @@ function alphaBeta(depth, maxDepth, alpha, beta, chessType, aiChessType, boardGr
     boardGrids[legalMoves[index].row][
       legalMoves[index].col
     ].boardGridType = chessType
-    zobrist.go(legalMoves[index].row, legalMoves[index].col, aiChessType, chessType)
-    const result = alphaBeta(depth - 1, maxDepth, -beta, -alpha, 3 - chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist)
-    result.val = -result.val
+    // zobrist.go(legalMoves[index].row, legalMoves[index].col, aiChessType, chessType)
+    let val = null
+    if (isFoundPv) {
+      val = -alphaBeta(depth - 1, maxDepth, -alpha - 1, -alpha, 3 - chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist)
+      if (val > alpha && val < beta) { // 检查失败
+        val = -alphaBeta(depth - 1, maxDepth, -beta, -alpha, 3 - chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist)
+      }
+    } else {
+      val = -alphaBeta(depth - 1, maxDepth, -beta, -alpha, 3 - chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist)
+    }
     boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
-    zobrist.go(legalMoves[index].row, legalMoves[index].col, aiChessType, chessType)
+    // zobrist.go(legalMoves[index].row, legalMoves[index].col, aiChessType, chessType)
     // console.log(
     //   '-----------------------',
-    //   val,
+    //   result.val,
     //   legalMoves[index].row,
     //   legalMoves[index].col
     // )
-    if (result.val >= beta) {
-      return { val: beta, abcut: 1 }
+    if (val >= beta) {
+      // return { val: beta, abcut: 1 }
+      return beta
     }
-    if (result.val > alpha) {
-      alpha = result.val
-      best = result
+    if (val > alpha) {
+      isFoundPv = true
+      alpha = val
+      // best = result
       if (depth === maxDepth) {
         // 只保存第一个最高分数的位置 忽略后面分数相同的位置
         bestMove = {
@@ -402,9 +413,9 @@ function alphaBeta(depth, maxDepth, alpha, beta, chessType, aiChessType, boardGr
     }
   }
 
-  setCache(depth, best, zobrist)
+  // setCache(depth, best, zobrist)
 
-  return best
+  return alpha
 }
 
 function setCache(depth, result, zobrist) {
@@ -428,9 +439,10 @@ export function searchAll(chessType, aiChessType, boardGrids, playerSteps, zobri
   let bestVal = 0
   for (let depth = 2; depth <= CONFIG.MAX_DEPTH; depth += 2) {
     // let best = { val: -INFINITY }
-    bestVal = alphaBeta(depth, depth, -INFINITY, INFINITY, chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist).val
+    bestVal = alphaBeta(depth, depth, -INFINITY, INFINITY, chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist)
     // 如果任意一方已经胜利 退出循环
     if (bestVal > CHESS_SHAPES_SCORE.FIVE || bestVal < -CHESS_SHAPES_SCORE.FIVE) {
+      console.log(bestVal)
       break
     }
     // 超时判定
