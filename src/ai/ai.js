@@ -20,8 +20,8 @@ export default class AI {
     this.zobrist = new Zobrist()
   }
 
-  initAI () {
-    this.zobrist.init()
+  initAI (gameBoard) {
+    this.zobrist.calculateInitHashKey(gameBoard.boardGrids)
     // console.log(this.zobrist.code)
   }
 
@@ -150,6 +150,7 @@ export default class AI {
     // const { row, col } = minimax(4, gameBoard.boardGrids, chessType)
 
     // return alphaBeta(6, -INFINITY, INFINITY, chessType, chessType, gameBoard.boardGrids, gamePlayerSteps)
+    this.initAI(gameBoard)
     return searchAll(chessType, chessType, gameBoard.boardGrids, gamePlayerSteps, this.zobrist)
   }
 }

@@ -78,7 +78,7 @@ export default class Game {
   }
 
   initGameAI () {
-    this.gameAI.initAI()
+    this.gameAI.initAI(this.gameBoard)
   }
 
   initGameScene (boardGridSize) {

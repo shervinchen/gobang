@@ -355,15 +355,14 @@ function alphaBeta (depth, maxDepth, alpha, beta, chessType, aiChessType, boardG
     return chessType === aiChessType ? -INFINITY : INFINITY // 超时，退出循环
   }
   // 使用置换表中的缓存
-  // const cache = Cache[zobrist.code]
-  // if (cache) {
-  //   if(cache.depth >= depth) { // 如果缓存中的结果搜索深度不比当前小，则结果完全可用
-  //     // 记得clone，因为这个分数会在搜索过程中被修改，会使缓存中的值不正确
-  //     return { val: cache.val }
-  //   }
-  // }
+  const cacheVal = zobrist.lookUpHashTable(alpha, beta, depth)
+  if (cacheVal !== 404404) {
+    return cacheVal
+  }
   if (depth === 0) {
-    return evaluateAllChessShapes(aiChessType, chessType, boardGrids)
+    const evaluateVal = evaluateAllChessShapes(aiChessType, chessType, boardGrids)
+    zobrist.enterHashTable(0, evaluateVal, depth)
+    return evaluateVal
   }
   // let best = { val: -INFINITY }
   let legalMoves = generateMoves(chessType, aiChessType, boardGrids, playerSteps)
@@ -371,11 +370,13 @@ function alphaBeta (depth, maxDepth, alpha, beta, chessType, aiChessType, boardG
     // 先搜索上一次最好的点
     legalMoves = historyMove.concat(legalMoves)
   }
+  // let bestIndex = -1
+  let exact = -1
   for (let index = 0; index < legalMoves.length; index++) {
     boardGrids[legalMoves[index].row][
       legalMoves[index].col
     ].boardGridType = chessType
-    // zobrist.go(legalMoves[index].row, legalMoves[index].col, aiChessType, chessType)
+    zobrist.hashMakeMove(legalMoves[index], boardGrids)
     let val = null
     if (isFoundPv) {
       val = -alphaBeta(depth - 1, maxDepth, -alpha - 1, -alpha, 3 - chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist)
@@ -386,7 +387,7 @@ function alphaBeta (depth, maxDepth, alpha, beta, chessType, aiChessType, boardG
       val = -alphaBeta(depth - 1, maxDepth, -beta, -alpha, 3 - chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist)
     }
     boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
-    // zobrist.go(legalMoves[index].row, legalMoves[index].col, aiChessType, chessType)
+    zobrist.hashUnMakeMove(legalMoves[index], boardGrids)
     // console.log(
     //   '-----------------------',
     //   result.val,
@@ -394,11 +395,14 @@ function alphaBeta (depth, maxDepth, alpha, beta, chessType, aiChessType, boardG
     //   legalMoves[index].col
     // )
     if (val >= beta) {
-      // return { val: beta, abcut: 1 }
+      if (!isTimeOut) {
+        zobrist.enterHashTable(1, beta, depth)
+      }
       return beta
     }
     if (val > alpha) {
       isFoundPv = true
+      exact = 1
       alpha = val
       // best = result
       if (depth === maxDepth) {
@@ -413,17 +417,21 @@ function alphaBeta (depth, maxDepth, alpha, beta, chessType, aiChessType, boardG
     }
   }
 
-  // setCache(depth, best, zobrist)
+  // if ( bestIndex !== -1 ) h_heuristic.enterHistoryScore( to_try[ bestIndex ], depth );
+  // 操作历史记录表
+  if (!isTimeOut) {
+    zobrist.enterHashTable(exact, alpha, depth)
+  }
 
   return alpha
 }
 
-function setCache(depth, result, zobrist) {
-  if (result.abcut) return false // 被剪枝的不要缓存哦，因为分数是一个极值
+function setCache (depth, val, zobrist) {
+  // if (result.abcut) return false // 被剪枝的不要缓存哦，因为分数是一个极值
   // 记得clone，因为score在搜索的时候可能会被改的，这里要clone一个新的
   const obj = {
     depth,
-    val: result.val
+    val
   }
   Cache[zobrist.code] = obj
 }
@@ -456,6 +464,18 @@ export function searchAll(chessType, aiChessType, boardGrids, playerSteps, zobri
   console.log('search end', (+new Date()) - startTime, bestMove)
   return bestMove
 }
+
+// return { val: beta, abcut: 1 }
+// setCache(depth, alpha, zobrist)
+// zobrist.go(legalMoves[index].row, legalMoves[index].col, aiChessType, chessType)
+
+// const cache = Cache[zobrist.code]
+  // if (cache) {
+  //   if (cache.depth >= depth) { // 如果缓存中的结果搜索深度不比当前小，则结果完全可用
+  //     // 记得clone，因为这个分数会在搜索过程中被修改，会使缓存中的值不正确
+  //     return cache.val
+  //   }
+  // }
 
 // resultStep = step
 
