@@ -1,4 +1,5 @@
 import {
+  UNKNOWN_VAL,
   INFINITY
 } from '../constant'
 import {
@@ -342,7 +343,7 @@ import {
 
 // 最佳位置
 let bestMove = null
-function alphaBeta (depth, maxDepth, alpha, beta, chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist) {
+function alphaBeta (depth, maxDepth, alpha, beta, chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist, history) {
   // || win()
   // || allChessShapesScore >= CHESS_SHAPES_SCORE.FIVE || allChessShapesScore <= -CHESS_SHAPES_SCORE.FIVE
   // const allChessShapesScore = evaluateAllChessShapes(aiChessType, chessType, boardGrids)
@@ -356,7 +357,7 @@ function alphaBeta (depth, maxDepth, alpha, beta, chessType, aiChessType, boardG
   }
   // 使用置换表中的缓存
   const cacheVal = zobrist.lookUpHashTable(alpha, beta, depth)
-  if (cacheVal !== 404404) {
+  if (cacheVal !== UNKNOWN_VAL) {
     return cacheVal
   }
   if (depth === 0) {
@@ -364,14 +365,19 @@ function alphaBeta (depth, maxDepth, alpha, beta, chessType, aiChessType, boardG
     zobrist.enterHashTable(0, evaluateVal, depth)
     return evaluateVal
   }
-  // let best = { val: -INFINITY }
   let legalMoves = generateMoves(chessType, aiChessType, boardGrids, playerSteps)
   if (depth === maxDepth) {
     // 先搜索上一次最好的点
     legalMoves = historyMove.concat(legalMoves)
   }
-  // let bestIndex = -1
+  // 历史启发效果不好，暂时弃用，效果待优化，使用杀手启发取代
+  // const legalMoves = generateMoves(chessType, aiChessType, boardGrids, playerSteps)
+  // for (let index = 0; index < legalMoves.length; index++) {
+  //   legalMoves[index].score = history.getHistoryScore(legalMoves[index])
+  // }
+  // history.mergeSort(legalMoves, legalMoves.length, 0)
   let exact = -1
+  let best = null
   for (let index = 0; index < legalMoves.length; index++) {
     boardGrids[legalMoves[index].row][
       legalMoves[index].col
@@ -379,12 +385,12 @@ function alphaBeta (depth, maxDepth, alpha, beta, chessType, aiChessType, boardG
     zobrist.hashMakeMove(legalMoves[index], boardGrids)
     let val = null
     if (isFoundPv) {
-      val = -alphaBeta(depth - 1, maxDepth, -alpha - 1, -alpha, 3 - chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist)
+      val = -alphaBeta(depth - 1, maxDepth, -alpha - 1, -alpha, 3 - chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist, history)
       if (val > alpha && val < beta) { // 检查失败
-        val = -alphaBeta(depth - 1, maxDepth, -beta, -alpha, 3 - chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist)
+        val = -alphaBeta(depth - 1, maxDepth, -beta, -alpha, 3 - chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist, history)
       }
     } else {
-      val = -alphaBeta(depth - 1, maxDepth, -beta, -alpha, 3 - chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist)
+      val = -alphaBeta(depth - 1, maxDepth, -beta, -alpha, 3 - chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist, history)
     }
     boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
     zobrist.hashUnMakeMove(legalMoves[index], boardGrids)
@@ -397,6 +403,7 @@ function alphaBeta (depth, maxDepth, alpha, beta, chessType, aiChessType, boardG
     if (val >= beta) {
       if (!isTimeOut) {
         zobrist.enterHashTable(1, beta, depth)
+        history.enterHistoryScore(legalMoves[index], depth)
       }
       return beta
     }
@@ -404,22 +411,24 @@ function alphaBeta (depth, maxDepth, alpha, beta, chessType, aiChessType, boardG
       isFoundPv = true
       exact = 1
       alpha = val
-      // best = result
+      // 只保存第一个最高分数的位置 忽略后面分数相同的位置
+      best = {
+        row: legalMoves[index].row,
+        col: legalMoves[index].col
+      }
       if (depth === maxDepth) {
-        // 只保存第一个最高分数的位置 忽略后面分数相同的位置
-        bestMove = {
-          row: legalMoves[index].row,
-          col: legalMoves[index].col
-        }
+        bestMove = best
         historyMove = [bestMove]
         console.log('searching', depth, bestMove)
       }
     }
   }
 
-  // if ( bestIndex !== -1 ) h_heuristic.enterHistoryScore( to_try[ bestIndex ], depth );
   // 操作历史记录表
   if (!isTimeOut) {
+    if (best) {
+      history.enterHistoryScore(best, depth)
+    }
     zobrist.enterHashTable(exact, alpha, depth)
   }
 
@@ -440,14 +449,14 @@ function setCache (depth, val, zobrist) {
 let isTimeOut = false
 let historyMove = []
 let Cache = {}
-export function searchAll(chessType, aiChessType, boardGrids, playerSteps, zobrist) {
+export function searchAll(chessType, aiChessType, boardGrids, playerSteps, zobrist, history) {
   isTimeOut = false
   const startTime = (+new Date())
   Cache = {}
   let bestVal = 0
-  for (let depth = 2; depth <= CONFIG.MAX_DEPTH; depth += 2) {
+  for (let depth = CONFIG.ITERATION_DEPTH; depth <= CONFIG.MAX_DEPTH; depth += 2) {
     // let best = { val: -INFINITY }
-    bestVal = alphaBeta(depth, depth, -INFINITY, INFINITY, chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist)
+    bestVal = alphaBeta(depth, depth, -INFINITY, INFINITY, chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist, history)
     // 如果任意一方已经胜利 退出循环
     if (bestVal > CHESS_SHAPES_SCORE.FIVE || bestVal < -CHESS_SHAPES_SCORE.FIVE) {
       console.log(bestVal)
@@ -465,6 +474,12 @@ export function searchAll(chessType, aiChessType, boardGrids, playerSteps, zobri
   return bestMove
 }
 
+// best = result
+  // console.log('排序前', JSON.parse(JSON.stringify(legalMoves)))
+  // console.log('排序后', legalMoves)
+// if ( bestIndex !== -1 ) h_heuristic.enterHistoryScore( to_try[ bestIndex ], depth );
+// let best = { val: -INFINITY }
+// let bestIndex = -1
 // return { val: beta, abcut: 1 }
 // setCache(depth, alpha, zobrist)
 // zobrist.go(legalMoves[index].row, legalMoves[index].col, aiChessType, chessType)

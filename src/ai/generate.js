@@ -51,37 +51,37 @@ export function generateMoves (chessType, aiChessType, boardGrids, playerSteps) 
         boardGrids[row][col].boardGridType = 0
 
         // console.log('打印10，8的分数', scoreAI, scoreHuman)
-        // boardGrids[row][col].score = Math.max(scoreAI, scoreHuman)
-        // if (boardGrids[row][col].score < CHESS_SHAPES_SCORE.THREE) {
+        // boardGrids[row][col].value = Math.max(scoreAI, scoreHuman)
+        // if (boardGrids[row][col].value < CHESS_SHAPES_SCORE.THREE) {
         //   continue
         // }
-        const score = Math.max(scoreAI, scoreHuman)
+        const value = Math.max(scoreAI, scoreHuman)
         if (scoreAI >= CHESS_SHAPES_SCORE.FIVE) {
-          fives.push({ row, col, score })
+          fives.push({ row, col, value })
         } else if (scoreHuman >= CHESS_SHAPES_SCORE.FIVE) {
-          fives.push({ row, col, score })
+          fives.push({ row, col, value })
         } else if (scoreAI >= CHESS_SHAPES_SCORE.FOUR) {
-          aiFours.push({ row, col, score })
+          aiFours.push({ row, col, value })
         } else if (scoreHuman >= CHESS_SHAPES_SCORE.FOUR) {
-          humanFours.push({ row, col, score })
+          humanFours.push({ row, col, value })
         } else if (scoreAI >= CHESS_SHAPES_SCORE.BLOCKED_FOUR) {
-          aiBlockedFours.push({ row, col, score })
+          aiBlockedFours.push({ row, col, value })
         } else if (scoreHuman >= CHESS_SHAPES_SCORE.BLOCKED_FOUR) {
-          humanBlockedFours.push({ row, col, score })
+          humanBlockedFours.push({ row, col, value })
         } else if (scoreAI >= 2 * CHESS_SHAPES_SCORE.THREE) {
-          aiTwoThrees.push({ row, col, score })
+          aiTwoThrees.push({ row, col, value })
         } else if (scoreHuman >= 2 * CHESS_SHAPES_SCORE.THREE) {
-          humanTwoThrees.push({ row, col, score })
+          humanTwoThrees.push({ row, col, value })
         } else if (scoreAI >= CHESS_SHAPES_SCORE.THREE) {
-          aiThrees.push({ row, col, score })
+          aiThrees.push({ row, col, value })
         } else if (scoreHuman >= CHESS_SHAPES_SCORE.THREE) {
-          humanThrees.push({ row, col, score })
+          humanThrees.push({ row, col, value })
         } else if (scoreAI >= CHESS_SHAPES_SCORE.TWO) {
-          aiTwos.unshift({ row, col, score })
+          aiTwos.unshift({ row, col, value })
         } else if (scoreHuman >= CHESS_SHAPES_SCORE.TWO) {
-          humanTwos.unshift({ row, col, score })
+          humanTwos.unshift({ row, col, value })
         } else {
-          neighbors.push({ row, col, score })
+          neighbors.push({ row, col, value })
         }
       }
     }
@@ -195,7 +195,7 @@ export function generateMoves (chessType, aiChessType, boardGrids, playerSteps) 
   }
 
   twos.sort((a, b) => {
-    return b.score - a.score
+    return b.value - a.value
   })
   result = result.concat(twos.length ? twos : neighbors)
 

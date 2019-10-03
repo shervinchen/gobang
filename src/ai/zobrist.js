@@ -1,4 +1,4 @@
-import { BOARD_GRIDS_COUNT } from '../constant'
+import { BOARD_GRIDS_COUNT, UNKNOWN_VAL } from '../constant'
 // import { Random } from "random-js";
 
   // var z = new Zobrist();
@@ -39,7 +39,7 @@ import { BOARD_GRIDS_COUNT } from '../constant'
  */
   /**
  * 置换表模块，由 T_Tbale 一个类构成，详见该类
- * @module t_table
+ * @module Zobrist
  */
   ;('use strict')
 /**
@@ -168,7 +168,7 @@ export default class Zobrist {
         }
       }
     }
-    return 404404 // 不存在，返回一个不在评分范围内的约定值
+    return UNKNOWN_VAL // 不存在，返回一个不在评分范围内的约定值
   }
 
   /**
