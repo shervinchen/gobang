@@ -1,22 +1,11 @@
-import {
-  UNKNOWN_VAL,
-  INFINITY
-} from '../constant'
-import {
-  evaluateAllChessShapes
-} from './evaluate'
-import {
-  calculateAllChessShapes
-} from './situation'
-import {
-  generateMoves
-} from './generate'
-import {
-  CHESS_SHAPES_SCORE
-} from './score'
-import {
-  CONFIG
-} from './config'
+import { UNKNOWN_VAL, INFINITY } from '../constant'
+import { evaluateAllChessShapes } from './evaluate'
+import { calculateAllChessShapes } from './situation'
+import { generateMoves } from './generate'
+import { CHESS_SHAPES_SCORE } from './score'
+import { CONFIG } from './config'
+
+import { vcf, vct } from './vcx'
 
 /*
   搜索
@@ -218,8 +207,8 @@ import {
 // }
 
 // function win(boardGrids, aiChessType) {
-  // const chessShapesCount = calculateAllChessShapes(aiChessType, boardGrids)
-  // return chessShapesCount.FIVE.AI !== 0 || chessShapesCount.FIVE.HUMAN !== 0
+// const chessShapesCount = calculateAllChessShapes(aiChessType, boardGrids)
+// return chessShapesCount.FIVE.AI !== 0 || chessShapesCount.FIVE.HUMAN !== 0
 // }
 
 // let resultStep = 0
@@ -339,18 +328,28 @@ import {
 //   return { val: alpha, row, col }
 // }
 
-
-
 // 最佳位置
 let bestMove = null
-function alphaBeta (depth, maxDepth, alpha, beta, chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist, history) {
+function alphaBeta (
+  depth,
+  maxDepth,
+  alpha,
+  beta,
+  chessType,
+  aiChessType,
+  boardGrids,
+  playerSteps,
+  startTime,
+  zobrist,
+  history
+) {
   // || win()
   // || allChessShapesScore >= CHESS_SHAPES_SCORE.FIVE || allChessShapesScore <= -CHESS_SHAPES_SCORE.FIVE
   // const allChessShapesScore = evaluateAllChessShapes(aiChessType, chessType, boardGrids)
   // 是否找到 PV 节点
   let isFoundPv = false
   // 超时判定
-  if ((+new Date()) - startTime > CONFIG.TIME_LIMIT * 1000) {
+  if (+new Date() - startTime > CONFIG.TIME_LIMIT * 1000) {
     console.log('timeout...')
     isTimeOut = true
     return chessType === aiChessType ? -INFINITY : INFINITY // 超时，退出循环
@@ -360,16 +359,78 @@ function alphaBeta (depth, maxDepth, alpha, beta, chessType, aiChessType, boardG
   if (cacheVal !== UNKNOWN_VAL) {
     return cacheVal
   }
+  // 判断是否搜索到最深的节点或者任意一方已经胜利
+  // const chessShapesCount = calculateAllChessShapes(aiChessType, boardGrids)
+  // || chessShapesCount['FIVE'].AI > 0 || chessShapesCount['FIVE'].HUMAN > 0
   if (depth === 0) {
-    const evaluateVal = evaluateAllChessShapes(aiChessType, chessType, boardGrids)
+    const evaluateVal = evaluateAllChessShapes(
+      aiChessType,
+      chessType,
+      boardGrids
+    )
+    // 经过测试，把算杀放在对子节点的搜索之后，比放在前面速度更快一些。
+    // vcf
+    // 自己没有形成活四，对面也没有形成活四，那么先尝试VCF
+    const vcxDeep = 0 // 算杀深度
+    if (
+      evaluateVal < CHESS_SHAPES_SCORE.FOUR &&
+      evaluateVal > CHESS_SHAPES_SCORE.FOUR * -1
+    ) {
+      const mate = vcf(chessType, aiChessType, vcxDeep, boardGrids, zobrist)
+      if (mate) {
+        // config.debug && console.log('vcf success')
+        // const v = {
+        //   score: mate.score,
+        //   step: step + mate.length,
+        //   steps: steps,
+        //   vcf: mate // 一个标记为，表示这个值是由vcx算出的
+        // }
+        // return v
+        return mate.val
+      }
+    } // vct
+    // 自己没有形成活三，对面也没有高于活三的棋型，那么尝试VCT
+    if (
+      evaluateVal < CHESS_SHAPES_SCORE.THREE * 2 &&
+      evaluateVal > CHESS_SHAPES_SCORE.THREE * -2
+    ) {
+      const mate = vct(chessType, aiChessType, vcxDeep, boardGrids, zobrist)
+      if (mate) {
+        // config.debug && console.log('vct success')
+        // v = {
+        //   score: mate.score,
+        //   step: step + mate.length,
+        //   steps: steps,
+        //   vct: mate // 一个标记为，表示这个值是由vcx算出的
+        // }
+        // return v
+        return mate.val
+      }
+    }
     zobrist.enterHashTable(0, evaluateVal, depth)
     return evaluateVal
   }
-  let legalMoves = generateMoves(chessType, aiChessType, boardGrids, playerSteps)
+  let legalMoves = generateMoves(
+    chessType,
+    aiChessType,
+    boardGrids,
+    playerSteps
+  )
   if (depth === maxDepth) {
     // 先搜索上一次最好的点
     legalMoves = historyMove.concat(legalMoves)
   }
+
+  // 杀手启发 非根节点
+  if (depth < maxDepth) {
+    if (
+      zobrist.killTable[zobrist.hash_key] &&
+      zobrist.killTable[zobrist.hash_key].key === zobrist.hash_checksum
+    ) {
+      legalMoves = zobrist.killTable[zobrist.hash_key].move.concat(legalMoves)
+    }
+  }
+
   // 历史启发效果不好，暂时弃用，效果待优化，使用杀手启发取代
   // const legalMoves = generateMoves(chessType, aiChessType, boardGrids, playerSteps)
   // for (let index = 0; index < legalMoves.length; index++) {
@@ -385,12 +446,49 @@ function alphaBeta (depth, maxDepth, alpha, beta, chessType, aiChessType, boardG
     zobrist.hashMakeMove(legalMoves[index], boardGrids)
     let val = null
     if (isFoundPv) {
-      val = -alphaBeta(depth - 1, maxDepth, -alpha - 1, -alpha, 3 - chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist, history)
-      if (val > alpha && val < beta) { // 检查失败
-        val = -alphaBeta(depth - 1, maxDepth, -beta, -alpha, 3 - chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist, history)
+      val = -alphaBeta(
+        depth - 1,
+        maxDepth,
+        -alpha - 1,
+        -alpha,
+        3 - chessType,
+        aiChessType,
+        boardGrids,
+        playerSteps,
+        startTime,
+        zobrist,
+        history
+      )
+      if (val > alpha && val < beta) {
+        // 检查失败
+        val = -alphaBeta(
+          depth - 1,
+          maxDepth,
+          -beta,
+          -alpha,
+          3 - chessType,
+          aiChessType,
+          boardGrids,
+          playerSteps,
+          startTime,
+          zobrist,
+          history
+        )
       }
     } else {
-      val = -alphaBeta(depth - 1, maxDepth, -beta, -alpha, 3 - chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist, history)
+      val = -alphaBeta(
+        depth - 1,
+        maxDepth,
+        -beta,
+        -alpha,
+        3 - chessType,
+        aiChessType,
+        boardGrids,
+        playerSteps,
+        startTime,
+        zobrist,
+        history
+      )
     }
     boardGrids[legalMoves[index].row][legalMoves[index].col].boardGridType = 0
     zobrist.hashUnMakeMove(legalMoves[index], boardGrids)
@@ -404,6 +502,11 @@ function alphaBeta (depth, maxDepth, alpha, beta, chessType, aiChessType, boardG
       if (!isTimeOut) {
         zobrist.enterHashTable(1, beta, depth)
         history.enterHistoryScore(legalMoves[index], depth)
+        // 将发生beta截断的落点在杀手走法表中保存为当前节点的杀手走法
+        zobrist.killTable[zobrist.hash_key] = {
+          key: zobrist.hash_checksum,
+          move: legalMoves[index]
+        }
       }
       return beta
     }
@@ -430,6 +533,14 @@ function alphaBeta (depth, maxDepth, alpha, beta, chessType, aiChessType, boardG
       history.enterHistoryScore(best, depth)
     }
     zobrist.enterHashTable(exact, alpha, depth)
+    // 如果当前节点为alpha节点且命中了杀手走法表，说明当前节点已不再是beta节点，应从杀手走法表中移除
+    if (
+      zobrist.killTable[zobrist.hash_key] &&
+      zobrist.killTable[zobrist.hash_key].key === zobrist.hash_checksum
+    ) {
+      zobrist.killTable[zobrist.hash_key].key = -1
+      zobrist.killTable[zobrist.hash_key].move = null
+    }
   }
 
   return alpha
@@ -449,34 +560,61 @@ function setCache (depth, val, zobrist) {
 let isTimeOut = false
 let historyMove = []
 let Cache = {}
-export function searchAll(chessType, aiChessType, boardGrids, playerSteps, zobrist, history) {
+export function searchAll (
+  chessType,
+  aiChessType,
+  boardGrids,
+  playerSteps,
+  zobrist,
+  history
+) {
   isTimeOut = false
-  const startTime = (+new Date())
+  const startTime = +new Date()
   Cache = {}
   let bestVal = 0
-  for (let depth = CONFIG.ITERATION_DEPTH; depth <= CONFIG.MAX_DEPTH; depth += 2) {
+  for (
+    let depth = CONFIG.ITERATION_DEPTH;
+    depth <= CONFIG.MAX_DEPTH;
+    depth += 2
+  ) {
     // let best = { val: -INFINITY }
-    bestVal = alphaBeta(depth, depth, -INFINITY, INFINITY, chessType, aiChessType, boardGrids, playerSteps, startTime, zobrist, history)
+    bestVal = alphaBeta(
+      depth,
+      depth,
+      -INFINITY,
+      INFINITY,
+      chessType,
+      aiChessType,
+      boardGrids,
+      playerSteps,
+      startTime,
+      zobrist,
+      history
+    )
     // 如果任意一方已经胜利 退出循环
-    if (bestVal > CHESS_SHAPES_SCORE.FIVE || bestVal < -CHESS_SHAPES_SCORE.FIVE) {
+    // CHESS_SHAPES_SCORE.FIVE
+    if (
+      bestVal >= CHESS_SHAPES_SCORE.FOUR ||
+      bestVal <= -CHESS_SHAPES_SCORE.FOUR
+    ) {
       console.log(bestVal)
       break
     }
     // 超时判定
-    if ((+new Date()) - startTime > CONFIG.TIME_LIMIT * 1000) {
+    if (+new Date() - startTime > CONFIG.TIME_LIMIT * 1000) {
       console.log('timeout...')
       break // 超时，退出循环
     }
     console.log(bestVal)
   }
   historyMove = []
-  console.log('search end', (+new Date()) - startTime, bestMove)
+  console.log('search end', +new Date() - startTime, bestMove)
   return bestMove
 }
 
 // best = result
-  // console.log('排序前', JSON.parse(JSON.stringify(legalMoves)))
-  // console.log('排序后', legalMoves)
+// console.log('排序前', JSON.parse(JSON.stringify(legalMoves)))
+// console.log('排序后', legalMoves)
 // if ( bestIndex !== -1 ) h_heuristic.enterHistoryScore( to_try[ bestIndex ], depth );
 // let best = { val: -INFINITY }
 // let bestIndex = -1
@@ -485,12 +623,12 @@ export function searchAll(chessType, aiChessType, boardGrids, playerSteps, zobri
 // zobrist.go(legalMoves[index].row, legalMoves[index].col, aiChessType, chessType)
 
 // const cache = Cache[zobrist.code]
-  // if (cache) {
-  //   if (cache.depth >= depth) { // 如果缓存中的结果搜索深度不比当前小，则结果完全可用
-  //     // 记得clone，因为这个分数会在搜索过程中被修改，会使缓存中的值不正确
-  //     return cache.val
-  //   }
-  // }
+// if (cache) {
+//   if (cache.depth >= depth) { // 如果缓存中的结果搜索深度不比当前小，则结果完全可用
+//     // 记得clone，因为这个分数会在搜索过程中被修改，会使缓存中的值不正确
+//     return cache.val
+//   }
+// }
 
 // resultStep = step
 
@@ -501,7 +639,7 @@ export function searchAll(chessType, aiChessType, boardGrids, playerSteps, zobri
 // }
 // let row = null
 // let col = null
-// bestVal = 
+// bestVal =
 
 // legalMoves.sort((a, b) => {
 //   if (a.val === b.val) {

@@ -1,9 +1,11 @@
 import { BOARD_GRIDS_COUNT } from '../constant'
 import { CHESS_SHAPES_SCORE } from './score'
 import { evaluateSingleChessShapes } from './evaluate'
+import { calculateSingleChessShapes } from './situation'
 
 export function generateMoves (chessType, aiChessType, boardGrids, playerSteps) {
-  const fives = []
+  const aiFives = []
+  const humanFives = []
   const aiFours = []
   const humanFours = []
   const aiBlockedFours = []
@@ -33,13 +35,23 @@ export function generateMoves (chessType, aiChessType, boardGrids, playerSteps) 
         
         // 计算当前位置放置ai棋子的棋型分数
         boardGrids[row][col].boardGridType = aiChessType
-        const scoreAI = evaluateSingleChessShapes(aiChessType, boardGrids, {
+        // const aiChessShapesCount = calculateSingleChessShapes(
+        //   aiChessType,
+        //   boardGrids,
+        //   { row, col }
+        // )
+        const aiResult = evaluateSingleChessShapes(aiChessType, boardGrids, {
           row,
           col
         })
         // 计算当前位置放置人类棋子的棋型分数
         boardGrids[row][col].boardGridType = 3 - aiChessType
-        const scoreHuman = evaluateSingleChessShapes(
+        // const humanChessShapesCount = calculateSingleChessShapes(
+        //   3 - aiChessType,
+        //   boardGrids,
+        //   { row, col }
+        // )
+        const humanResult = evaluateSingleChessShapes(
           3 - aiChessType,
           boardGrids,
           {
@@ -55,30 +67,32 @@ export function generateMoves (chessType, aiChessType, boardGrids, playerSteps) 
         // if (boardGrids[row][col].value < CHESS_SHAPES_SCORE.THREE) {
         //   continue
         // }
-        const value = Math.max(scoreAI, scoreHuman)
-        if (scoreAI >= CHESS_SHAPES_SCORE.FIVE) {
-          fives.push({ row, col, value })
-        } else if (scoreHuman >= CHESS_SHAPES_SCORE.FIVE) {
-          fives.push({ row, col, value })
-        } else if (scoreAI >= CHESS_SHAPES_SCORE.FOUR) {
+
+        // 用棋型个数来计算  别用分数
+        const value = Math.max(aiResult.score, humanResult.score)
+        if (aiResult.count.FIVE >= 1) {
+          aiFives.push({ row, col, value })
+        } else if (humanResult.count.FIVE >= 1) {
+          humanFives.push({ row, col, value })
+        } else if (aiResult.count.FOUR >= 1) {
           aiFours.push({ row, col, value })
-        } else if (scoreHuman >= CHESS_SHAPES_SCORE.FOUR) {
+        } else if (humanResult.count.FOUR >= 1) {
           humanFours.push({ row, col, value })
-        } else if (scoreAI >= CHESS_SHAPES_SCORE.BLOCKED_FOUR) {
+        } else if (aiResult.count.BLOCKED_FOUR >= 1) {
           aiBlockedFours.push({ row, col, value })
-        } else if (scoreHuman >= CHESS_SHAPES_SCORE.BLOCKED_FOUR) {
+        } else if (humanResult.count.BLOCKED_FOUR >= 1) {
           humanBlockedFours.push({ row, col, value })
-        } else if (scoreAI >= 2 * CHESS_SHAPES_SCORE.THREE) {
+        } else if (aiResult.count.THREE >= 2) {
           aiTwoThrees.push({ row, col, value })
-        } else if (scoreHuman >= 2 * CHESS_SHAPES_SCORE.THREE) {
+        } else if (humanResult.count.THREE >= 2) {
           humanTwoThrees.push({ row, col, value })
-        } else if (scoreAI >= CHESS_SHAPES_SCORE.THREE) {
+        } else if (aiResult.count.THREE >= 1) {
           aiThrees.push({ row, col, value })
-        } else if (scoreHuman >= CHESS_SHAPES_SCORE.THREE) {
+        } else if (humanResult.count.THREE >= 1) {
           humanThrees.push({ row, col, value })
-        } else if (scoreAI >= CHESS_SHAPES_SCORE.TWO) {
+        } else if (aiResult.count.TWO >= 1) {
           aiTwos.unshift({ row, col, value })
-        } else if (scoreHuman >= CHESS_SHAPES_SCORE.TWO) {
+        } else if (humanResult.count.TWO >= 1) {
           humanTwos.unshift({ row, col, value })
         } else {
           neighbors.push({ row, col, value })
@@ -87,8 +101,17 @@ export function generateMoves (chessType, aiChessType, boardGrids, playerSteps) 
     }
   }
   // 如果成五，是必杀棋，直接返回
-  if (fives.length) {
-    return fives
+  // if (fives.length) {
+  //   return fives
+  // }
+  if (chessType === aiChessType && aiFives.length) {
+    if (chessType === 3 - aiChessType && humanFives.length) {
+      return aiFives.concat(humanFives)
+    }
+    return aiFives
+  }
+  if (aiFives.length || humanFives.length) {
+    return aiFives.concat(humanFives)
   }
 
   // 先考虑必须下子的位置  直接返回

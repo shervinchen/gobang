@@ -57,6 +57,11 @@ export default class Zobrist {
     this.hash_checksum = 0
     this.size = 50e7
     this.hash_lookup = Zobrist.zobristInit()
+    this.killTable = []
+  }
+
+  initKillTable () {
+    this.killTable = []
   }
 
   /**

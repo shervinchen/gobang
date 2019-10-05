@@ -25,6 +25,7 @@ export default class AI {
   initAI (gameBoard) {
     this.history.clearHistoryScore()
     this.zobrist.calculateInitHashKey(gameBoard.boardGrids)
+    this.zobrist.initKillTable()
     // console.log(this.zobrist.code)
   }
 
@@ -154,7 +155,9 @@ export default class AI {
     // const { row, col } = minimax(4, gameBoard.boardGrids, chessType)
 
     // return alphaBeta(6, -INFINITY, INFINITY, chessType, chessType, gameBoard.boardGrids, gamePlayerSteps)
-    this.initAI(gameBoard)
+
+    // 每次搜索前初始化历史表与置换表
+    // this.initAI(gameBoard)
     return searchAll(chessType, chessType, gameBoard.boardGrids, gamePlayerSteps, this.zobrist, this.history)
   }
 }
