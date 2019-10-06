@@ -157,7 +157,7 @@ export default class AI {
     // return alphaBeta(6, -INFINITY, INFINITY, chessType, chessType, gameBoard.boardGrids, gamePlayerSteps)
 
     // 每次搜索前初始化历史表与置换表
-    // this.initAI(gameBoard)
+    this.initAI(gameBoard)
     return searchAll(chessType, chessType, gameBoard.boardGrids, gamePlayerSteps, this.zobrist, this.history)
   }
 }

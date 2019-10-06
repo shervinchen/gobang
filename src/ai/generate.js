@@ -4,8 +4,9 @@ import { evaluateSingleChessShapes } from './evaluate'
 import { calculateSingleChessShapes } from './situation'
 
 export function generateMoves (chessType, aiChessType, boardGrids, playerSteps) {
-  const aiFives = []
-  const humanFives = []
+  const fives = []
+  // const aiFives = []
+  // const humanFives = []
   const aiFours = []
   const humanFours = []
   const aiBlockedFours = []
@@ -71,9 +72,9 @@ export function generateMoves (chessType, aiChessType, boardGrids, playerSteps) 
         // 用棋型个数来计算  别用分数
         const value = Math.max(aiResult.score, humanResult.score)
         if (aiResult.count.FIVE >= 1) {
-          aiFives.push({ row, col, value })
+          fives.push({ row, col, value })
         } else if (humanResult.count.FIVE >= 1) {
-          humanFives.push({ row, col, value })
+          fives.push({ row, col, value })
         } else if (aiResult.count.FOUR >= 1) {
           aiFours.push({ row, col, value })
         } else if (humanResult.count.FOUR >= 1) {
@@ -101,18 +102,18 @@ export function generateMoves (chessType, aiChessType, boardGrids, playerSteps) 
     }
   }
   // 如果成五，是必杀棋，直接返回
-  // if (fives.length) {
-  //   return fives
+  if (fives.length) {
+    return fives
+  }
+  // if (chessType === aiChessType && aiFives.length) {
+  //   if (chessType === 3 - aiChessType && humanFives.length) {
+  //     return aiFives.concat(humanFives)
+  //   }
+  //   return aiFives
   // }
-  if (chessType === aiChessType && aiFives.length) {
-    if (chessType === 3 - aiChessType && humanFives.length) {
-      return aiFives.concat(humanFives)
-    }
-    return aiFives
-  }
-  if (aiFives.length || humanFives.length) {
-    return aiFives.concat(humanFives)
-  }
+  // if (aiFives.length || humanFives.length) {
+  //   return aiFives.concat(humanFives)
+  // }
 
   // 先考虑必须下子的位置  直接返回
   // 第一种情况  对面有冲四  因为自己不能成五  所以直接考虑对方冲四
@@ -223,8 +224,8 @@ export function generateMoves (chessType, aiChessType, boardGrids, playerSteps) 
   result = result.concat(twos.length ? twos : neighbors)
 
   // 这种分数低的，就不用全部计算了
-  if (result.length > 20) {
-    return result.slice(0, 20)
+  if (result.length > 10) {
+    return result.slice(0, 10)
   }
 
   return result

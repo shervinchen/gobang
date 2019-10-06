@@ -354,11 +354,11 @@ function alphaBeta (
     isTimeOut = true
     return chessType === aiChessType ? -INFINITY : INFINITY // 超时，退出循环
   }
-  // 使用置换表中的缓存
-  const cacheVal = zobrist.lookUpHashTable(alpha, beta, depth)
-  if (cacheVal !== UNKNOWN_VAL) {
-    return cacheVal
-  }
+  // TODO 使用置换表中的缓存
+  // const cacheVal = zobrist.lookUpHashTable(alpha, beta, depth)
+  // if (cacheVal !== UNKNOWN_VAL) {
+  //   return cacheVal
+  // }
   // 判断是否搜索到最深的节点或者任意一方已经胜利
   // const chessShapesCount = calculateAllChessShapes(aiChessType, boardGrids)
   // || chessShapesCount['FIVE'].AI > 0 || chessShapesCount['FIVE'].HUMAN > 0
@@ -368,45 +368,45 @@ function alphaBeta (
       chessType,
       boardGrids
     )
-    // 经过测试，把算杀放在对子节点的搜索之后，比放在前面速度更快一些。
+    // TODO 经过测试，把算杀放在对子节点的搜索之后，比放在前面速度更快一些。
     // vcf
     // 自己没有形成活四，对面也没有形成活四，那么先尝试VCF
-    const vcxDeep = 0 // 算杀深度
-    if (
-      evaluateVal < CHESS_SHAPES_SCORE.FOUR &&
-      evaluateVal > CHESS_SHAPES_SCORE.FOUR * -1
-    ) {
-      const mate = vcf(chessType, aiChessType, vcxDeep, boardGrids, zobrist)
-      if (mate) {
-        // config.debug && console.log('vcf success')
-        // const v = {
-        //   score: mate.score,
-        //   step: step + mate.length,
-        //   steps: steps,
-        //   vcf: mate // 一个标记为，表示这个值是由vcx算出的
-        // }
-        // return v
-        return mate.val
-      }
-    } // vct
-    // 自己没有形成活三，对面也没有高于活三的棋型，那么尝试VCT
-    if (
-      evaluateVal < CHESS_SHAPES_SCORE.THREE * 2 &&
-      evaluateVal > CHESS_SHAPES_SCORE.THREE * -2
-    ) {
-      const mate = vct(chessType, aiChessType, vcxDeep, boardGrids, zobrist)
-      if (mate) {
-        // config.debug && console.log('vct success')
-        // v = {
-        //   score: mate.score,
-        //   step: step + mate.length,
-        //   steps: steps,
-        //   vct: mate // 一个标记为，表示这个值是由vcx算出的
-        // }
-        // return v
-        return mate.val
-      }
-    }
+    // const vcxDeep = 5 // 算杀深度
+    // if (
+    //   evaluateVal < CHESS_SHAPES_SCORE.FOUR &&
+    //   evaluateVal > CHESS_SHAPES_SCORE.FOUR * -1
+    // ) {
+    //   const mate = vcf(chessType, aiChessType, vcxDeep, boardGrids, zobrist)
+    //   if (mate) {
+    //     // config.debug && console.log('vcf success')
+    //     // const v = {
+    //     //   score: mate.score,
+    //     //   step: step + mate.length,
+    //     //   steps: steps,
+    //     //   vcf: mate // 一个标记为，表示这个值是由vcx算出的
+    //     // }
+    //     // return v
+    //     return mate.val
+    //   }
+    // } // vct
+    // // 自己没有形成活三，对面也没有高于活三的棋型，那么尝试VCT
+    // if (
+    //   evaluateVal < CHESS_SHAPES_SCORE.THREE * 2 &&
+    //   evaluateVal > CHESS_SHAPES_SCORE.THREE * -2
+    // ) {
+    //   const mate = vct(chessType, aiChessType, vcxDeep, boardGrids, zobrist)
+    //   if (mate) {
+    //     // config.debug && console.log('vct success')
+    //     // v = {
+    //     //   score: mate.score,
+    //     //   step: step + mate.length,
+    //     //   steps: steps,
+    //     //   vct: mate // 一个标记为，表示这个值是由vcx算出的
+    //     // }
+    //     // return v
+    //     return mate.val
+    //   }
+    // }
     zobrist.enterHashTable(0, evaluateVal, depth)
     return evaluateVal
   }
@@ -421,15 +421,15 @@ function alphaBeta (
     legalMoves = historyMove.concat(legalMoves)
   }
 
-  // 杀手启发 非根节点
-  if (depth < maxDepth) {
-    if (
-      zobrist.killTable[zobrist.hash_key] &&
-      zobrist.killTable[zobrist.hash_key].key === zobrist.hash_checksum
-    ) {
-      legalMoves = zobrist.killTable[zobrist.hash_key].move.concat(legalMoves)
-    }
-  }
+  // TODO 杀手启发 非根节点
+  // if (depth < maxDepth) {
+  //   if (
+  //     zobrist.killTable[zobrist.hash_key] &&
+  //     zobrist.killTable[zobrist.hash_key].key === zobrist.hash_checksum
+  //   ) {
+  //     legalMoves = zobrist.killTable[zobrist.hash_key].move.concat(legalMoves)
+  //   }
+  // }
 
   // 历史启发效果不好，暂时弃用，效果待优化，使用杀手启发取代
   // const legalMoves = generateMoves(chessType, aiChessType, boardGrids, playerSteps)
@@ -575,7 +575,7 @@ export function searchAll (
   for (
     let depth = CONFIG.ITERATION_DEPTH;
     depth <= CONFIG.MAX_DEPTH;
-    depth += 2
+    depth += 1
   ) {
     // let best = { val: -INFINITY }
     bestVal = alphaBeta(
