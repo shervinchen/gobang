@@ -407,7 +407,7 @@ function alphaBeta (
     //     return mate.val
     //   }
     // }
-    zobrist.enterHashTable(0, evaluateVal, depth)
+    // zobrist.enterHashTable(0, evaluateVal, depth)
     return evaluateVal
   }
   let legalMoves = generateMoves(

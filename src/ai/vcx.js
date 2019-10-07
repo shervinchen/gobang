@@ -119,7 +119,7 @@ const findMin = (chessType, aiChessType, score, boardGrids) => {
   for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
     for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
       if (boardGrids[row][col].boardGridType === 0) {
-        const p = { row, col }
+        let p = { row, col }
         // 计算当前位置放置ai棋子的棋型分数
         boardGrids[row][col].boardGridType = aiChessType
         const aiScore = evaluateSingleChessShapes(aiChessType, boardGrids, {
@@ -196,7 +196,7 @@ const findMin = (chessType, aiChessType, score, boardGrids) => {
   return result
 }
 
-var max = function (chessType, aiChessType, deep, totalDeep, boardGrids) {
+const max = (chessType, aiChessType, deep, totalDeep, boardGrids) => {
   debugNodeCount++
   // board.logSteps();
   if (deep <= 1) return false
@@ -226,8 +226,8 @@ var max = function (chessType, aiChessType, deep, totalDeep, boardGrids) {
 }
 
 // 只要有一种方式能防守住，就可以了
-var min = function (chessType, aiChessType, deep, boardGrids) {
-  debugNodeCount++
+const min = (chessType, aiChessType, deep, boardGrids) => {
+  // debugNodeCount++
   //   var w = board.win()
   //   if (w == role) return false
   //   if (w == R.reverse(role)) return true
@@ -286,9 +286,11 @@ const deeping = (chessType, aiChessType, deep, totalDeep, boardGrids) => {
   }
   const time = Math.round(new Date() - start)
   if (result) {
+    console.log('算杀成功')
     // config.log && console.log("算杀成功("+time+"毫秒, "+ debugNodeCount + "个节点):" + JSON.stringify(result));
   } else {
-    // console.log("算杀失败("+time+"毫秒)");
+    // console.log("算杀失败("+time+"毫秒)")
+    // console.log('算杀失败')
   }
   return result
 }
