@@ -71,11 +71,11 @@ export default class Zobrist {
    */
   static zobristInit () {
     const zobrist = []
-    for (let i = 15; i--;) {
-      zobrist.push(Array.from({ length: 15 }))
+    for (let i = BOARD_GRIDS_COUNT; i--;) {
+      zobrist.push(Array.from({ length: BOARD_GRIDS_COUNT }))
     }
-    for (let i = 0; i < 15; i++) {
-      for (let j = 0; j < 15; j++) {
+    for (let i = 0; i < BOARD_GRIDS_COUNT; i++) {
+      for (let j = 0; j < BOARD_GRIDS_COUNT; j++) {
         zobrist[i][j] = [[], []]
         for (let k = 0; k < 2; k++) {
           zobrist[i][j][k][0] = Math.floor(Math.random() * 10e12)
@@ -94,8 +94,8 @@ export default class Zobrist {
     let stone
     this.hash_key = 0
     this.hash_checksum = 0
-    for (let i = 0; i < 15; i++) {
-      for (let j = 0; j < 15; j++) {
+    for (let i = 0; i < BOARD_GRIDS_COUNT; i++) {
+      for (let j = 0; j < BOARD_GRIDS_COUNT; j++) {
         stone = board[i][j].boardGridType
         if (stone !== 0) {
           this.hash_key += stone
