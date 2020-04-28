@@ -1,5 +1,5 @@
-import { drawRadiusRect, window2Canvas } from './util'
-import { BOARD_GRID_COLOR, BOARD_GRID_TYPE_DEFAULT } from './constant'
+import { drawRadiusRect, clearRadiusRect, window2Canvas } from './util'
+import { BOARD_GRID_TYPE_DEFAULT } from './constant'
 
 /**
  * 棋格类
@@ -17,6 +17,7 @@ export default class BoardGrid {
    * @param {Number} boardGridType 棋格类型
    * @param {Number} boardGridChess 棋格棋子
    * @param {Number} boardGridRadius 棋格圆角半径
+   * @param {String} boardGridColor 棋格颜色
    * @memberof BoardGrid
    */
   constructor (
@@ -25,7 +26,8 @@ export default class BoardGrid {
     boardGridSize,
     boardGridType,
     boardGridChess,
-    boardGridRadius
+    boardGridRadius,
+    boardGridColor
   ) {
     // 棋格坐标
     this.boardGridX = boardGridX
@@ -38,6 +40,8 @@ export default class BoardGrid {
     this.boardGridChess = boardGridChess
     // 棋格圆角弧度
     this.boardGridRadius = boardGridRadius
+    // 棋格颜色
+    this.boardGridColor = boardGridColor
   }
 
   setBoardGridPosition (x, y) {
@@ -47,6 +51,10 @@ export default class BoardGrid {
 
   setBoardGridSize (boardGridSize) {
     this.boardGridSize = boardGridSize
+  }
+
+  setBoardGridColor (boardGridColor) {
+    this.boardGridColor = boardGridColor
   }
 
   redrawBoardGrid (
@@ -99,8 +107,18 @@ export default class BoardGrid {
       this.boardGridRadius,
       ctx
     )
-    ctx.fillStyle = BOARD_GRID_COLOR
+    ctx.fillStyle = this.boardGridColor
     ctx.fill()
+  }
+
+  clearBoardGrid (ctx) {
+    clearRadiusRect(
+      this.boardGridX,
+      this.boardGridY,
+      this.boardGridSize,
+      this.boardGridSize,
+      ctx
+    )
   }
 
   /**

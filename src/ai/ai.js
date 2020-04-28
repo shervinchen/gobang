@@ -29,7 +29,7 @@ export default class AI {
     // console.log(this.zobrist.code)
   }
 
-  getNextStep (chessType, gameBoard, gamePlayerSteps) {
+  getNextStep (chessType, gameBoard, gameHumanPlayerSteps, gameAIPlayerSteps) {
     // return {row: , col: }
     // const { row, col } = this.getNextStep()
 
@@ -158,6 +158,6 @@ export default class AI {
 
     // 每次搜索前初始化历史表与置换表
     this.initAI(gameBoard)
-    return searchAll(chessType, chessType, gameBoard.boardGrids, gamePlayerSteps, this.zobrist, this.history)
+    return searchAll(chessType, chessType, gameBoard.boardGrids, gameHumanPlayerSteps, gameAIPlayerSteps, this.zobrist, this.history)
   }
 }

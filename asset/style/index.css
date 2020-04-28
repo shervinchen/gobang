@@ -57,8 +57,8 @@ body {
 
 .scene .choose .info {
   font-size: 18px;
-  /* color: #ffff66; */
-  color: #ffb366;
+  color: #ffff66;
+  /* color: #ffb366; */
   line-height: 34px;
   font-style: italic;
   flex: 1;

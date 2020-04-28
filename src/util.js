@@ -57,6 +57,10 @@ export function drawRadiusRect (left, top, width, height, r, ctx) {
   ctx.closePath()
 }
 
+export function clearRadiusRect (left, top, width, height, ctx) {
+  ctx.clearRect(left, top, width, height)
+}
+
 export function drawCircle (x, y, r, ctx) {
   // var offset = 1;
   const pi = Math.PI

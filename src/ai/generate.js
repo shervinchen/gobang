@@ -3,7 +3,7 @@ import { CHESS_SHAPES_SCORE } from './score'
 import { evaluateSingleChessShapes } from './evaluate'
 import { calculateSingleChessShapes } from './situation'
 
-export function generateMoves (chessType, aiChessType, boardGrids, playerSteps) {
+export function generateMoves (chessType, aiChessType, boardGrids, humanPlayerSteps, aiPlayerSteps) {
   const fives = []
   // const aiFives = []
   // const humanFives = []
@@ -23,7 +23,7 @@ export function generateMoves (chessType, aiChessType, boardGrids, playerSteps) 
       // 当前位置为空
       if (boardGrids[row][col].boardGridType === 0) {
         // 如果当前游戏步数少于6步
-        if (playerSteps.length < 6) {
+        if (humanPlayerSteps.length + aiPlayerSteps.length < 6) {
           // 当前位置距离1格以内必须有一个棋子 否则进行下个位置的判断
           if (!hasNeighbor(row, col, 1, 1, boardGrids)) continue
         } else {

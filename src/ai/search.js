@@ -338,7 +338,8 @@ function alphaBeta (
   chessType,
   aiChessType,
   boardGrids,
-  playerSteps,
+  humanPlayerSteps,
+  aiPlayerSteps,
   startTime,
   zobrist,
   history
@@ -413,7 +414,8 @@ function alphaBeta (
     chessType,
     aiChessType,
     boardGrids,
-    playerSteps
+    humanPlayerSteps,
+    aiPlayerSteps
   )
   if (depth === maxDepth) {
     // 先搜索上一次最好的点
@@ -431,7 +433,7 @@ function alphaBeta (
   // }
 
   // 历史启发效果不好，暂时弃用，效果待优化，使用杀手启发取代
-  // const legalMoves = generateMoves(chessType, aiChessType, boardGrids, playerSteps)
+  // const legalMoves = generateMoves(chessType, aiChessType, boardGrids, humanPlayerSteps, aiPlayerSteps)
   // for (let index = 0; index < legalMoves.length; index++) {
   //   legalMoves[index].score = history.getHistoryScore(legalMoves[index])
   // }
@@ -453,7 +455,8 @@ function alphaBeta (
         3 - chessType,
         aiChessType,
         boardGrids,
-        playerSteps,
+        humanPlayerSteps,
+        aiPlayerSteps,
         startTime,
         zobrist,
         history
@@ -468,7 +471,8 @@ function alphaBeta (
           3 - chessType,
           aiChessType,
           boardGrids,
-          playerSteps,
+          humanPlayerSteps,
+          aiPlayerSteps,
           startTime,
           zobrist,
           history
@@ -483,7 +487,8 @@ function alphaBeta (
         3 - chessType,
         aiChessType,
         boardGrids,
-        playerSteps,
+        humanPlayerSteps,
+        aiPlayerSteps,
         startTime,
         zobrist,
         history
@@ -563,7 +568,8 @@ export function searchAll (
   chessType,
   aiChessType,
   boardGrids,
-  playerSteps,
+  humanPlayerSteps,
+  aiPlayerSteps,
   zobrist,
   history
 ) {
@@ -585,7 +591,8 @@ export function searchAll (
       chessType,
       aiChessType,
       boardGrids,
-      playerSteps,
+      humanPlayerSteps,
+      aiPlayerSteps,
       startTime,
       zobrist,
       history

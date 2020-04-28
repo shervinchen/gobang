@@ -72,7 +72,8 @@ export default class Game {
     // 添加棋盘监听器
     this.addBoardListener()
     // 初始化棋子储存器  保存玩家和AI的每一步棋子  可以获取步数
-    this.gamePlayerSteps = []
+    this.gameHumanPlayerSteps = []
+    this.gameAIPlayerSteps = []
     // 初始化游戏AI
     this.initGameAI()
   }
@@ -120,6 +121,8 @@ export default class Game {
       'click',
       () => {
         this.gameStatus = true
+        this.gameHumanPlayerSteps = []
+        this.gameAIPlayerSteps = []
         this.gameBoard.resetBoardGrids(this.gameCanvas.context)
         this.initGamePlayer(CHESS_TYPE_CROSS, CHESS_TYPE_CIRCLE)
         this.initGameAI()
@@ -133,10 +136,12 @@ export default class Game {
       'click',
       () => {
         this.gameStatus = true
+        this.gameHumanPlayerSteps = []
+        this.gameAIPlayerSteps = []
         this.gameBoard.resetBoardGrids(this.gameCanvas.context)
         this.initGamePlayer(CHESS_TYPE_CIRCLE, CHESS_TYPE_CROSS)
         this.initGameAI()
-        this.gameAIPlayer.generatePlayerChess(this.gameBoard.boardGrids, this.getGameAIFistStep(), this.gameCanvas.context, this.gamePlayerSteps, this.gameAI, this.gameAIPlayer.playerChessType)
+        this.gameAIPlayer.generatePlayerChess(this.gameBoard.boardGrids, this.getGameAIFistStep(), this.gameCanvas.context, this.gameHumanPlayerSteps, this.gameAIPlayerSteps, this.gameAI, this.gameAIPlayer.playerChessType)
       },
       false
     )
@@ -249,12 +254,12 @@ export default class Game {
             return
           }
           const humanNextStep = { row, col }
-          this.gameHumanPlayer.generatePlayerChess(this.gameBoard.boardGrids, humanNextStep, this.gameCanvas.context, this.gamePlayerSteps, this.gameAI, this.gameAIPlayer.playerChessType)
+          this.gameHumanPlayer.generatePlayerChess(this.gameBoard.boardGrids, humanNextStep, this.gameCanvas.context, this.gameHumanPlayerSteps, this.gameAIPlayerSteps, this.gameAI, this.gameAIPlayer.playerChessType)
           this.checkGameStatus(this.gameHumanPlayer.playerChessType, this.gameHumanPlayer.playerType, humanNextStep)
           if (this.gameStatus) {
             // 调用AI类 获取AI计算后的落棋位置
             const aiNextStep = this.getGameAINextStep()
-            this.gameAIPlayer.generatePlayerChess(this.gameBoard.boardGrids, aiNextStep, this.gameCanvas.context, this.gamePlayerSteps, this.gameAI, this.gameAIPlayer.playerChessType)
+            this.gameAIPlayer.generatePlayerChess(this.gameBoard.boardGrids, aiNextStep, this.gameCanvas.context, this.gameHumanPlayerSteps, this.gameAIPlayerSteps, this.gameAI, this.gameAIPlayer.playerChessType)
             this.checkGameStatus(this.gameAIPlayer.playerChessType, this.gameAIPlayer.playerType, aiNextStep)
           }
           return
@@ -285,7 +290,7 @@ export default class Game {
 
   getGameAINextStep () {
     // 调用AI模块获取下一步的棋格位置
-    const { row, col } = this.gameAI.getNextStep(this.gameAIPlayer.playerChessType, this.gameBoard, this.gamePlayerSteps)
+    const { row, col } = this.gameAI.getNextStep(this.gameAIPlayer.playerChessType, this.gameBoard, this.gameHumanPlayerSteps, this.gameAIPlayerSteps)
     return { row, col }
   }
 

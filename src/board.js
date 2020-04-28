@@ -9,6 +9,7 @@ import {
   BOARD_GRID_CHESS_DEFAULT_SIZE,
   BOARD_GRID_CHESS_DEFAULT_LINEWIDTH,
   BOARD_GRID_DEFAULT_SIZE,
+  BOARD_GRID_COLOR
 } from './constant'
 
 /**
@@ -44,7 +45,8 @@ export default class Board {
           boardGridSize,
           BOARD_GRID_TYPE_DEFAULT,
           new Chess(BOARD_GRID_TYPE_DEFAULT, chessSize, chessLineWidth),
-          BOARD_GRID_RADIUS
+          BOARD_GRID_RADIUS,
+          BOARD_GRID_COLOR
         )
         // 绘制棋格
         this.boardGrids[row][col].drawBoardGrid(ctx)
@@ -59,6 +61,7 @@ export default class Board {
         this.boardGrids[row][
           col
         ].boardGridChess.chessType = BOARD_GRID_TYPE_DEFAULT
+        this.boardGrids[row][col].setBoardGridColor(BOARD_GRID_COLOR)
         this.boardGrids[row][col].drawBoardGrid(ctx)
       }
     }
