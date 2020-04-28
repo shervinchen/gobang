@@ -1,9 +1,12 @@
 import { BOARD_GRIDS_COUNT } from '../constant'
 import { CHESS_SHAPES_SCORE } from './score'
 import { evaluateSingleChessShapes } from './evaluate'
+import { calculateSingleChessShapes } from './situation'
 
 export function generateMoves (chessType, aiChessType, boardGrids, playerSteps) {
   const fives = []
+  // const aiFives = []
+  // const humanFives = []
   const aiFours = []
   const humanFours = []
   const aiBlockedFours = []
@@ -33,13 +36,23 @@ export function generateMoves (chessType, aiChessType, boardGrids, playerSteps) 
         
         // 计算当前位置放置ai棋子的棋型分数
         boardGrids[row][col].boardGridType = aiChessType
-        const scoreAI = evaluateSingleChessShapes(aiChessType, boardGrids, {
+        // const aiChessShapesCount = calculateSingleChessShapes(
+        //   aiChessType,
+        //   boardGrids,
+        //   { row, col }
+        // )
+        const aiResult = evaluateSingleChessShapes(aiChessType, boardGrids, {
           row,
           col
         })
         // 计算当前位置放置人类棋子的棋型分数
         boardGrids[row][col].boardGridType = 3 - aiChessType
-        const scoreHuman = evaluateSingleChessShapes(
+        // const humanChessShapesCount = calculateSingleChessShapes(
+        //   3 - aiChessType,
+        //   boardGrids,
+        //   { row, col }
+        // )
+        const humanResult = evaluateSingleChessShapes(
           3 - aiChessType,
           boardGrids,
           {
@@ -51,37 +64,39 @@ export function generateMoves (chessType, aiChessType, boardGrids, playerSteps) 
         boardGrids[row][col].boardGridType = 0
 
         // console.log('打印10，8的分数', scoreAI, scoreHuman)
-        // boardGrids[row][col].score = Math.max(scoreAI, scoreHuman)
-        // if (boardGrids[row][col].score < CHESS_SHAPES_SCORE.THREE) {
+        // boardGrids[row][col].value = Math.max(scoreAI, scoreHuman)
+        // if (boardGrids[row][col].value < CHESS_SHAPES_SCORE.THREE) {
         //   continue
         // }
-        const score = Math.max(scoreAI, scoreHuman)
-        if (scoreAI >= CHESS_SHAPES_SCORE.FIVE) {
-          fives.push({ row, col, score })
-        } else if (scoreHuman >= CHESS_SHAPES_SCORE.FIVE) {
-          fives.push({ row, col, score })
-        } else if (scoreAI >= CHESS_SHAPES_SCORE.FOUR) {
-          aiFours.push({ row, col, score })
-        } else if (scoreHuman >= CHESS_SHAPES_SCORE.FOUR) {
-          humanFours.push({ row, col, score })
-        } else if (scoreAI >= CHESS_SHAPES_SCORE.BLOCKED_FOUR) {
-          aiBlockedFours.push({ row, col, score })
-        } else if (scoreHuman >= CHESS_SHAPES_SCORE.BLOCKED_FOUR) {
-          humanBlockedFours.push({ row, col, score })
-        } else if (scoreAI >= 2 * CHESS_SHAPES_SCORE.THREE) {
-          aiTwoThrees.push({ row, col, score })
-        } else if (scoreHuman >= 2 * CHESS_SHAPES_SCORE.THREE) {
-          humanTwoThrees.push({ row, col, score })
-        } else if (scoreAI >= CHESS_SHAPES_SCORE.THREE) {
-          aiThrees.push({ row, col, score })
-        } else if (scoreHuman >= CHESS_SHAPES_SCORE.THREE) {
-          humanThrees.push({ row, col, score })
-        } else if (scoreAI >= CHESS_SHAPES_SCORE.TWO) {
-          aiTwos.unshift({ row, col, score })
-        } else if (scoreHuman >= CHESS_SHAPES_SCORE.TWO) {
-          humanTwos.unshift({ row, col, score })
+
+        // 用棋型个数来计算  别用分数
+        const value = Math.max(aiResult.score, humanResult.score)
+        if (aiResult.count.FIVE >= 1) {
+          fives.push({ row, col, value })
+        } else if (humanResult.count.FIVE >= 1) {
+          fives.push({ row, col, value })
+        } else if (aiResult.count.FOUR >= 1) {
+          aiFours.push({ row, col, value })
+        } else if (humanResult.count.FOUR >= 1) {
+          humanFours.push({ row, col, value })
+        } else if (aiResult.count.BLOCKED_FOUR >= 1) {
+          aiBlockedFours.push({ row, col, value })
+        } else if (humanResult.count.BLOCKED_FOUR >= 1) {
+          humanBlockedFours.push({ row, col, value })
+        } else if (aiResult.count.THREE >= 2) {
+          aiTwoThrees.push({ row, col, value })
+        } else if (humanResult.count.THREE >= 2) {
+          humanTwoThrees.push({ row, col, value })
+        } else if (aiResult.count.THREE >= 1) {
+          aiThrees.push({ row, col, value })
+        } else if (humanResult.count.THREE >= 1) {
+          humanThrees.push({ row, col, value })
+        } else if (aiResult.count.TWO >= 1) {
+          aiTwos.unshift({ row, col, value })
+        } else if (humanResult.count.TWO >= 1) {
+          humanTwos.unshift({ row, col, value })
         } else {
-          neighbors.push({ row, col, score })
+          neighbors.push({ row, col, value })
         }
       }
     }
@@ -90,6 +105,15 @@ export function generateMoves (chessType, aiChessType, boardGrids, playerSteps) 
   if (fives.length) {
     return fives
   }
+  // if (chessType === aiChessType && aiFives.length) {
+  //   if (chessType === 3 - aiChessType && humanFives.length) {
+  //     return aiFives.concat(humanFives)
+  //   }
+  //   return aiFives
+  // }
+  // if (aiFives.length || humanFives.length) {
+  //   return aiFives.concat(humanFives)
+  // }
 
   // 先考虑必须下子的位置  直接返回
   // 第一种情况  对面有冲四  因为自己不能成五  所以直接考虑对方冲四
@@ -195,13 +219,13 @@ export function generateMoves (chessType, aiChessType, boardGrids, playerSteps) 
   }
 
   twos.sort((a, b) => {
-    return b.score - a.score
+    return b.value - a.value
   })
   result = result.concat(twos.length ? twos : neighbors)
 
   // 这种分数低的，就不用全部计算了
-  if (result.length > 20) {
-    return result.slice(0, 20)
+  if (result.length > 10) {
+    return result.slice(0, 10)
   }
 
   return result

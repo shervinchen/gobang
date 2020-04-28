@@ -45,7 +45,7 @@ export function evaluateSingleChessShapes (chessType, boardGrids, position) {
     }
   }
   // return singleChessShapesScore + BOARD_SCORES[position.row][position.col]
-  return fixScore(singleChessShapesScore)
+  return { score: fixScore(singleChessShapesScore), count: chessShapesCount }
 }
 
 export function evaluateAllChessShapes (aiChessType, chessType, boardGrids) {

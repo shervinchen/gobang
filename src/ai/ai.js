@@ -9,7 +9,8 @@ import { getSingleChessShapesCount } from './situation'
 import { CHESS_CROSS_SHAPES } from './chessShape'
 
 import { negamax, minimax, alphaBeta, generateLegalMoves, searchAll } from './search'
-// import Zobrist from './zobrist'
+import Zobrist from './zobrist'
+import History from './history'
 
 /*
   AI
@@ -17,11 +18,14 @@ import { negamax, minimax, alphaBeta, generateLegalMoves, searchAll } from './se
 */
 export default class AI {
   constructor () {
-    // this.zobrist = new Zobrist()
+    this.zobrist = new Zobrist()
+    this.history = new History()
   }
 
-  initAI () {
-    // this.zobrist.init()
+  initAI (gameBoard) {
+    this.history.clearHistoryScore()
+    this.zobrist.calculateInitHashKey(gameBoard.boardGrids)
+    this.zobrist.initKillTable()
     // console.log(this.zobrist.code)
   }
 
@@ -142,6 +146,7 @@ export default class AI {
     // 优化重构现有代码
     // 加入测试逻辑的代码  测试ab剪枝搜索的结果
     // 实现迭代加深
+    // 增量式估值
 
     // 进度条 （或者显示搜索了多少局面节点、花费的时间）
     // 确认、取消 模拟放置棋子的功能
@@ -150,6 +155,9 @@ export default class AI {
     // const { row, col } = minimax(4, gameBoard.boardGrids, chessType)
 
     // return alphaBeta(6, -INFINITY, INFINITY, chessType, chessType, gameBoard.boardGrids, gamePlayerSteps)
-    return searchAll(chessType, chessType, gameBoard.boardGrids, gamePlayerSteps, this.zobrist)
+
+    // 每次搜索前初始化历史表与置换表
+    this.initAI(gameBoard)
+    return searchAll(chessType, chessType, gameBoard.boardGrids, gamePlayerSteps, this.zobrist, this.history)
   }
 }

@@ -61,6 +61,9 @@ const CHESS_SHAPE_SEARCH_RANGE = 9
 
 const INFINITY = 999999999
 
+// 小于-INFINITY 或大于 INFINITY
+const UNKNOWN_VAL = 9999999999
+
 const BOARD_SCORES = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
@@ -80,6 +83,7 @@ const BOARD_SCORES = [
 ]
 
 export {
+  UNKNOWN_VAL,
   BOARD_SCORES,
   INFINITY,
   CHESS_SHAPE_SEARCH_RANGE,
