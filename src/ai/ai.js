@@ -9,7 +9,7 @@ import { getSingleChessShapesCount } from './situation'
 import { CHESS_CROSS_SHAPES } from './chessShape'
 
 import { negamax, minimax, alphaBeta, generateLegalMoves, searchAll } from './search'
-import Zobrist from './zobrist'
+// import Zobrist from './zobrist'
 
 /*
   AI
@@ -17,11 +17,11 @@ import Zobrist from './zobrist'
 */
 export default class AI {
   constructor () {
-    this.zobrist = new Zobrist()
+    // this.zobrist = new Zobrist()
   }
 
   initAI () {
-    this.zobrist.init()
+    // this.zobrist.init()
     // console.log(this.zobrist.code)
   }
 
