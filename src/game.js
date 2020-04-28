@@ -251,12 +251,32 @@ export default class Game {
           this.gameHumanPlayer.generatePlayerChess(this.gameBoard.boardGrids, { row, col }, this.gameCanvas.context, this.gamePlayerSteps, this.gameAI, this.gameAIPlayer.playerChessType)
           this.checkGameStatus(this.gameHumanPlayer.playerChessType, this.gameHumanPlayer.playerType, { row, col })
           if (this.gameStatus) {
-            // 如果未结束 调用AI类 获取AI计算后的落棋位置
-            const aiPosition = this.getGameAINextStep()
-            this.gameAIPlayer.generatePlayerChess(this.gameBoard.boardGrids, aiPosition, this.gameCanvas.context, this.gamePlayerSteps, this.gameAI, this.gameAIPlayer.playerChessType)
-            this.checkGameStatus(this.gameAIPlayer.playerChessType, this.gameAIPlayer.playerType, aiPosition)
+            // 先判断当前局面上是否有AI的连五点，如果有，直接连五，不用搜索
+            let aiNextStep = this.checkAIFive()
+            // 如果没有AI的连五点 调用AI类 获取AI计算后的落棋位置
+            if (!aiNextStep) {
+              aiNextStep = this.getGameAINextStep()
+            }
+            this.gameAIPlayer.generatePlayerChess(this.gameBoard.boardGrids, aiNextStep, this.gameCanvas.context, this.gamePlayerSteps, this.gameAI, this.gameAIPlayer.playerChessType)
+            this.checkGameStatus(this.gameAIPlayer.playerChessType, this.gameAIPlayer.playerType, aiNextStep)
           }
           return
+        }
+      }
+    }
+  }
+
+  checkAIFive() {
+    for (let row = 0; row < BOARD_GRIDS_COUNT; row++) {
+      for (let col = 0; col < BOARD_GRIDS_COUNT; col++) {
+        const boardGrid = this.gameBoard.boardGrids[row][col]
+        if (boardGrid.boardGridType === BOARD_GRID_TYPE_DEFAULT) {
+          boardGrid.boardGridType = this.gameAIPlayer.playerChessType
+          if (calculateSingleChessShapes(this.gameAIPlayer.playerChessType, this.gameBoard.boardGrids, { row, col })['FIVE'] !== 0) {
+            boardGrid.boardGridType = BOARD_GRID_TYPE_DEFAULT
+            return { row, col }
+          }
+          boardGrid.boardGridType = BOARD_GRID_TYPE_DEFAULT
         }
       }
     }
