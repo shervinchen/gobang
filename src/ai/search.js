@@ -360,9 +360,8 @@ function alphaBeta (
   //   return cacheVal
   // }
   // 判断是否搜索到最深的节点或者任意一方已经胜利
-  // const chessShapesCount = calculateAllChessShapes(aiChessType, boardGrids)
-  // || chessShapesCount['FIVE'].AI > 0 || chessShapesCount['FIVE'].HUMAN > 0
-  if (depth === 0) {
+  const chessShapesCount = calculateAllChessShapes(aiChessType, boardGrids)
+  if (depth === 0 || chessShapesCount['FIVE'].AI > 0 || chessShapesCount['FIVE'].HUMAN > 0) {
     const evaluateVal = evaluateAllChessShapes(
       aiChessType,
       chessType,
