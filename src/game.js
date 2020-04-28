@@ -249,12 +249,12 @@ export default class Game {
             return
           }
           this.gameHumanPlayer.generatePlayerChess(this.gameBoard.boardGrids, { row, col }, this.gameCanvas.context, this.gamePlayerSteps, this.gameAI, this.gameAIPlayer.playerChessType)
-          this.checkGameStatus(this.gameHumanPlayer.playerType, { row, col })
+          this.checkGameStatus(this.gameHumanPlayer.playerChessType, this.gameHumanPlayer.playerType, { row, col })
           if (this.gameStatus) {
             // 如果未结束 调用AI类 获取AI计算后的落棋位置
             const aiPosition = this.getGameAINextStep()
             this.gameAIPlayer.generatePlayerChess(this.gameBoard.boardGrids, aiPosition, this.gameCanvas.context, this.gamePlayerSteps, this.gameAI, this.gameAIPlayer.playerChessType)
-            this.checkGameStatus(this.gameAIPlayer.playerType, aiPosition)
+            this.checkGameStatus(this.gameAIPlayer.playerChessType, this.gameAIPlayer.playerType, aiPosition)
           }
           return
         }
@@ -262,11 +262,11 @@ export default class Game {
     }
   }
 
-  checkGameStatus (playerType, position) {
+  checkGameStatus (playerChessType, playerType, position) {
     // 判断当前玩家是否胜利
     // 判断当前玩家的棋子形成的棋型是否连成长连
     // 如果当前玩家取得胜利 游戏结束
-    if (calculateSingleChessShapes(this.playerChessType, this.gameBoard.boardGrids, position)['FIVE'] !== 0) {
+    if (calculateSingleChessShapes(playerChessType, this.gameBoard.boardGrids, position)['FIVE'] !== 0) {
       this.gameStatus = false
       if (playerType === PLAYER_TYPE_HUMAN) {
         // 如果是人类玩家
