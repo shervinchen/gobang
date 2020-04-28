@@ -3,7 +3,7 @@ import Scene from './scene'
 import Board from './board'
 import Player from './player'
 import AI from './ai/ai'
-import { checkChessShape } from './ai/situation'
+import { checkChessShape, calculateSingleChessShapes } from './ai/situation'
 import {
   CHESS_TYPE_CROSS,
   CHESS_TYPE_CIRCLE,
@@ -228,7 +228,11 @@ export default class Game {
     this.gameCanvas.canvas.addEventListener(
       'click',
       event => {
-        this.onClickBoard(event)
+        if (this.gameStatus) {
+          this.onClickBoard(event)
+        } else {
+          alert('The game is over, please restart the game!')
+        }
       },
       false
     )
@@ -245,10 +249,35 @@ export default class Game {
             return
           }
           this.gameHumanPlayer.generatePlayerChess(this.gameBoard.boardGrids, { row, col }, this.gameCanvas.context, this.gamePlayerSteps, this.gameAI, this.gameAIPlayer.playerChessType)
-          // 如果未结束 调用AI类 获取AI计算后的落棋位置
-          this.gameAIPlayer.generatePlayerChess(this.gameBoard.boardGrids, this.getGameAINextStep(), this.gameCanvas.context, this.gamePlayerSteps, this.gameAI, this.gameAIPlayer.playerChessType)
+          this.checkGameStatus(this.gameHumanPlayer.playerType, { row, col })
+          if (this.gameStatus) {
+            // 如果未结束 调用AI类 获取AI计算后的落棋位置
+            const aiPosition = this.getGameAINextStep()
+            this.gameAIPlayer.generatePlayerChess(this.gameBoard.boardGrids, aiPosition, this.gameCanvas.context, this.gamePlayerSteps, this.gameAI, this.gameAIPlayer.playerChessType)
+            this.checkGameStatus(this.gameAIPlayer.playerType, aiPosition)
+          }
           return
         }
+      }
+    }
+  }
+
+  checkGameStatus (playerType, position) {
+    // 判断当前玩家是否胜利
+    // 判断当前玩家的棋子形成的棋型是否连成长连
+    // 如果当前玩家取得胜利 游戏结束
+    if (calculateSingleChessShapes(this.playerChessType, this.gameBoard.boardGrids, position)['FIVE'] !== 0) {
+      this.gameStatus = false
+      if (playerType === PLAYER_TYPE_HUMAN) {
+        // 如果是人类玩家
+        // 绘制 you win 文字
+        alert('You win!')
+      } else if (playerType === PLAYER_TYPE_AI) {
+        // 如果AI玩家
+        // 绘制 you lose 文字
+        alert('You lose!')
+      } else {
+        return null
       }
     }
   }
