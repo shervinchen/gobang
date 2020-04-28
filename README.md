@@ -1,6 +1,7 @@
 # gobang
 
 一个五子棋AI，使用原生JavaScript开发
+
 试玩：https://csdoker.github.io/gobang/
 
 ## 介绍
@@ -18,3 +19,10 @@ npm run start
 ## 打包
 
 npm run build
+
+## TODO
+
+- [ ] loading动画
+- [ ] 走棋提示
+- [ ] 悔棋
+- [ ] 算法优化
