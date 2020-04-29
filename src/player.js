@@ -1,4 +1,4 @@
-import { BOARD_GRID_COLOR } from './constant'
+import { BOARD_GRID_COLOR, BOARD_GRID_ACTIVE_COLOR  } from './constant'
 
 /*
   玩家
@@ -39,7 +39,7 @@ export default class Player {
       )
     }
     boardGrids[position.row][position.col].clearBoardGrid(ctx)
-    boardGrids[position.row][position.col].setBoardGridColor('rgb(255, 255, 102, .2)')
+    boardGrids[position.row][position.col].setBoardGridColor(BOARD_GRID_ACTIVE_COLOR)
     boardGrids[position.row][position.col].redrawBoardGrid(ctx)
     boardGrids[position.row][position.col].redrawBoardGridChess(
       ctx

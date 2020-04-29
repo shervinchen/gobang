@@ -22,9 +22,9 @@ npm run build
 
 ## TODO
 
+- [x] 添加最后落子提示
 - [ ] loading动画
 - [ ] 走棋提示
 - [ ] 悔棋
 - [ ] 算法优化
-- [ ] 添加最后落子提示
 - [ ] 使用Web Worker优化性能
