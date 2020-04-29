@@ -438,7 +438,7 @@ function alphaBeta (
   //   legalMoves[index].score = history.getHistoryScore(legalMoves[index])
   // }
   // history.mergeSort(legalMoves, legalMoves.length, 0)
-  let exact = -1
+  let exact = 0
   let best = null
   for (let index = 0; index < legalMoves.length; index++) {
     boardGrids[legalMoves[index].row][
@@ -477,6 +477,7 @@ function alphaBeta (
           zobrist,
           history
         )
+        exact = 1
       }
     } else {
       val = -alphaBeta(
@@ -536,7 +537,11 @@ function alphaBeta (
     if (best) {
       history.enterHistoryScore(best, depth)
     }
-    zobrist.enterHashTable(exact, alpha, depth)
+    if (exact) {
+      zobrist.enterHashTable(0, alpha, depth)
+    } else {
+      zobrist.enterHashTable(-1, alpha, depth)
+    }
     // 如果当前节点为alpha节点且命中了杀手走法表，说明当前节点已不再是beta节点，应从杀手走法表中移除
     if (
       zobrist.killTable[zobrist.hash_key] &&
