@@ -25,6 +25,9 @@
     "url": "https://github.com/shervinchen/gobang/issues"
   },
   "homepage": "https://github.com/shervinchen/gobang#readme",
+  "engines": {
+    "node": "14.9.0"
+  },
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/plugin-transform-runtime": "^7.5.5",
