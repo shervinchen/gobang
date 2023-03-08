@@ -2,7 +2,7 @@
 
 一个五子棋AI，使用原生JavaScript开发
 
-试玩：https://csdoker.github.io/gobang/
+试玩：https://shervinchen.github.io/gobang/
 
 ## 介绍
 
