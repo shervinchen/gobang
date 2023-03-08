@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 module.exports = {
   entry: './src/main.js',
   output: {
-    path: path.resolve(__dirname, 'docs'), // dist
+    path: path.resolve(__dirname, 'public'), // dist
     filename: 'gobang.min.js'
   },
   plugins: [
